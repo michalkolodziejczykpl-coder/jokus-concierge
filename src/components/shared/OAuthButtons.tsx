@@ -14,10 +14,13 @@ import { APP_URL } from '@/lib/constants';
 
 type Provider = 'google' | 'facebook' | 'apple';
 
+// Only Google is wired up end-to-end. Facebook is paused pending Meta Business
+// Verification (1-5 day review + KRS/NIP upload). Apple needs the Apple
+// Developer Program ($99/yr) and is bundled with Stage 2 native (iOS App Store
+// requirement). Re-add the entries below when each provider is enabled in
+// Supabase Auth → Sign In / Providers.
 const PROVIDERS: Array<{ id: Provider; label: string }> = [
-  { id: 'google', label: 'Kontynuuj z Google' },
-  { id: 'facebook', label: 'Kontynuuj z Facebookiem' },
-  { id: 'apple', label: 'Kontynuuj z Apple' }
+  { id: 'google', label: 'Kontynuuj z Google' }
 ];
 
 export function OAuthButtons({ className }: { className?: string }) {
