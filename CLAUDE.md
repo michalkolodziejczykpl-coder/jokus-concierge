@@ -13,16 +13,32 @@ This file is automatically loaded by Claude Code on session start. It tells the 
 
 ## Repository state
 
-This is a **scaffolded skeleton**, not production code. As of May 2026:
+End-of-setup, pre-Phase-1. As of late May 2026:
 
-- ✅ Directory tree per `PROJECT_TREE.md` is complete (105 dirs, 119 files, `.gitkeep` in every empty folder).
-- ✅ Config files: `package.json`, `tsconfig.json`, `next.config.js`, `tailwind.config.ts`, `postcss.config.js`, `.env.example`, `.gitignore`, `.prettierrc`.
-- ✅ Supabase migrations copied from spec: `01_initial_schema.sql`, `02_rls_policies.sql`, `03_seed_modules.sql` (commented stub).
-- ✅ Source stubs: Supabase clients (browser/server/admin/middleware), root layout, landing page, auth group (login/register/callback), `OAuthButtons` component.
-- ❌ Business logic — none. Edge Functions are TODO-only stubs. UI components beyond auth do not exist yet.
-- ❌ `node_modules` not installed. `npm install` is the first thing a developer must run.
+- ✅ Directory tree per `PROJECT_TREE.md` complete (105 dirs, .gitkeep in empty folders).
+- ✅ Config files in place; `package.json` bumped to Next 16.2.x / React 19 to clear 14.x CVEs.
+- ✅ Supabase migrations `01_initial_schema.sql` and `02_rls_policies.sql` **applied to the live dev project**. `03_seed_modules.sql` is still a commented stub.
+- ✅ Source stubs: Supabase clients (browser/server/admin/middleware), root layout, landing, `(auth)/login`, `(auth)/register`, `(auth)/callback`, `OAuthButtons`.
+- ✅ Minimal post-login placeholder at `(resident)/home/page.tsx` — shows user email + sign-out form. Will be replaced by the real tile grid in Phase 1.
+- ✅ Public `/privacy` and `/data-deletion` pages (Polish, RODO-minimal — placeholder text, must be lawyer-reviewed before public launch).
+- ✅ `node_modules` installed locally. `npm run dev`, `npm run build`, `npm run typecheck` all green.
+- ✅ Deployed to Vercel (production: https://migmig-concierge.vercel.app, auto-deploys from `main`). Vercel Authentication ("Standard Protection") explicitly disabled on Production so public pages and Facebook/Google crawlers can reach them.
+- ✅ OAuth: **Google only**, end-to-end verified on localhost and prod. Facebook is paused pending Meta Business Verification (1–5 day review); Apple deferred to Stage 2 native.
+- ❌ Business logic — none. No order flow, no slot picker, no payments, no tracking, no marketplace. Edge Functions still TODO-only stubs.
+- ❌ No tests. Per roadmap Faza 6 — premature for solo scaffold.
 
 The full design spec lives in `docs/` — 15 markdown files + 2 SQL files. The reference contract is `MIGMIG_Concierge_koncepcja_v2.docx` (not in repo; lives on Michał's machine).
+
+## Live infrastructure
+
+These are the actual deployed resources — use them when configuring env vars, OAuth allow-lists, or debugging production:
+
+- **Production URL**: https://migmig-concierge.vercel.app (canonical, stable across deploys)
+- **Supabase project**: https://uveeqjidyuumcddnfnop.supabase.co (region Stockholm, EU-North-1)
+- **GitHub**: https://github.com/michalkolodziejczykpl-coder/migmig-concierge (private)
+- **Vercel team / project**: `migmig-s-projects` / `migmig-concierge` (Hobby plan)
+- **Google Cloud OAuth project**: `MIGMIG Concierge` (project number 862680181705), Web Client `MIGMIG Web Client`. App is in Testing mode — Google shows the "unverified app" warning until verified.
+- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, migmig-concierge.vercel.app/**, *-migmig-s-projects.vercel.app/**, *.migmig.pl/** (future custom domain).
 
 ## Three non-negotiable UX requirements
 
