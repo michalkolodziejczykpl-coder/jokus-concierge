@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Providers } from '@/components/shared/Providers';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,8 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl">
       <body className="min-h-screen antialiased">
-        {/* TODO: wrap in <QueryClientProvider /> + <AuthProvider /> once those land. */}
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

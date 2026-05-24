@@ -1,9 +1,13 @@
-// Minimal placeholder home for logged-in residents.
-// Phase 1 will replace this with the real tile grid + voice entry point.
-// For now it just proves the OAuth round-trip works end-to-end.
+// Resident home — Phase 1 "coś na ekranie" sprint.
+// Server Component: resolves the session and resident's display name on the
+// server, then hands off to the client-side <ModuleGrid /> for catalog fetch.
+//
+// The voice entry point (large mic button) is intentionally deferred — it
+// will live next to the greeting once the Whisper edge function lands.
 
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { ModuleGrid } from '@/components/resident/ModuleGrid';
 
 async function signOut() {
   'use server';
@@ -23,36 +27,35 @@ export default async function ResidentHomePage() {
   }
 
   const displayName =
-    (user.user_metadata?.full_name as string | undefined) ??
-    (user.user_metadata?.name as string | undefined) ??
-    user.email ??
+    (user.user_metadata?.full_name as string | undefined)?.split(' ')[0] ??
+    (user.user_metadata?.name as string | undefined)?.split(' ')[0] ??
+    user.email?.split('@')[0] ??
     'mieszkańcu';
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-8 px-6 text-center">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Cześć, {displayName} 👋
+    <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12">
+      <header className="mb-10">
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 sm:text-4xl">
+          Cześć, {displayName}
         </h1>
-        <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
-          Logowanie działa. Panel mieszkańca powstanie w Fazie 1 (kafelki modułów, wpis głosowy, koszyk → BLIK).
+        <p className="mt-2 text-base text-neutral-600 dark:text-neutral-400">
+          W czym możemy pomóc?
         </p>
-      </div>
+      </header>
 
-      <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-6 py-4 text-left text-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <p className="font-medium">Sesja Supabase</p>
-        <p className="mt-1 text-neutral-600 dark:text-neutral-400">user.id: {user.id}</p>
-        <p className="text-neutral-600 dark:text-neutral-400">email: {user.email}</p>
-      </div>
+      <ModuleGrid />
 
-      <form action={signOut}>
-        <button
-          type="submit"
-          className="rounded-lg border border-neutral-300 px-6 py-3 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
-        >
-          Wyloguj się
-        </button>
-      </form>
+      <footer className="mt-16 flex items-center justify-between border-t border-neutral-200 pt-6 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-500">
+        <span>{user.email}</span>
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="rounded-md border border-neutral-300 px-3 py-1.5 font-medium text-neutral-700 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
+          >
+            Wyloguj się
+          </button>
+        </form>
+      </footer>
     </main>
   );
 }
