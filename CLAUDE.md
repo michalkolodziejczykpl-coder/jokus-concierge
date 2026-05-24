@@ -72,7 +72,7 @@ src/
 │   └── constants.ts
 ├── hooks/                     useUser, useOrder, useLiveTracking, useVoiceInput, useSlots
 ├── stores/                    Zustand — orderDraft, voiceSession, tracking
-└── middleware.ts              Session refresh
+└── proxy.ts                   Session refresh (renamed from `middleware.ts` in Next 16)
 supabase/
 ├── migrations/                Versioned SQL (3 files at scaffold time)
 └── functions/                 Deno Edge Functions — ai-intent-recognition, slot-finder, tracking-broadcast, przelewy24-webhook
