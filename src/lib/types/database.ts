@@ -24,9 +24,46 @@ type GenericTable = {
   Relationships: [];
 };
 
+/**
+ * All `public.*` tables, enumerated explicitly. With an index-signature
+ * (`[tableName: string]: GenericTable`) the supabase-js insert overload
+ * collapses to `never[]` because TS can't resolve concrete keys — listing
+ * them keeps insert/update/upsert weakly typed but functional.
+ *
+ * Sync this list when adding tables in `supabase/migrations/`. Eventually
+ * replaced wholesale by `supabase gen types` output (REVIEW_REPORT.md #5).
+ */
+type PublicTableName =
+  | 'users'
+  | 'estates'
+  | 'addresses'
+  | 'jokusors'
+  | 'modules'
+  | 'module_activations'
+  | 'jokusor_modules'
+  | 'orders'
+  | 'time_slots'
+  | 'order_events'
+  | 'ratings'
+  | 'tips'
+  | 'module_proposals'
+  | 'module_proposal_votes'
+  | 'ai_intents'
+  | 'voice_query_log'
+  | 'marketplace_listings'
+  | 'marketplace_messages'
+  | 'marketplace_purchases'
+  | 'trusted_professionals'
+  | 'professional_reviews'
+  | 'payments'
+  | 'invoices'
+  | 'push_subscriptions'
+  | 'notifications'
+  | 'audit_log';
+
 export interface Database {
   public: {
-    Tables: { [tableName: string]: GenericTable };
+    Tables: Record<PublicTableName, GenericTable>;
     Views: { [viewName: string]: { Row: GenericRow; Relationships: [] } };
     Functions: {
       [functionName: string]: {
