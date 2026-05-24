@@ -71,9 +71,11 @@ Cursor to fork VS Code z wbudowaną integracją Claude. Wszystkie kroki wyżej d
 ### B3. Pierwszy test
 
 Bez wypełnionych kluczy projekt się zbuduje, ale nie zaloguje. Sprawdźmy że TypeScript jest zielony:
+
 ```powershell
 npx tsc --noEmit
 ```
+
 Jeśli pokaże "0 errors" — wszystko OK. Jeśli błędy — zgłoś mi, zobaczymy.
 
 ---
@@ -311,15 +313,15 @@ Jeśli któryś punkt nie działa — wróć do tej sekcji w guidzie. Jeśli dal
 
 ## CO DALEJ — kolejność prac (z roadmap)
 
-| Faza | Czas | Co dostajesz na koniec |
-|------|------|------------------------|
-| **0 — Setup** | 1–2 tyg (TERAZ) | Ten guide ✓ |
-| **1 — MVP mieszkańca** | 6–8 tyg | Można zamówić wyprowadzenie psa, BLIK, status |
-| **2 — MVP jokusora** | 3–4 tyg | Franczyzobiorca przyjmuje zlecenia |
-| **3 — Live tracking + AI głosowe** | 3–4 tyg | Uber-like mapa + komenda głosowa |
-| **4 — Marketplace C2C** | 3–4 tyg | Sprzedaż między sąsiadami z dostawą |
-| **5 — Professional** | 2–3 tyg | "Przypilnuj hydraulika" |
-| **6 — Polish** | 4–6 tyg | PWA offline, push, A/B, accessibility |
-| **7 — React Native** | 8–12 tyg (po 3000 DAU) | Aplikacje natywne |
+| Faza                               | Czas                   | Co dostajesz na koniec                        |
+| ---------------------------------- | ---------------------- | --------------------------------------------- |
+| **0 — Setup**                      | 1–2 tyg (TERAZ)        | Ten guide ✓                                   |
+| **1 — MVP mieszkańca**             | 6–8 tyg                | Można zamówić wyprowadzenie psa, BLIK, status |
+| **2 — MVP jokusora**               | 3–4 tyg                | Franczyzobiorca przyjmuje zlecenia            |
+| **3 — Live tracking + AI głosowe** | 3–4 tyg                | Uber-like mapa + komenda głosowa              |
+| **4 — Marketplace C2C**            | 3–4 tyg                | Sprzedaż między sąsiadami z dostawą           |
+| **5 — Professional**               | 2–3 tyg                | "Przypilnuj hydraulika"                       |
+| **6 — Polish**                     | 4–6 tyg                | PWA offline, push, A/B, accessibility         |
+| **7 — React Native**               | 8–12 tyg (po 3000 DAU) | Aplikacje natywne                             |
 
 Pełen breakdown sprintów: [`docs/roadmap/01_phases.md`](docs/roadmap/01_phases.md).

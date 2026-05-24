@@ -17,7 +17,8 @@ export default function DataDeletionPage() {
 
       <h1 className="mt-6 text-3xl font-bold tracking-tight">Usunięcie konta i danych</h1>
       <p className="mt-2 text-sm text-neutral-500">
-        Zgodnie z art. 17 RODO masz prawo żądać usunięcia swoich danych osobowych w dowolnym momencie.
+        Zgodnie z art. 17 RODO masz prawo żądać usunięcia swoich danych osobowych w dowolnym
+        momencie.
       </p>
 
       <section className="mt-8 space-y-4 text-neutral-700 dark:text-neutral-300">
@@ -25,10 +26,12 @@ export default function DataDeletionPage() {
           Sposób 1 — z poziomu aplikacji (zalecane)
         </h2>
         <p>
-          Po zalogowaniu się przejdź do <strong>Profil → Ustawienia → Usuń konto</strong>. Konto zostanie usunięte natychmiast wraz ze wszystkimi danymi osobowymi.
+          Po zalogowaniu się przejdź do <strong>Profil → Ustawienia → Usuń konto</strong>. Konto
+          zostanie usunięte natychmiast wraz ze wszystkimi danymi osobowymi.
         </p>
         <p className="text-sm text-neutral-500">
-          (Ten przepływ jest w trakcie wdrażania. Do czasu jego uruchomienia prosimy korzystać ze Sposobu 2.)
+          (Ten przepływ jest w trakcie wdrażania. Do czasu jego uruchomienia prosimy korzystać ze
+          Sposobu 2.)
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
@@ -38,7 +41,10 @@ export default function DataDeletionPage() {
         <p className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 font-mono text-sm dark:border-neutral-800 dark:bg-neutral-900">
           michal.kolodziejczyk.pl@gmail.com
         </p>
-        <p>z tytułem <em>„Usunięcie konta MIGMIG"</em> i z adresu e-mail, którego użyłeś do rejestracji. Konto usuniemy w ciągu 30 dni od otrzymania zgłoszenia (zwykle szybciej).</p>
+        <p>
+          z tytułem <em>„Usunięcie konta MIGMIG"</em> i z adresu e-mail, którego użyłeś do
+          rejestracji. Konto usuniemy w ciągu 30 dni od otrzymania zgłoszenia (zwykle szybciej).
+        </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
           Co zostanie usunięte
@@ -55,21 +61,25 @@ export default function DataDeletionPage() {
           Co możemy zachować
         </h2>
         <p>
-          Zgodnie z polskim prawem (Ordynacja podatkowa, Ustawa o rachunkowości) możemy być zobowiązani zachować przez 5 lat:
+          Zgodnie z polskim prawem (Ordynacja podatkowa, Ustawa o rachunkowości) możemy być
+          zobowiązani zachować przez 5 lat:
         </p>
         <ul className="list-disc space-y-1 pl-6">
           <li>Faktury i dokumenty księgowe związane z opłaconymi zleceniami.</li>
           <li>Zanonimizowane logi systemowe (bez powiązania z osobą).</li>
         </ul>
         <p>
-          Te dane przechowujemy wyłącznie w celu wypełnienia obowiązku prawnego — nie używamy ich do żadnych innych celów.
+          Te dane przechowujemy wyłącznie w celu wypełnienia obowiązku prawnego — nie używamy ich do
+          żadnych innych celów.
         </p>
 
-        <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-          Pytania
-        </h2>
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">Pytania</h2>
         <p>
-          Wszystkie pytania związane z ochroną danych kieruj na adres administratora podany w <Link href="/privacy" className="text-brand hover:underline">Polityce prywatności</Link>.
+          Wszystkie pytania związane z ochroną danych kieruj na adres administratora podany w{' '}
+          <Link href="/privacy" className="text-brand hover:underline">
+            Polityce prywatności
+          </Link>
+          .
         </p>
       </section>
     </main>

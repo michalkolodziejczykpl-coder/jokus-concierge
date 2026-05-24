@@ -5,6 +5,7 @@
 **Cel:** mieć działający szkielet, na którym można budować.
 
 ### Zadania
+
 - [ ] Cowork generuje strukturę projektu (na podstawie tego pakietu)
 - [ ] Założenie projektu Supabase (Frankfurt)
 - [ ] Wykonanie `01_schema.sql` + `02_rls_policies.sql`
@@ -16,6 +17,7 @@
 - [ ] Konfiguracja PostHog na Cyberfolks VPS
 
 ### Definition of Done
+
 - Aplikacja deploy'uje się na migmig.pl
 - Można się zalogować przez Google
 - Po zalogowaniu pojawia się ekran "Hello, [imię]"
@@ -27,12 +29,14 @@
 **Cel:** mieszkaniec może zamówić usługę i ją otrzymać. Bez marketplace, bez professional, bez głosu.
 
 ### Sprint 1.1 — Onboarding (1 tydzień)
+
 - [ ] OAuth flow (Google + Facebook + Email magic link)
 - [ ] Ekran wyboru adresu (Mapbox autocomplete)
 - [ ] Walidacja: czy adres w obsługiwanym osiedlu
 - [ ] Out-of-range screen + email do listy oczekujących
 
 ### Sprint 1.2 — Ekran główny + moduły (2 tygodnie)
+
 - [ ] Komponent `<ModuleTile>`
 - [ ] Server Component pobierający aktywne moduły dla adresu mieszkańca
 - [ ] Formularz modułu (dynamiczne renderowanie z `custom_fields`)
@@ -40,6 +44,7 @@
 - [ ] Algorytm wyszukiwania slotów (Edge Function)
 
 ### Sprint 1.3 — Płatności + zamówienia (2 tygodnie)
+
 - [ ] Integracja Przelewy24 (BLIK + karty)
 - [ ] Sesja płatności + redirect
 - [ ] Webhook handler
@@ -49,18 +54,22 @@
 - [ ] Ekran szczegółów zamówienia (bez mapy live na razie)
 
 ### Sprint 1.4 — Czat + statusy (1 tydzień)
+
 - [ ] Chat panel (Supabase Realtime)
 - [ ] Statusy zamówienia + timeline
 - [ ] Powiadomienia push przy zmianie statusu
 
 ### Sprint 1.5 — Ocena + napiwek + profil (1 tydzień)
+
 - [ ] Ekran oceny po zakończeniu
 - [ ] Napiwek (BLIK / karta)
 - [ ] Profil użytkownika
 - [ ] Zarządzanie adresami
 
 ### Definition of Done
+
 Mieszkaniec może:
+
 - Zarejestrować się przez Google
 - Dodać adres
 - Zobaczyć kafelki modułów
@@ -75,30 +84,36 @@ Mieszkaniec może:
 **Cel:** jokusor może odbierać i realizować zlecenia.
 
 ### Sprint 2.1 — Onboarding jokusora (1 tydzień)
+
 - [ ] Formularz aplikacyjny (`/franchise`)
 - [ ] Panel admina: lista wniosków
 - [ ] Akceptacja → utworzenie rekordu jokusora
 - [ ] Pierwsze logowanie z rolą jokusora
 
 ### Sprint 2.2 — Dashboard + zlecenia (1 tydzień)
+
 - [ ] Dashboard dnia
 - [ ] Lista zleceń (pending / in_progress / completed)
 - [ ] Akcje: akceptuj / odrzuć / rozpocznij / zakończ
 - [ ] Checkpoint events
 
 ### Sprint 2.3 — Zasięg + kalendarz (1 tydzień)
+
 - [ ] Ekran service-area (3 zakładki: mapa / kody / ulice)
 - [ ] Rysowanie polygonu (Mapbox GL Draw)
 - [ ] Ustawianie godzin pracy
 - [ ] Urlop (od-do)
 
 ### Sprint 2.4 — Statystyki + zarobki (1 tydzień)
+
 - [ ] Ekran zarobków
 - [ ] Faktury miesięczne (PDF generation)
 - [ ] Ranking osiedla
 
 ### Definition of Done
+
 Jokusor może:
+
 - Aplikować jako franczyzobiorca
 - Zostać zatwierdzony przez admina
 - Logować się jako jokusor
@@ -112,11 +127,13 @@ Jokusor może:
 **Cel:** wprowadzenie kluczowych unique selling points.
 
 ### Sprint 3.1 — GPS broadcasting (1 tydzień)
+
 - [ ] Komponent `<GpsTracker>` w aplikacji jokusora
 - [ ] Supabase Realtime channel `tracking:order:{id}`
 - [ ] Throttling po stronie klienta (haversine check)
 
 ### Sprint 3.2 — Live tracking map (1 tydzień)
+
 - [ ] Komponent `<LiveTrackingMap>` w aplikacji mieszkańca
 - [ ] Mapbox GL JS + animowany marker
 - [ ] Pobieranie trasy z Mapbox Directions API
@@ -124,12 +141,14 @@ Jokusor może:
 - [ ] RLS policy na kanale realtime
 
 ### Sprint 3.3 — Whisper transcription (1 tydzień)
+
 - [ ] Komponent `<VoiceButton>` (FAB) + modal nasłuchiwania
 - [ ] Nagrywanie audio w przeglądarce (MediaRecorder API)
 - [ ] Endpoint `/api/ai/transcribe` (Whisper)
 - [ ] Wyświetlanie transkrypcji + przycisk "potwierdź"
 
 ### Sprint 3.4 — Intent recognition (1 tydzień)
+
 - [ ] Tabela `ai_intents` + seed (5-10 intentów na start)
 - [ ] Generowanie embeddings (script offline)
 - [ ] Funkcja `match_intents` (pgvector)
@@ -139,6 +158,7 @@ Jokusor może:
 - [ ] Fallback gdy confidence < 0.75
 
 ### Definition of Done
+
 - Mieszkaniec widzi jokusora na mapie podczas drogi
 - ETA aktualizuje się co 7s
 - Można zamówić wyprowadzenie psa głosem ("wyprowadź Reksia na pół godziny")
@@ -150,18 +170,21 @@ Jokusor może:
 **Cel:** dodać mini-marketplace z dostawą MIGMIG.
 
 ### Sprint 4.1 — Lista i ogłoszenia (1 tydzień)
+
 - [ ] `/marketplace` — lista z filtrami
 - [ ] `/marketplace/new` — dodawanie ogłoszenia
 - [ ] Upload zdjęć (Supabase Storage)
 - [ ] Auto-moderacja AI (klasyfikacja + zakazane przedmioty)
 
 ### Sprint 4.2 — Komunikacja + zakup (1 tydzień)
+
 - [ ] Czat między kupującym a sprzedawcą
 - [ ] Modal "Kup z dostawą MIGMIG"
 - [ ] Wybór slotu dostawy
 - [ ] Płatność BLIK + escrow
 
 ### Sprint 4.3 — Escrow + finalizacja (1 tydzień)
+
 - [ ] Logika escrow w bazie
 - [ ] Powiadomienia: "Twoje pieniądze są zabezpieczone"
 - [ ] Inspection deadline 15 min
@@ -169,12 +192,14 @@ Jokusor może:
 - [ ] Spór: dispute flow
 
 ### Sprint 4.4 — Moderacja (1 tydzień)
+
 - [ ] Panel admina: ogłoszenia do akceptacji
 - [ ] Reports + auto-flag
 - [ ] Lista zakazanych przedmiotów
 - [ ] Anti-spam: limit ogłoszeń per user
 
 ### Definition of Done
+
 - Mieszkaniec może wystawić ogłoszenie z zdjęciami
 - Może kupić ogłoszenie sąsiada z dostawą MIGMIG
 - Escrow chroni obie strony
@@ -186,12 +211,14 @@ Jokusor może:
 **Cel:** dodać "przypilnuj fachowca" — najwyżej-marżowy moduł.
 
 ### Sprint 5.1 — Baza fachowców (1 tydzień)
+
 - [ ] Tabela `trusted_professionals`
 - [ ] Panel admina: onboarding fachowców
 - [ ] Weryfikacja dokumentów
 - [ ] Lista per kategoria + osiedle
 
 ### Sprint 5.2 — Flow zamówienia (1 tydzień)
+
 - [ ] Kafelki "Przypilnuj X" (hydraulik, elektryk, ślusarz, handyman, AGD)
 - [ ] Formularz problemu (tekst + zdjęcia)
 - [ ] Wybór fachowca (lub "dowolny zaufany")
@@ -199,6 +226,7 @@ Jokusor może:
 - [ ] Tryb awarii (mnożnik 1.5x / 2.0x)
 
 ### Sprint 5.3 — Realizacja (1 tydzień)
+
 - [ ] Jokusor widzi listę zaufanych fachowców
 - [ ] Kontakt telefoniczny w aplikacji
 - [ ] Zdjęcia "po naprawie"
@@ -206,6 +234,7 @@ Jokusor może:
 - [ ] Ocena fachowca po zakończeniu
 
 ### Definition of Done
+
 - Mieszkaniec może zamówić "przypilnuj hydraulika"
 - Jokusor wybiera fachowca i organizuje naprawę
 - Trzy strumienie płatności działają poprawnie
@@ -231,6 +260,7 @@ Jokusor może:
 **Cel:** aplikacje natywne dla Android + iOS, gdy PWA osiągnie 3000 DAU.
 
 ### Stack RN
+
 - Expo SDK 51+
 - React Native 0.74+
 - TypeScript
@@ -238,12 +268,14 @@ Jokusor może:
 - Współdzielone z PWA: `lib/types`, `lib/validators`, API endpointy
 
 ### Co się NIE zmienia
+
 - Backend (Supabase + Edge Functions)
 - Schemat bazy
 - Logika biznesowa
 - Routing (Expo Router ma tę samą filozofię co Next.js App Router)
 
 ### Co się zmienia
+
 - UI komponenty (RN zamiast HTML)
 - Native modules: location, push, biometrics
 - Build process (EAS Build)
@@ -251,16 +283,16 @@ Jokusor może:
 
 ## Mapa decyzji — kiedy następna faza?
 
-| Trigger | Następna faza |
-|---------|---------------|
-| Faza 0 ukończona | Start Faza 1 |
-| Faza 1 ukończona | Faza 2 (równolegle: pierwsi jokusorzy onboardowani manualnie) |
-| 5 aktywnych jokusorów | Faza 3 |
-| 20 aktywnych jokusorów | Faza 4 (marketplace ma sens przy gęstości) |
-| 100 zleceń / dzień | Faza 5 |
-| 1000 DAU | Faza 6 (polish staje się ważniejsza niż features) |
-| 3000 DAU | Faza 7 (RN) |
-| 10000 DAU | Skalowanie infrastruktury (multi-region, caching, CDN) |
+| Trigger                | Następna faza                                                 |
+| ---------------------- | ------------------------------------------------------------- |
+| Faza 0 ukończona       | Start Faza 1                                                  |
+| Faza 1 ukończona       | Faza 2 (równolegle: pierwsi jokusorzy onboardowani manualnie) |
+| 5 aktywnych jokusorów  | Faza 3                                                        |
+| 20 aktywnych jokusorów | Faza 4 (marketplace ma sens przy gęstości)                    |
+| 100 zleceń / dzień     | Faza 5                                                        |
+| 1000 DAU               | Faza 6 (polish staje się ważniejsza niż features)             |
+| 3000 DAU               | Faza 7 (RN)                                                   |
+| 10000 DAU              | Skalowanie infrastruktury (multi-region, caching, CDN)        |
 
 ## Budżet czasowy
 

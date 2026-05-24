@@ -1,6 +1,7 @@
 # Lista ekranów
 
 Wszystkie ekrany do zbudowania, pogrupowane po roli. Każdy ekran ma:
+
 - Path
 - Główne komponenty
 - Stan loading/error/empty
@@ -9,18 +10,21 @@ Wszystkie ekrany do zbudowania, pogrupowane po roli. Każdy ekran ma:
 ## Publiczne (bez auth)
 
 ### `/` — Landing
+
 - Hero z propozycją wartości
 - Demo wideo
 - CTA: "Zarejestruj się" / "Zostań jokusorem"
 - Footer z linkami legal
 
 ### `/login` — Logowanie
+
 - OAuth buttons (Google, Facebook, Apple)
 - Magic link email
 - Link do regulaminu
 - Komponent: `<OAuthButtons />`
 
 ### `/franchise` — Rekrutacja jokusorów
+
 - Opis modelu, zarobki, wymagania
 - Formularz aplikacyjny
 - Link do regulaminu franczyzowego
@@ -28,9 +32,11 @@ Wszystkie ekrany do zbudowania, pogrupowane po roli. Każdy ekran ma:
 ## Mieszkaniec — `(resident)`
 
 ### `/home` — Ekran główny
+
 **Najważniejszy ekran w aplikacji.**
 
 Układ:
+
 ```
 ┌─────────────────────────────────────┐
 │  Cześć, Anna! 👋                    │
@@ -66,29 +72,34 @@ Układ:
 - Empty state: jeśli brak modułów (poza zasięgiem) → ekran "MIGMIG jeszcze nie tutaj"
 
 ### `/modules/[slug]` — Formularz modułu
+
 - Custom fields modułu (renderowane z `custom_fields` JSON)
 - Notatki
 - Toggle bodycam (jeśli dostępne)
 - Button: "Wybierz slot →"
 
 ### `/slots` — Wybór slotu
+
 - 3-5 najbliższych dostępnych slotów
 - Większy zakres (jutro, pojutrze) za rozwijaną sekcją
 - Dla każdego slotu: godzina + przewidywany jokusor (z oceną)
 - Button: "Potwierdź i zapłać"
 
 ### `/payment` — BLIK modal
+
 - Kwota + breakdown (cena bazowa + ewentualne dodatki)
 - Kod BLIK
 - Lub przyciski: Karta / Apple Pay / Google Pay
 - Po zaplaceniu: redirect do `/orders/[id]`
 
 ### `/orders` — Lista zamówień
+
 - Tabs: Aktywne / Zakończone / Anulowane
 - Karty zamówień z statusem + ikoną modułu
 - Pull-to-refresh
 
 ### `/orders/[id]` — Szczegóły zamówienia + LIVE TRACKING
+
 **Drugi najważniejszy ekran.**
 
 Stany ekranu zależnie od `order.status`:
@@ -133,23 +144,27 @@ status='completed'
 - Komponenty: `<LiveTrackingMap>` (Mapbox), `<OrderStatusTimeline>`, `<ChatPanel>`
 
 ### `/orders/[id]/rate` — Ocena + napiwek
+
 - 5 gwiazdek
 - Pole tekstowe (opcjonalne)
 - Quick-pick napiwków: 5 zł / 10 zł / 20 zł / inne
 - Submit
 
 ### `/orders/[id]/chat` — Czat z jokusorem
+
 - Wiadomości tekstowe + zdjęcia
 - "Andrzej pisze..." (presence)
 - Realtime via Supabase channel
 
 ### `/marketplace` — Marketplace główny
+
 - Filter bar (kategoria, cena, odległość)
 - Grid kafelków `<ListingCard>`
 - Infinite scroll
 - Empty state: zachęta do wystawienia
 
 ### `/marketplace/new` — Dodawanie ogłoszenia
+
 - Form z polami: tytuł, opis, kategoria, cena, kondycja
 - Upload zdjęć (max 5)
 - Adres odbioru (z profilu lub manual)
@@ -157,12 +172,14 @@ status='completed'
 - Submit
 
 ### `/marketplace/[id]` — Szczegóły ogłoszenia
+
 - Galeria zdjęć (lightbox)
 - Tytuł, cena, opis, kondycja
 - Profil sprzedawcy (avatar, rating, liczba sprzedaży)
 - Komponenty: `<DeliveryRequestModal>`, `<MessageSellerButton>`, `<ReportButton>`
 
 ### `/profile` — Profil
+
 - Avatar (z OAuth)
 - Imię, email, telefon
 - Linki do podstron:
@@ -175,18 +192,21 @@ status='completed'
 - Wyloguj się
 
 ### `/profile/addresses` — Zarządzanie adresami
+
 - Lista adresów
 - Dodaj nowy (autocomplete Mapbox)
 - Edytuj / usuń
 - Ustaw domyślny
 
 ### `/profile/payment-methods` — Metody płatności
+
 - Lista zapisanych kart
 - BLIK (zawsze dostępny)
 - Apple Pay / Google Pay
 - Dodaj kartę
 
 ### `/propose-module` — Propozycja nowego modułu
+
 - Formularz: nazwa, opis, oczekiwana częstotliwość, oczekiwana cena
 - Lista istniejących propozycji z głosowaniem
 - Status własnej propozycji
@@ -194,6 +214,7 @@ status='completed'
 ## Jokusor — `(jokusor)`
 
 ### `/dashboard` — Dashboard dnia
+
 ```
 ┌─────────────────────────────────────┐
 │  Cześć, Andrzej!                    │
@@ -211,12 +232,14 @@ status='completed'
 ```
 
 ### `/dashboard/calendar` — Kalendarz
+
 - Widok dnia / tygodnia
 - Sloty z zleceniami
 - Drag&drop dla zmiany godzin (opcjonalne)
 - Filtr modułów
 
 ### `/dashboard/service-area` — Zasięg usług
+
 **Trzy zakładki:**
 
 1. **Mapa** — narysuj polygon na mapie Mapbox
@@ -226,6 +249,7 @@ status='completed'
 User wybiera jeden tryb. Domyślny to mapa.
 
 ### `/dashboard/jobs` — Zlecenia
+
 - Tabs: Nowe (pending) / W trakcie / Zakończone
 - Karty zleceń z przyciskami akcji:
   - [Akceptuj] / [Odrzuć]
@@ -234,6 +258,7 @@ User wybiera jeden tryb. Domyślny to mapa.
   - [Zakończ]
 
 ### `/dashboard/jobs/[id]` — Szczegóły zlecenia + GPS tracker
+
 - Dane zamówienia + custom_data
 - Mapa z trasą
 - **Komponent `<GpsTracker>` aktywujący się po `status=in_transit`** — wysyła GPS co 7s
@@ -241,12 +266,14 @@ User wybiera jeden tryb. Domyślny to mapa.
 - Kontakt z mieszkańcem (telefon, czat)
 
 ### `/dashboard/earnings` — Zarobki
+
 - Suma za okres (dziś / tydzień / miesiąc / rok)
 - Lista zleceń + kwoty
 - Faktura miesięczna (PDF download)
 - Saldo do wypłaty (jeśli model split-payment)
 
 ### `/dashboard/profile` — Profil jokusora
+
 - Dane firmowe (nazwa, NIP, REGON, konto bankowe)
 - Godziny pracy
 - Urlop (od-do)
@@ -256,6 +283,7 @@ User wybiera jeden tryb. Domyślny to mapa.
 ## Admin — `(admin)`
 
 ### `/admin/dashboard` — KPI Dashboard
+
 ```
 ┌─────────────────────────────────────────────────┐
 │  Today: 234 zleceń, 8400 zł GMV                 │
@@ -274,44 +302,53 @@ User wybiera jeden tryb. Domyślny to mapa.
 ```
 
 ### `/admin/modules` — Zarządzanie modułami
+
 - Lista wszystkich modułów
 - Toggle: globalnie aktywne / nieaktywne
 - Per-osiedle aktywacja
 
 ### `/admin/modules/[id]` — Edycja modułu
+
 - Wszystkie pola z `modules`
 - Custom fields builder (drag&drop)
 - AI intents builder
 
 ### `/admin/jokusors` — Lista jokusorów
+
 - Filtr: status (active / pending / suspended)
 - Szybki podgląd: imię, osiedle, ocena, liczba zleceń
 
 ### `/admin/jokusors/onboarding` — Zatwierdzanie wniosków
+
 - Wnioski w statusie 'pending'
 - Dokumenty do weryfikacji
 - Przyciski: [Akceptuj] / [Odrzuć] / [Poproś o uzupełnienie]
 
 ### `/admin/estates` — Definicja osiedli
+
 - Mapa Polski
 - Rysowanie polygonów dla osiedli
 - Lista osiedli (aktywne / draft)
 
 ### `/admin/proposals` — Propozycje modułów
+
 - Sortowanie po liczbie głosów
 - Przyciski: [Zaakceptuj jako pomysł] / [Wdrażam] / [Odrzuć]
 
 ### `/admin/professionals` — Zaufani fachowcy
+
 - Lista
 - Onboarding nowych (formularz)
 - Edycja, weryfikacja
 
 ### `/admin/disputes` — Reklamacje
+
 - Lista otwartych reklamacji
 - Detale: zamówienie, wiadomości, dowody
 - Rozstrzygnięcie: zwrot / odrzucenie / kompromis
 
 ### `/admin/finance` — Finanse
+
 - Faktury wystawione
 - Faktury do wystawienia (koniec miesiąca)
 - Eksport JPK_FA dla księgowej
@@ -319,11 +356,13 @@ User wybiera jeden tryb. Domyślny to mapa.
 ## Wspólne komponenty
 
 ### `<VoiceButton>` (FAB)
+
 - Float w prawym dolnym rogu
 - Animacja pulse podczas nasłuchiwania
 - Modal otwierany on-click
 
 ### `<LiveTrackingMap>`
+
 - Mapbox GL JS
 - Marker jokusora animowany
 - Trasa GeoJSON
@@ -331,16 +370,19 @@ User wybiera jeden tryb. Domyślny to mapa.
 - Update co 7s przez Supabase channel
 
 ### `<BlikPaymentModal>`
+
 - Pole 6-cyfrowe BLIK
 - Timer 60s (BLIK kod expires)
 - Fallback do innych metod
 
 ### `<ServiceAreaMap>` (dla jokusora)
+
 - Mapbox GL JS Draw plugin
 - Polygon drawing
 - Display surface area in km²
 
 ### `<AddressPicker>`
+
 - Mapbox Geocoding autocomplete
 - PL focus
 - Validation: czy w obsługiwanym osiedlu

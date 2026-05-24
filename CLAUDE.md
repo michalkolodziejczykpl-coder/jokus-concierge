@@ -38,14 +38,14 @@ These are the actual deployed resources — use them when configuring env vars, 
 - **GitHub**: https://github.com/michalkolodziejczykpl-coder/migmig-concierge (private)
 - **Vercel team / project**: `migmig-s-projects` / `migmig-concierge` (Hobby plan)
 - **Google Cloud OAuth project**: `MIGMIG Concierge` (project number 862680181705), Web Client `MIGMIG Web Client`. App is in Testing mode — Google shows the "unverified app" warning until verified.
-- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, migmig-concierge.vercel.app/**, *-migmig-s-projects.vercel.app/**, *.migmig.pl/** (future custom domain).
+- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, migmig-concierge.vercel.app/**, _-migmig-s-projects.vercel.app/\*\*, _.migmig.pl/\*\* (future custom domain).
 
 ## Three non-negotiable UX requirements
 
 These come from the product spec and override convenience trade-offs:
 
 1. **3–4 clicks from home screen to BLIK confirmation** for a logged-in resident.
-2. **Two parallel entry points** to ordering: tile grid OR voice command — both must hit the *same* form and the *same* API endpoint. No divergent paths.
+2. **Two parallel entry points** to ordering: tile grid OR voice command — both must hit the _same_ form and the _same_ API endpoint. No divergent paths.
 3. **Time slots cannot overlap.** Enforced at the PostgreSQL level via `EXCLUDE USING gist`, not just in application code. Application bugs must not be able to cause double bookings.
 
 ## File layout
@@ -134,15 +134,15 @@ All four must pass. If `lint` is not yet configured (current state), skip it but
 
 ## Memory of past decisions
 
-| Decision | Reason | Source |
-|----------|--------|--------|
-| PWA before native apps | One codebase, faster to market, install-prompt on Android is good enough until 3000 DAU | Koncepcja v2 sec. 13.5 |
-| Region Stockholm (instead of spec's Frankfurt) | Project was provisioned in EU-North-1 by mistake; ~10ms latency difference is negligible, region is immutable post-creation, not worth recreating | Setup decision May 2026 |
-| OAuth-first auth (no password fields) | Every required field cuts conversion ~20% | Spec sec. 6 |
-| Three modes of `service_area` (polygon / postal codes / streets) | Different jokusors have different mental models for "my area" | Spec sec. 8 |
-| Escrow held by JOKUS, released after 15-min inspection | Protects both buyer and seller; commission 5% on marketplace | Spec sec. 7.3 |
-| Slots: 90-second hold before payment | Long enough to enter BLIK code, short enough to free up after abandon | Spec sec. 5.1 |
-| AI confidence threshold 0.75 | Empirically right balance; fallback shows 3 most common intents | Spec sec. 4.3 |
+| Decision                                                         | Reason                                                                                                                                            | Source                  |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| PWA before native apps                                           | One codebase, faster to market, install-prompt on Android is good enough until 3000 DAU                                                           | Koncepcja v2 sec. 13.5  |
+| Region Stockholm (instead of spec's Frankfurt)                   | Project was provisioned in EU-North-1 by mistake; ~10ms latency difference is negligible, region is immutable post-creation, not worth recreating | Setup decision May 2026 |
+| OAuth-first auth (no password fields)                            | Every required field cuts conversion ~20%                                                                                                         | Spec sec. 6             |
+| Three modes of `service_area` (polygon / postal codes / streets) | Different jokusors have different mental models for "my area"                                                                                     | Spec sec. 8             |
+| Escrow held by JOKUS, released after 15-min inspection           | Protects both buyer and seller; commission 5% on marketplace                                                                                      | Spec sec. 7.3           |
+| Slots: 90-second hold before payment                             | Long enough to enter BLIK code, short enough to free up after abandon                                                                             | Spec sec. 5.1           |
+| AI confidence threshold 0.75                                     | Empirically right balance; fallback shows 3 most common intents                                                                                   | Spec sec. 4.3           |
 
 ## Useful pointers
 

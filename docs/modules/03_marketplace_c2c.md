@@ -14,6 +14,7 @@ Mieszkańcy osiedla mogą sprzedawać/kupować rzeczy od siebie nawzajem, z opcj
 ## Customer journey
 
 ### Sprzedawca:
+
 1. `/marketplace/new` — formularz dodania ogłoszenia
 2. Wypełnia: tytuł, opis, cena, kategoria, zdjęcia (max 5), preferowany sposób odbioru
 3. Publikacja → ogłoszenie widoczne dla wszystkich na osiedlu
@@ -23,6 +24,7 @@ Mieszkańcy osiedla mogą sprzedawać/kupować rzeczy od siebie nawzajem, z opcj
 7. Jokusor odbiera, sprzedawca dostaje płatność (lub kupujący płaci jokusorowi przy odbiorze)
 
 ### Kupujący:
+
 1. `/marketplace` — przeglądanie ogłoszeń
 2. Filtry: kategoria, cena, odległość
 3. Klika ogłoszenie → szczegóły
@@ -132,16 +134,16 @@ Lista w `lib/constants.ts`:
 
 ```typescript
 export const FORBIDDEN_CATEGORIES = [
-  'weapons',           // broń (wszystkie rodzaje)
+  'weapons', // broń (wszystkie rodzaje)
   'prescription_drugs', // leki na receptę
-  'alcohol',           // alkohol bez koncesji
-  'tobacco',           // tytoń bez koncesji
-  'live_animals',      // żywe zwierzęta (osobne procedury)
-  'adult_content',     // treści dla dorosłych
-  'counterfeit',       // podróbki znanych marek
-  'stolen_goods',      // skradzione (oczywiste)
-  'human_remains',     // ludzkie tkanki/organy
-  'hazardous'          // materiały niebezpieczne
+  'alcohol', // alkohol bez koncesji
+  'tobacco', // tytoń bez koncesji
+  'live_animals', // żywe zwierzęta (osobne procedury)
+  'adult_content', // treści dla dorosłych
+  'counterfeit', // podróbki znanych marek
+  'stolen_goods', // skradzione (oczywiste)
+  'human_remains', // ludzkie tkanki/organy
+  'hazardous' // materiały niebezpieczne
 ];
 ```
 

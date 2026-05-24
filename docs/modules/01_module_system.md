@@ -17,37 +17,37 @@ Wynik: na ekranie mieszkańca pokazuje się moduł, jeśli **wszystkie trzy** s�
 ```typescript
 type Module = {
   id: string;
-  slug: string;             // 'dog-walking', 'package-pickup', 'plumber'
-  name: string;             // 'Wyprowadzanie psa'
+  slug: string; // 'dog-walking', 'package-pickup', 'plumber'
+  name: string; // 'Wyprowadzanie psa'
   description: string;
   category: ModuleCategory; // enum
-  icon_name: string;        // ikona z Lucide
-  base_price: number;       // 25.00 zł
-  price_unit: PriceUnit;    // 'fixed' | 'hourly' | 'per_km' | 'percent'
+  icon_name: string; // ikona z Lucide
+  base_price: number; // 25.00 zł
+  price_unit: PriceUnit; // 'fixed' | 'hourly' | 'per_km' | 'percent'
   estimated_duration_min: number; // 30
   requires_pickup: boolean; // czy potrzebny punkt odbioru (sklep, apteka)
   custom_fields: CustomField[]; // dodatkowe pola formularza
-  ai_intents: AiIntent[];   // pula odpowiedzi AI dla tego modułu
-  is_global: boolean;       // czy admin może w ogóle włączyć
+  ai_intents: AiIntent[]; // pula odpowiedzi AI dla tego modułu
+  is_global: boolean; // czy admin może w ogóle włączyć
   created_at: timestamp;
-}
+};
 
 type ModuleCategory =
-  | 'delivery'        // odbiór i dostawa
-  | 'shopping'        // zakupy
-  | 'transport'       // transport
-  | 'home_pet'        // dom i zwierzęta
-  | 'errands'         // sprawy urzędowe
-  | 'professional'    // przypilnuj fachowca (NOWA KATEGORIA)
-  | 'marketplace';    // dostawa z mini-marketplace (NOWA KATEGORIA)
+  | 'delivery' // odbiór i dostawa
+  | 'shopping' // zakupy
+  | 'transport' // transport
+  | 'home_pet' // dom i zwierzęta
+  | 'errands' // sprawy urzędowe
+  | 'professional' // przypilnuj fachowca (NOWA KATEGORIA)
+  | 'marketplace'; // dostawa z mini-marketplace (NOWA KATEGORIA)
 
 type CustomField = {
-  key: string;              // 'shopping_list'
-  label: string;            // 'Lista zakupów'
+  key: string; // 'shopping_list'
+  label: string; // 'Lista zakupów'
   type: 'text' | 'photo' | 'select' | 'number';
   required: boolean;
-  options?: string[];       // dla select
-}
+  options?: string[]; // dla select
+};
 ```
 
 ## Tabele bazy

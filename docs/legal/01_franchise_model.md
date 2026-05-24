@@ -5,6 +5,7 @@
 JOKUS Sp. z o.o. (Wrocław, NIP 9131639730) jest **organizatorem sieci**. Jokusorzy są **niezależnymi przedsiębiorcami** świadczącymi usługi pod marką MIGMIG na podstawie umowy franczyzowej.
 
 To **NIE jest zatrudnienie** — jokusor:
+
 - Sam prowadzi działalność (JDG lub spółkę)
 - Sam rozlicza się z US i ZUS
 - Sam wystawia faktury (lub paragony)
@@ -17,6 +18,7 @@ To kluczowe rozróżnienie prawne — niezależność jest fundamentem modelu (i
 Admin (Michał) decyduje per jokusor, który model wybiera. Trzy opcje w tabeli `jokusors.billing_model`:
 
 ### 1. `subscription_only` — tylko abonament
+
 - Jokusor płaci stały abonament (np. 299 zł / miesiąc)
 - Bez prowizji od zleceń
 - 100% przychodu zostaje u jokusora
@@ -25,6 +27,7 @@ Admin (Michał) decyduje per jokusor, który model wybiera. Trzy opcje w tabeli 
 **Przychód JOKUS:** 299 zł × liczba jokusorów
 
 ### 2. `commission_only` — tylko prowizja
+
 - Bez abonamentu
 - Prowizja 15-25% od każdego zlecenia
 - Dobry dla: jokusora startującego, niskie zlecenia
@@ -33,6 +36,7 @@ Admin (Michał) decyduje per jokusor, który model wybiera. Trzy opcje w tabeli 
 **Przychód JOKUS:** prowizja × suma zleceń
 
 ### 3. `hybrid` — mieszany (rekomendowany start)
+
 - Niski abonament (np. 99 zł / miesiąc)
 - Niska prowizja (np. 8% od zleceń)
 - Najbardziej balansowany
@@ -44,17 +48,19 @@ Admin (Michał) decyduje per jokusor, który model wybiera. Trzy opcje w tabeli 
 ## Symulacja przychodów
 
 Założenia (konserwatywne):
+
 - 30 jokusorów aktywnych
 - Każdy 100 zleceń/mies × 50 zł średnio = 5000 zł GMV/jokusor/mies
 - Łączny GMV: 150 000 zł/mies
 
-| Model | Przychód JOKUS/mies | Per jokusor |
-|-------|---------------------|-------------|
-| subscription_only (299 zł) | 8 970 zł | 5 000 zł (100%) |
-| commission_only (20%) | 30 000 zł | 4 000 zł (80%) |
-| hybrid (99 zł + 8%) | 14 970 zł | 4 501 zł (90%) |
+| Model                      | Przychód JOKUS/mies | Per jokusor     |
+| -------------------------- | ------------------- | --------------- |
+| subscription_only (299 zł) | 8 970 zł            | 5 000 zł (100%) |
+| commission_only (20%)      | 30 000 zł           | 4 000 zł (80%)  |
+| hybrid (99 zł + 8%)        | 14 970 zł           | 4 501 zł (90%)  |
 
 Hybrid daje JOKUS ~15k zł/mies przy 30 jokusorach. Z tego pokrywamy:
+
 - Infrastruktura: ~900 zł
 - Mapbox: ~200 zł
 - OpenAI: ~300 zł
@@ -136,23 +142,28 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
 ## Umowa franczyzowa — kluczowe punkty
 
 ### Czas trwania
+
 - 12 miesięcy
 - Auto-przedłużenie na kolejne 12 (chyba że wypowiedzenie 30 dni przed końcem)
 
 ### Wypowiedzenie
+
 - Bez podania przyczyny: 30 dni okresu wypowiedzenia
 - W przypadku rażących naruszeń (kradzież, oszustwo, nieuczciwość): natychmiastowe
 
 ### Wyłączność terytorialna
+
 - Jokusor ma **rejon obsługi** (osiedle lub kilka osiedli)
 - Może obsługiwać tylko adresy w swoim rejonie
 - JOKUS gwarantuje, że nie przydzieli innego jokusora na ten sam rejon, dopóki obecny pokrywa zapotrzebowanie
 
 **Wyjątki:**
+
 - Jeśli jokusor osiąga >150 zleceń/mies — wskazany jako kandydat do rekrutacji „zespołowca" (pomocnika)
 - Jeśli jokusor jest na urlopie — zastępstwo z innego rejonu
 
 ### Kary umowne
+
 - Brak akceptacji zlecenia w 5 min: bez kary (system przekazuje do innego)
 - Nieuzasadnione anulowanie po akceptacji: 30 zł (z prowizji)
 - Negatywna ocena (1-2★) z winy jokusora: 50 zł + szkolenie korygujące
@@ -160,6 +171,7 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
 - Naruszenie RODO (dane mieszkańców do osób trzecich): 5000 zł + natychmiastowe rozwiązanie
 
 ### Zakaz konkurencji
+
 - Jokusor nie może świadczyć podobnych usług pod inną marką w swoim rejonie
 - 6 miesięcy po zakończeniu umowy: zakaz świadczenia podobnych usług w tym samym rejonie
 - Wyjątek: jeśli to JOKUS rozwiązał umowę bez winy jokusora — zakaz nie obowiązuje
@@ -237,6 +249,7 @@ Po osiągnięciu pewnych progów jokusor dostaje benefity:
 ## Zakończenie współpracy
 
 Po rozwiązaniu umowy:
+
 - Jokusor usuwa logo i materiały MIGMIG
 - Dane historyczne zleceń: anonimizowane po 90 dniach (RODO)
 - Mieszkańcy z osiedla jokusora są ponownie przydzielani do innego (lub dostają informację o czasowym braku obsługi)

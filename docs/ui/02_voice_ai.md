@@ -7,6 +7,7 @@
 Nie generujemy odpowiedzi swobodnie (jak ChatGPT). Mamy skończoną pulę odpowiedzi i każda komenda głosowa musi pasować do jednego z predefiniowanych intentów, albo użytkownik dostaje fallback.
 
 To minimalizuje:
+
 - Ryzyko halucynacji
 - Ryzyko powiedzenia czegoś nieautoryzowanego
 - Koszt API (mniej tokenów)
@@ -63,6 +64,7 @@ type ActionType =
 ### Moduł: dog-walking
 
 **intent_key:** `order_dog_walking_30`
+
 - sample_questions:
   - "wyprowadź mojego psa"
   - "potrzebuję spaceru z psem"
@@ -75,6 +77,7 @@ type ActionType =
 - action_params: `{ module: 'dog-walking', walk_duration: '30min' }`
 
 **intent_key:** `order_dog_walking_60`
+
 - sample_questions:
   - "wyprowadź psa na godzinę"
   - "długi spacer 60 minut"
@@ -83,6 +86,7 @@ type ActionType =
 - action_params: `{ module: 'dog-walking', walk_duration: '60min' }`
 
 **intent_key:** `dog_walking_pricing`
+
 - sample_questions:
   - "ile kosztuje wyprowadzenie psa"
   - "cena spaceru z psem"
@@ -93,6 +97,7 @@ type ActionType =
 ### Moduł: pharmacy
 
 **intent_key:** `order_pharmacy_e_prescription`
+
 - sample_questions:
   - "wykup receptę"
   - "mam e-receptę do realizacji"
@@ -102,6 +107,7 @@ type ActionType =
 - action_params: `{ module: 'pharmacy', prescription_type: 'e-recepta' }`
 
 **intent_key:** `order_pharmacy_otc`
+
 - sample_questions:
   - "kup mi paracetamol"
   - "potrzebuję ibupromu"
@@ -112,6 +118,7 @@ type ActionType =
 ### Moduł: grocery-shopping
 
 **intent_key:** `order_groceries`
+
 - sample_questions:
   - "zrób zakupy"
   - "potrzebuję zakupów"
@@ -123,6 +130,7 @@ type ActionType =
 ### Cross-module: status
 
 **intent_key:** `check_my_orders`
+
 - sample_questions:
   - "co z moim zamówieniem"
   - "gdzie jest jokusor"
@@ -132,6 +140,7 @@ type ActionType =
 - follow_up_action: `check_status`
 
 **intent_key:** `cancel_order`
+
 - sample_questions:
   - "anuluj zamówienie"
   - "rezygnuję"
@@ -263,7 +272,7 @@ Niezależnie od pgvector, te komendy mają pierwszeństwo:
 const SYSTEM_COMMANDS = {
   'pomoc|help|nie wiem': () => showHelpModal(),
   'gdzie.*kuri|gdzie.*jokusor|status': () => showActiveOrders(),
-  'anuluj': () => showCancelMenu(),
+  anuluj: () => showCancelMenu(),
   'zamknij|wyjdź|wróć': () => closeVoiceModal(),
   'admin|reklamacja': () => contactSupport()
 };
@@ -289,12 +298,14 @@ Po prostu powiedz, co potrzebujesz — np.:
 ## Aktualizacja puli intentów
 
 Admin w panelu `/admin/ai-intents` może:
+
 - Dodać nowy intent
 - Edytować sample_questions
 - Zatwierdzić canonical_response
 - **Po zapisie:** system automatycznie regeneruje embedding (background job)
 
 Source of truth dla pytań mieszkańców: `voice_query_log`. Co tydzień admin analizuje:
+
 - Najczęstsze zapytania bez matchu (kandydaci do nowych intentów)
 - Najczęstsze zapytania z niskim confidence (kandydaci do dodania jako sample_questions)
 - Zapytania, które nie skonwertowały do zamówienia (problemy UX)
@@ -302,32 +313,37 @@ Source of truth dla pytań mieszkańców: `voice_query_log`. Co tydzień admin a
 ## Polski język — wyzwania
 
 ### Liczebniki
+
 Whisper transkrybuje "trzydzieści" jako liczbę słów. Trzeba normalizować:
+
 - "trzydzieści minut" → "30 minut"
 - "pół godziny" → "30 minut"
 - "godzina" → "60 minut"
 
 ### Polskie znaki
+
 Whisper sobie radzi z polskim ą, ę, ż, ś, ć etc. Testowane na akcentach śląskim, kresowym i poznańskim — bez błędów.
 
 ### Slang i potoczne wyrażenia
+
 Sample_questions muszą zawierać warianty:
+
 - "wykup" / "zrealizuj" / "zrób" (recepta)
 - "zrobisz mi" / "zrobisz nam" / "zrób"
 - "psa" / "pieska" / "kundla"
 
 ## Latencja end-to-end
 
-| Krok | Czas |
-|------|------|
-| Nagranie 5s głosu | 5s |
-| Upload do Whisper | 0.3s |
-| Whisper transkrypcja | 1.5s |
-| Embedding query | 0.2s |
-| pgvector search | 0.05s |
-| GPT-4o-mini extraction | 0.8s |
-| Render formularza | 0.1s |
-| **Total** | **~8s** |
+| Krok                   | Czas    |
+| ---------------------- | ------- |
+| Nagranie 5s głosu      | 5s      |
+| Upload do Whisper      | 0.3s    |
+| Whisper transkrypcja   | 1.5s    |
+| Embedding query        | 0.2s    |
+| pgvector search        | 0.05s   |
+| GPT-4o-mini extraction | 0.8s    |
+| Render formularza      | 0.1s    |
+| **Total**              | **~8s** |
 
 Cel: <10s. Akceptowalne dla user experience (porównywalne do wpisania ręcznego).
 

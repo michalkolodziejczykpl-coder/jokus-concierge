@@ -3,11 +3,13 @@
 ## Problem biznesowy
 
 Mieszkaniec ma problem (np. cieknący kran). Klasyczne ścieżki to:
+
 1. Sam szuka hydraulika w internecie → ryzyko trafienia na nieuczciwego
 2. Bierze urlop, czeka cały dzień → strata pieniędzy + nerwy
 3. Daje klucze sąsiadowi → niezbyt komfortowe
 
 **Rozwiązanie MIGMIG:**
+
 1. Mieszkaniec opisuje problem w aplikacji
 2. MIGMIG ma zaufaną bazę fachowców (zweryfikowanych przez admina)
 3. Jokusor jest w mieszkaniu podczas naprawy — jako oczy mieszkańca
@@ -18,6 +20,7 @@ To **najwyżej-marżowy moduł** w katalogu (50 zł/godz jokusora + prowizja od 
 ## Customer journey
 
 ### Mieszkaniec:
+
 1. Klika kafelek „Przypilnuj fachowca" → wybiera typ (hydraulik/elektryk/...)
 2. Opisuje problem: tekst + zdjęcia + pilność
 3. (Opcjonalnie) Wybiera preferowanego fachowca z listy zaufanych
@@ -34,6 +37,7 @@ To **najwyżej-marżowy moduł** w katalogu (50 zł/godz jokusora + prowizja od 
 9. Ocena: zarówno jokusora, jak i fachowca
 
 ### Jokusor:
+
 1. Otrzymuje zlecenie z opisem problemu
 2. Akceptuje → wybiera fachowca z listy zaufanych dla swojego osiedla
 3. Dzwoni do fachowca, umawia czas
@@ -44,6 +48,7 @@ To **najwyżej-marżowy moduł** w katalogu (50 zł/godz jokusora + prowizja od 
 8. Zamyka zlecenie
 
 ### Fachowiec:
+
 1. Otrzymuje SMS/telefon od jokusora (nie ma aplikacji MIGMIG na start)
 2. Przyjeżdża, naprawia
 3. Wystawia paragon/fakturę
@@ -53,14 +58,14 @@ W przyszłości (etap 2): aplikacja dla fachowców z systemem zleceń + płatno�
 
 ## Cennik
 
-| Czynność | Cena |
-|----------|------|
-| Pilnowanie jokusora | 50 zł/godz (min 1 godz) |
-| Dojazd jokusora | wliczone |
-| Wezwanie fachowca | wliczone (admin negocjuje z fachowcami) |
-| Praca fachowca | wg cennika fachowca (15-200 zł/godz w zależności od specjalności) |
-| Materiały | wg paragonu fachowca |
-| **Prowizja MIGMIG od fachowca** | 10% wartości usługi fachowca |
+| Czynność                        | Cena                                                              |
+| ------------------------------- | ----------------------------------------------------------------- |
+| Pilnowanie jokusora             | 50 zł/godz (min 1 godz)                                           |
+| Dojazd jokusora                 | wliczone                                                          |
+| Wezwanie fachowca               | wliczone (admin negocjuje z fachowcami)                           |
+| Praca fachowca                  | wg cennika fachowca (15-200 zł/godz w zależności od specjalności) |
+| Materiały                       | wg paragonu fachowca                                              |
+| **Prowizja MIGMIG od fachowca** | 10% wartości usługi fachowca                                      |
 
 ## Lista zaufanych fachowców
 
@@ -172,6 +177,7 @@ Każde zlecenie professional ma trzy strumienie pieniędzy:
 3. **Fachowiec → MIGMIG (po fakcie):** 10% prowizji od strumienia 2
 
 **Rozliczenie wewnątrz MIGMIG:**
+
 - Strumień 1: 70% jokusor + 30% MIGMIG (jak normalna prowizja)
 - Strumień 3: 100% MIGMIG (prowizja od fachowca)
 
@@ -183,6 +189,7 @@ Mieszkaniec płaci całość przez MIGMIG (pilnowanie + naprawa), MIGMIG rozlicz
 ## Awarie 24/7
 
 Niektórzy fachowcy (z `emergency_available = true`) mogą być wzywani poza godzinami pracy. Cennik:
+
 - Stawka × 1.5 (popołudnia, weekendy)
 - Stawka × 2.0 (noce 22:00-6:00, święta)
 - Dojazd: +50 zł

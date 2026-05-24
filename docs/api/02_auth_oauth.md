@@ -9,22 +9,26 @@ Rozwiązanie: trzy OAuth providers + magic link email jako fallback.
 ## Providers w kolejności priorytetu
 
 ### 1. Google (najwyższy priorytet)
+
 - ~80% Polaków ma konto Google
 - Najmniej friction (jedno kliknięcie + biometria/PIN)
 - Bezpłatne dla developera
 - Wymaga: Google Cloud Console project + OAuth consent screen
 
 ### 2. Facebook
+
 - Wciąż popularne wśród grupy 35+
 - Mniej zaufania niż Google (po skandalach z danymi), ale wciąż używane
 - Wymaga: Facebook Developer account + app review (dla scope `email`)
 
 ### 3. Apple Sign In
+
 - Wymagane przez App Store dla aplikacji iOS oferujących inny OAuth (regulamin Apple)
 - Na etapie PWA opcjonalne; obowiązkowe gdy będzie RN dla iOS
 - Wymaga: Apple Developer Program ($99/rok)
 
 ### 4. Email magic link (fallback)
+
 - Dla osób bez kont social albo nieufnych
 - Bez hasła — link w emailu
 - Wbudowane w Supabase Auth
@@ -61,6 +65,7 @@ Email:
 ```
 
 **Authentication → URL Configuration:**
+
 - Site URL: `https://migmig.pl`
 - Redirect URLs:
   - `https://migmig.pl/auth/callback`
@@ -122,7 +127,9 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
 
     // Pierwsza rejestracja? Utwórz rekord w public.users
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user }
+    } = await supabase.auth.getUser();
     if (user) {
       const { data: existing } = await supabase
         .from('users')
@@ -196,31 +203,39 @@ Pierwszy raz po OAuth:
 ## Czego AVOID
 
 ### ❌ Nie wymuszaj weryfikacji telefonu na start
+
 - To jest friction
 - Wymagaj telefonu dopiero przy pierwszym zamówieniu (potrzebny do kontaktu z jokusorem)
 
 ### ❌ Nie wymuszaj imienia i nazwiska
+
 - OAuth providers już to dostarczają w `user_metadata`
 - Jeśli pole puste — pozwól wypełnić w profilu później
 
 ### ❌ Nie wymuszaj weryfikacji email
+
 - Magic link już potwierdza email
 - Google/Facebook/Apple już zweryfikowali email po swojej stronie
 
 ## Bezpieczeństwo
 
 ### Rotacja sekretów
+
 - Client secrets per provider rotowane co 6 miesięcy
 - Logi audytu (kto się logował, jak, kiedy) w `audit_log`
 
 ### Konta wielokrotne
+
 Co jeśli user ma to samo email w Google i Facebook? Supabase trzyma to jako jednego usera (przez `auth.users.email`). Logowanie różnym providerem ten sam user.
 
 ### Linkowanie kont
+
 Future: pozwól userowi linkować dodatkowe providery do istniejącego konta. Na MVP: jedno konto = jeden provider.
 
 ### Konto admina
+
 Konto Michała (admin) ma:
+
 - Provider: dowolny (Google najlepiej)
 - Po pierwszym logowaniu: ręczna zmiana `role` w bazie na `'admin'` (przez SQL Editor)
 - Future: panel zarządzania adminami (rola "super_admin" dla Michała)
@@ -228,6 +243,7 @@ Konto Michała (admin) ma:
 ## UI ekranów
 
 ### `/login` (lub `/register` — ten sam ekran)
+
 ```
 ┌──────────────────────────────────┐
 │                                  │
@@ -259,11 +275,13 @@ Bez pól haseł. Bez "zapomniałem hasła". Bez kombinacji "captcha + 8 znaków 
 ## Mierzenie konwersji
 
 Kluczowe metryki:
+
 - **CTR OAuth button** (kliknięcie → callback): cel > 60%
 - **Onboarding completion** (callback → adres dodany): cel > 80%
 - **First order time** (rejestracja → pierwsze zamówienie): cel < 24h dla 50% userów
 
 Eventy do PostHog:
+
 - `auth_oauth_clicked` z `{ provider }`
 - `auth_signup_completed` z `{ provider, time_to_complete_sec }`
 - `onboarding_address_added`

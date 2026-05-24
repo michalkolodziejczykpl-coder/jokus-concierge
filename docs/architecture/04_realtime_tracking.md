@@ -3,6 +3,7 @@
 ## Wymaganie biznesowe
 
 Mieszkaniec po opłaceniu zamówienia ma widzieć na mapie:
+
 1. Aktualną pozycję jokusora (update co 5-10 sekund)
 2. Trasę z punktu A (jokusor) przez B (np. sklep) do C (adres mieszkańca)
 3. ETA — szacowany czas przybycia, aktualizowany co update
@@ -19,6 +20,7 @@ Czyli „jak Uber/Bolt".
 ## Rozwiązanie: dwa kanały danych
 
 ### Kanał A: Live broadcast (efemeryczny)
+
 - Supabase Realtime Broadcast (channel-based WebSocket)
 - Nie zapisujemy w bazie — przekazujemy P2P
 - Mieszkaniec subskrybuje `tracking:order:{order_id}`
@@ -57,6 +59,7 @@ await channel.subscribe();
 ```
 
 ### Kanał B: Checkpoint events (persistent)
+
 - Zapisujemy w bazie tylko **kluczowe punkty**:
   - `accepted` — jokusor zaakceptował zlecenie
   - `started` — wyjechał z punktu startowego
@@ -109,6 +112,7 @@ To redukuje liczbę broadcastów o ~40% bez utraty UX.
 ETA liczona po stronie klienta mieszkańca (oszczędza requesty), z fallback do Mapbox Directions API.
 
 ### Tryb prosty (default)
+
 ```typescript
 function calculateETA(jokusorPos, destination) {
   const distMeters = haversine(jokusorPos, destination);
@@ -122,7 +126,9 @@ function calculateETA(jokusorPos, destination) {
 Działa dla 90% przypadków, błąd ±3 minuty.
 
 ### Tryb dokładny (po odpaleniu Directions API)
+
 Co 60 sekund:
+
 ```typescript
 const route = await mapbox.directions({
   profile: 'driving',
@@ -134,6 +140,7 @@ const eta = new Date(Date.now() + route.duration * 1000);
 Koszt: 1 request/min × 60 min × 100 jokusorów = 6000 requestów/dzień = $3/dzień = ~$90/mies przy 100 jokusorach.
 
 ### Decyzja
+
 **Start: tryb prosty** (haversine), bez kosztu API. Po MVP — A/B test, czy tryb dokładny zwiększa satysfakcję.
 
 ## Trasa na mapie
@@ -151,10 +158,13 @@ const route = await mapbox.directions({
 });
 
 // Zapisujemy GeoJSON LineString w orders.planned_route (JSONB)
-await supabase.from('orders').update({
-  planned_route: route.geometry,
-  planned_duration: route.duration
-}).eq('id', orderId);
+await supabase
+  .from('orders')
+  .update({
+    planned_route: route.geometry,
+    planned_duration: route.duration
+  })
+  .eq('id', orderId);
 ```
 
 Mieszkaniec widzi tę linię na mapie statycznie. Marker jokusora porusza się po niej (lub obok niej, jeśli zboczy z trasy).
@@ -162,12 +172,14 @@ Mieszkaniec widzi tę linię na mapie statycznie. Marker jokusora porusza się p
 ## Bezpieczeństwo i prywatność
 
 ### RODO
+
 - **Surowe pozycje GPS nie są zapisywane.** Tylko checkpoint events.
 - Po zakończeniu zamówienia kanał broadcast jest zamykany.
 - Dane historyczne (checkpoints) retencja: 24 miesiące, potem soft-delete.
 - Możliwość eksportu i usunięcia danych (RODO art. 15, 17).
 
 ### Bezpieczeństwo kanału
+
 - RLS policy na kanale `tracking:order:{id}`: subskrybować mogą tylko:
   - Mieszkaniec danego zamówienia
   - Jokusor przypisany do zamówienia
@@ -190,6 +202,7 @@ CREATE POLICY "tracking_subscribe" ON realtime.messages
 ## Fallback offline
 
 Jeśli jokusor traci internet:
+
 - Aplikacja buforuje pozycje w IndexedDB
 - Przy odzyskaniu sieci wysyła jednym batch'em (z timestampami)
 - Mieszkaniec widzi: ostatnia znana pozycja + ikona „brak sygnału" + szacowany czas
@@ -197,6 +210,7 @@ Jeśli jokusor traci internet:
 ## Tracking w aplikacji RN (etap 2)
 
 W aplikacji natywnej (Expo) używamy `expo-location` z `Location.startLocationUpdatesAsync()`:
+
 - Background tracking (działa przy zablokowanym ekranie)
 - Wymaga uprawnienia „Always Allow" — UX flow z dobrym wyjaśnieniem dla użytkownika
 - Battery-friendly: system OS optymalizuje sampling

@@ -5,7 +5,8 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Polityka prywatności | MIGMIG Concierge',
-  description: 'Polityka prywatności serwisu MIGMIG Concierge — administrator danych, cel przetwarzania, prawa użytkownika.'
+  description:
+    'Polityka prywatności serwisu MIGMIG Concierge — administrator danych, cel przetwarzania, prawa użytkownika.'
 };
 
 export default function PrivacyPage() {
@@ -16,16 +17,19 @@ export default function PrivacyPage() {
       </Link>
 
       <h1 className="mt-6 text-3xl font-bold tracking-tight">Polityka prywatności</h1>
-      <p className="mt-2 text-sm text-neutral-500">
-        Ostatnia aktualizacja: 18 maja 2026
-      </p>
+      <p className="mt-2 text-sm text-neutral-500">Ostatnia aktualizacja: 18 maja 2026</p>
 
       <section className="mt-8 space-y-4 text-neutral-700 dark:text-neutral-300">
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
           1. Administrator danych
         </h2>
         <p>
-          Administratorem Twoich danych osobowych jest <strong>JOKUS Sp. z o.o.</strong> z siedzibą we Wrocławiu, NIP 9131639730 (dalej: „MIGMIG"). Kontakt: <a className="text-brand hover:underline" href="mailto:michal.kolodziejczyk.pl@gmail.com">michal.kolodziejczyk.pl@gmail.com</a>.
+          Administratorem Twoich danych osobowych jest <strong>JOKUS Sp. z o.o.</strong> z siedzibą
+          we Wrocławiu, NIP 9131639730 (dalej: „MIGMIG"). Kontakt:{' '}
+          <a className="text-brand hover:underline" href="mailto:michal.kolodziejczyk.pl@gmail.com">
+            michal.kolodziejczyk.pl@gmail.com
+          </a>
+          .
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
@@ -33,13 +37,17 @@ export default function PrivacyPage() {
         </h2>
         <p>W zależności od sposobu korzystania z serwisu możemy zbierać:</p>
         <ul className="list-disc space-y-1 pl-6">
-          <li>Adres e-mail, imię i zdjęcie profilowe (z dostawcy OAuth: Google, Facebook, Apple).</li>
+          <li>
+            Adres e-mail, imię i zdjęcie profilowe (z dostawcy OAuth: Google, Facebook, Apple).
+          </li>
           <li>Adres dostawy zleceń (gdy go podasz).</li>
           <li>Treść zleceń (np. lista zakupów) i czasy realizacji.</li>
           <li>Logi techniczne (IP, przeglądarka) na potrzeby bezpieczeństwa.</li>
         </ul>
         <p>
-          <strong>Nie przechowujemy</strong> ciągłych pozycji GPS jokusora — lokalizacja jest transmitowana w czasie rzeczywistym wyłącznie do zalogowanego mieszkańca śledzącego dane zlecenie i nie zostaje zapisana.
+          <strong>Nie przechowujemy</strong> ciągłych pozycji GPS jokusora — lokalizacja jest
+          transmitowana w czasie rzeczywistym wyłącznie do zalogowanego mieszkańca śledzącego dane
+          zlecenie i nie zostaje zapisana.
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
@@ -48,7 +56,10 @@ export default function PrivacyPage() {
         <ul className="list-disc space-y-1 pl-6">
           <li>Realizacja zleceń (art. 6 ust. 1 lit. b RODO — wykonanie umowy).</li>
           <li>Obsługa płatności (art. 6 ust. 1 lit. b RODO).</li>
-          <li>Bezpieczeństwo i wykrywanie nadużyć (art. 6 ust. 1 lit. f RODO — prawnie uzasadniony interes).</li>
+          <li>
+            Bezpieczeństwo i wykrywanie nadużyć (art. 6 ust. 1 lit. f RODO — prawnie uzasadniony
+            interes).
+          </li>
           <li>Spełnienie obowiązków podatkowych i księgowych (art. 6 ust. 1 lit. c RODO).</li>
         </ul>
 
@@ -68,7 +79,9 @@ export default function PrivacyPage() {
           5. Okres przechowywania
         </h2>
         <p>
-          Dane konta przechowujemy przez czas posiadania konta oraz do 5 lat po jego usunięciu — wyłącznie w zakresie wymaganym przez prawo (księgowość, podatki, ewentualne roszczenia). Treści zleceń anonimizujemy po 24 miesiącach.
+          Dane konta przechowujemy przez czas posiadania konta oraz do 5 lat po jego usunięciu —
+          wyłącznie w zakresie wymaganym przez prawo (księgowość, podatki, ewentualne roszczenia).
+          Treści zleceń anonimizujemy po 24 miesiącach.
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
@@ -83,25 +96,34 @@ export default function PrivacyPage() {
           <li>Skargi do Prezesa UODO (uodo.gov.pl).</li>
         </ul>
         <p>
-          Aby skorzystać z któregokolwiek prawa, napisz do nas na adres podany w punkcie 1, lub skorzystaj z <Link href="/data-deletion" className="text-brand hover:underline">instrukcji usunięcia konta</Link>.
+          Aby skorzystać z któregokolwiek prawa, napisz do nas na adres podany w punkcie 1, lub
+          skorzystaj z{' '}
+          <Link href="/data-deletion" className="text-brand hover:underline">
+            instrukcji usunięcia konta
+          </Link>
+          .
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
           7. Pliki cookies
         </h2>
         <p>
-          Używamy wyłącznie cookies niezbędnych do działania serwisu (sesja logowania). Nie stosujemy cookies marketingowych ani analitycznych firm trzecich.
+          Używamy wyłącznie cookies niezbędnych do działania serwisu (sesja logowania). Nie
+          stosujemy cookies marketingowych ani analitycznych firm trzecich.
         </p>
 
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
           8. Zmiany polityki
         </h2>
         <p>
-          O istotnych zmianach poinformujemy Cię e-mailem z wyprzedzeniem co najmniej 14 dni. Aktualna wersja zawsze dostępna jest pod tym adresem.
+          O istotnych zmianach poinformujemy Cię e-mailem z wyprzedzeniem co najmniej 14 dni.
+          Aktualna wersja zawsze dostępna jest pod tym adresem.
         </p>
 
         <p className="mt-8 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/30 dark:text-amber-100">
-          <strong>Uwaga:</strong> Serwis jest obecnie w fazie testów. Powyższy dokument stanowi podstawową informację — finalna wersja zostanie zweryfikowana przez prawnika przed publicznym uruchomieniem.
+          <strong>Uwaga:</strong> Serwis jest obecnie w fazie testów. Powyższy dokument stanowi
+          podstawową informację — finalna wersja zostanie zweryfikowana przez prawnika przed
+          publicznym uruchomieniem.
         </p>
       </section>
     </main>

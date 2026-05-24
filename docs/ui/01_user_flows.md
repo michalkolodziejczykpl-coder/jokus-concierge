@@ -38,10 +38,12 @@ Cel: zamówić wyprowadzenie psa za 25 zł, slot najbliższy.
 ### Optymalizacja: domyślne wartości
 
 Jeśli user już zamawiał wyprowadzanie psa wcześniej, system preselectuje:
+
 - Imię psa: wczytane z poprzedniego zamówienia
 - Długość spaceru: ostatnio wybrana
 
 Wtedy flow skraca się do **3 kliknięć**:
+
 ```
 Kafelek → [Wybierz slot] → [Najbliższy] → [Potwierdź] → BLIK
 ```
@@ -99,6 +101,7 @@ Tydzień 2 — Flow 1, ale system pyta:
 ```
 
 Po akceptacji subskrypcji:
+
 - System sam tworzy zamówienia co rano
 - User dostaje powiadomienie "Reksio idzie z Andrzejem o 8:00" — bez kliknięć
 
@@ -216,18 +219,23 @@ Cel: wezwać hydraulika.
 ## Antywzorce — czego unikać
 
 ### ❌ Wizard z paskiem postępu „1 z 5"
+
 Mówisz userowi że to długo zanim zaczął. Demotywujące.
 
 ### ❌ Modal confirmation dla każdego kroku
+
 "Czy na pewno chcesz...?" — sabotuje flow. Confirmation tylko dla destrukcyjnych operacji (anulowanie zamówienia po opłaceniu).
 
 ### ❌ Wymuszanie wypełnienia profilu przed pierwszą akcją
+
 User chce ZAMÓWIĆ, nie wypełniać profil. Dodaj profil w trakcie zamówienia (np. telefon przy potwierdzaniu) tylko jeśli krytyczne.
 
 ### ❌ Walidacja błędów na końcu formularza
+
 Waliduj inline — gdy user wychodzi z pola, nie po kliknięciu „Zapisz".
 
 ### ❌ Dialog "Pozwól na lokalizację" w niewłaściwym momencie
+
 Pytanie o GPS dopiero gdy user pierwszy raz zamawia. Nie na onboardingu.
 
 ## Bottom navigation (mieszkaniec)
@@ -263,6 +271,7 @@ Cztery główne sekcje. Mikrofon AI jest osobno, jako FAB (floating action butto
 ## Heatmaps i monitoring
 
 PostHog event tracking:
+
 - `flow_started` z `{ flow_name, entry_point }`
 - `flow_step_completed` z `{ flow_name, step_number, step_name }`
 - `flow_completed` z `{ flow_name, total_clicks, time_sec }`

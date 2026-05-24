@@ -28,9 +28,7 @@ export default function LandingPage() {
         </Link>
       </div>
 
-      <p className="text-xs text-neutral-500">
-        JOKUS Sp. z o.o. · Wrocław · NIP 9131639730
-      </p>
+      <p className="text-xs text-neutral-500">JOKUS Sp. z o.o. · Wrocław · NIP 9131639730</p>
     </main>
   );
 }
