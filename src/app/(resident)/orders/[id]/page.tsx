@@ -17,6 +17,14 @@ import OrderAutoRefresh from './OrderAutoRefresh';
 
 type PageProps = { params: Promise<{ id: string }> };
 
+type PickupAddr = {
+  street: string;
+  building: string;
+  apartment: string | null;
+  city: string;
+  postal_code: string;
+};
+
 type OrderDetail = {
   id: string;
   status: OrderStatus;
@@ -29,6 +37,7 @@ type OrderDetail = {
   accepted_at: string | null;
   started_at: string | null;
   completed_at: string | null;
+  pickup_address: PickupAddr | null;
   modules: { name: string; estimated_duration_min: number } | null;
 };
 
@@ -106,7 +115,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
     .from('orders')
     .select(
       'id, status, total_price, scheduled_at, estimated_duration_min, notes, ' +
-        'resident_id, jokusor_id, accepted_at, started_at, completed_at, ' +
+        'resident_id, jokusor_id, accepted_at, started_at, completed_at, pickup_address, ' +
         'modules(name, estimated_duration_min)'
     )
     .eq('id', id)
@@ -203,6 +212,19 @@ export default async function OrderDetailPage({ params }: PageProps) {
               <dt className="text-neutral-600 dark:text-neutral-400">Jokusor</dt>
               <dd className="font-medium text-neutral-900 dark:text-neutral-100">
                 {jokusorName}
+              </dd>
+            </div>
+          )}
+          {order.pickup_address && (
+            <div className="flex justify-between gap-3">
+              <dt className="text-neutral-600 dark:text-neutral-400">Odbiór od</dt>
+              <dd className="text-right text-neutral-900 dark:text-neutral-100">
+                ul. {order.pickup_address.street} {order.pickup_address.building}
+                {order.pickup_address.apartment ? `/${order.pickup_address.apartment}` : ''}
+                <br />
+                <span className="text-neutral-600 dark:text-neutral-400">
+                  {order.pickup_address.postal_code} {order.pickup_address.city}
+                </span>
               </dd>
             </div>
           )}

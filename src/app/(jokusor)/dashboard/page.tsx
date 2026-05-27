@@ -13,6 +13,14 @@ import { createClient } from '@/lib/supabase/server';
 import { formatPLN, formatDayHeader, formatSlotRange } from '@/lib/utils/formatters';
 import OrderActions from './OrderActions';
 
+type AddressFields = {
+  street: string;
+  building: string;
+  apartment: string | null;
+  city: string;
+  postal_code: string;
+};
+
 type DashboardOrder = {
   id: string;
   status: 'pending' | 'accepted' | 'in_progress';
@@ -20,16 +28,15 @@ type DashboardOrder = {
   scheduled_at: string | null;
   estimated_duration_min: number | null;
   notes: string | null;
+  pickup_address: AddressFields | null;
   modules: { name: string; estimated_duration_min: number } | null;
   users: { full_name: string | null } | null;
-  addresses: {
-    street: string;
-    building: string;
-    apartment: string | null;
-    city: string;
-    postal_code: string;
-  } | null;
+  addresses: AddressFields | null;
 };
+
+function formatAddr(a: AddressFields): string {
+  return `ul. ${a.street} ${a.building}${a.apartment ? `/${a.apartment}` : ''}, ${a.postal_code} ${a.city}`;
+}
 
 const STATUS_LABELS: Record<DashboardOrder['status'], { label: string; tone: string }> = {
   pending: {
@@ -79,7 +86,7 @@ export default async function JokusorDashboard() {
   const { data: rows, error } = await supabase
     .from('orders')
     .select(
-      'id, status, total_price, scheduled_at, estimated_duration_min, notes, ' +
+      'id, status, total_price, scheduled_at, estimated_duration_min, notes, pickup_address, ' +
         'modules(name, estimated_duration_min), ' +
         'users:resident_id(full_name), ' +
         'addresses(street, building, apartment, city, postal_code)'
@@ -165,11 +172,19 @@ export default async function JokusorDashboard() {
                     </p>
                   )}
 
+                  {o.pickup_address && (
+                    <p className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
+                      <span className="text-neutral-500 dark:text-neutral-500">Odbiór: </span>
+                      {formatAddr(o.pickup_address)}
+                    </p>
+                  )}
+
                   {addr && (
                     <p className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
-                      <span className="text-neutral-500 dark:text-neutral-500">Adres: </span>
-                      ul. {addr.street} {addr.building}
-                      {addr.apartment ? `/${addr.apartment}` : ''}, {addr.postal_code} {addr.city}
+                      <span className="text-neutral-500 dark:text-neutral-500">
+                        {o.pickup_address ? 'Dostawa: ' : 'Adres: '}
+                      </span>
+                      {formatAddr(addr)}
                     </p>
                   )}
 

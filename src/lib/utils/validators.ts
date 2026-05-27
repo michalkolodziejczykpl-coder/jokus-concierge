@@ -45,6 +45,39 @@ export const orderDraftInputSchema = z.object({
 export type OrderDraftInputParsed = z.infer<typeof orderDraftInputSchema>;
 
 // ============================================================================
+// Marketplace — listing creation
+// ============================================================================
+
+const pickupAddressSchema = z.object({
+  street: z.string().trim().min(2).max(120),
+  building: z.string().trim().min(1).max(20),
+  apartment: z.string().trim().max(20).nullable().optional(),
+  city: z.string().trim().min(2).max(80).default('Wrocław'),
+  postal_code: postalCodeSchema
+});
+
+export const createListingSchema = z.object({
+  title: z.string().trim().min(3, 'Tytuł min 3 znaki').max(100),
+  description: z.string().trim().max(2000).optional().or(z.literal('')),
+  category: z.enum(['electronics', 'clothing', 'books', 'home', 'kids', 'sports', 'other']),
+  price: z.coerce
+    .number({ invalid_type_error: 'Cena musi być liczbą' })
+    .min(5, 'Minimalna cena 5 zł')
+    .max(50_000, 'Maksymalna cena 50 000 zł'),
+  condition: z.enum(['new', 'like_new', 'good', 'used', 'for_parts']),
+  delivery_option: z
+    .enum(['migmig_only', 'pickup_only', 'migmig_or_pickup'])
+    .default('migmig_or_pickup'),
+  pickup_address: pickupAddressSchema,
+  photos: z
+    .array(z.string().url())
+    .max(3, 'Maksymalnie 3 zdjęcia')
+    .default([])
+});
+
+export type CreateListingParsed = z.infer<typeof createListingSchema>;
+
+// ============================================================================
 // Dynamic schema builder: CustomField[] → Zod object
 // ============================================================================
 
