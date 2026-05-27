@@ -26,6 +26,16 @@ export default async function ResidentHomePage() {
     redirect('/login');
   }
 
+  // Role gate: send jokusors to their dashboard instead of the resident catalog
+  const { data: profile } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle();
+  if ((profile as { role?: string } | null)?.role === 'jokusor') {
+    redirect('/dashboard');
+  }
+
   const displayName =
     (user.user_metadata?.full_name as string | undefined)?.split(' ')[0] ??
     (user.user_metadata?.name as string | undefined)?.split(' ')[0] ??

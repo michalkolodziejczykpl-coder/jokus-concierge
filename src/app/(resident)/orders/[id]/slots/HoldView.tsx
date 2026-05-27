@@ -34,7 +34,7 @@ function computeSecondsLeft(holdExpiresAt: string): number {
 }
 
 export default function HoldView({
-  orderId: _orderId,
+  orderId,
   timeSlotId,
   holdExpiresAt,
   scheduledAt,
@@ -45,6 +45,8 @@ export default function HoldView({
   const router = useRouter();
   const [secondsLeft, setSecondsLeft] = useState(() => computeSecondsLeft(holdExpiresAt));
   const [cancelling, setCancelling] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const expiredHandledRef = useRef(false);
 
@@ -76,9 +78,29 @@ export default function HoldView({
     }
   }
 
-  function fakePay() {
-    // Placeholder for sprint 3c (Przelewy24 init).
-    alert('Sprint 3c: tu pójdzie inicjalizacja BLIK przez Przelewy24.');
+  async function mockPay() {
+    if (paying || cancelling || expired) return;
+    setPaying(true);
+    setPayError(null);
+    try {
+      const res = await fetch('/api/payments/mock-pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId })
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
+        setPayError(data.message ?? `Nie udało się zapłacić (${data.error ?? res.status}).`);
+        setPaying(false);
+        return;
+      }
+      // Order is now 'pending' — bounce to its status page.
+      router.push(`/orders/${orderId}`);
+    } catch (e) {
+      console.error('[HoldView.mockPay]', e);
+      setPayError('Błąd sieci. Spróbuj ponownie.');
+      setPaying(false);
+    }
   }
 
   const expired = secondsLeft <= 0;
@@ -116,19 +138,28 @@ export default function HoldView({
         </div>
       </div>
 
+      {payError && (
+        <div
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200"
+        >
+          {payError}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="button"
-          onClick={fakePay}
-          disabled={expired || cancelling}
+          onClick={mockPay}
+          disabled={expired || cancelling || paying}
           className="flex-1 rounded-xl bg-orange-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Zapłać BLIK · {formatPLN(totalPrice)}
+          {paying ? 'Płacę…' : `Zapłać BLIK · ${formatPLN(totalPrice)}`}
         </button>
         <button
           type="button"
           onClick={() => cancelHold(false)}
-          disabled={cancelling}
+          disabled={cancelling || paying}
           className="rounded-xl border border-neutral-300 px-6 py-3 text-base font-medium text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
         >
           Anuluj
@@ -136,7 +167,8 @@ export default function HoldView({
       </div>
 
       <p className="text-xs text-neutral-500 dark:text-neutral-500">
-        BLIK to placeholder w sprincie 3b. Pełna integracja Przelewy24 ląduje w sprincie 3c.
+        Płatność BLIK to obecnie mock (sprint 4) — po kliknięciu zlecenie idzie do akceptacji
+        przez jokusora. Sprint 3c podmieni mock na realny przekierowanie do Przelewy24.
       </p>
     </section>
   );
