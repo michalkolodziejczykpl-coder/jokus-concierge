@@ -12,6 +12,7 @@ import { ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatPLN, formatDayHeader, formatSlotRange } from '@/lib/utils/formatters';
 import OrderActions from './OrderActions';
+import LiveTrackingShare from './LiveTrackingShare';
 
 type AddressFields = {
   street: string;
@@ -193,6 +194,12 @@ export default async function JokusorDashboard() {
                       <span className="font-medium">Uwagi: </span>
                       {o.notes}
                     </p>
+                  )}
+
+                  {o.status === 'in_progress' && (
+                    <div className="mt-3">
+                      <LiveTrackingShare orderId={o.id} />
+                    </div>
                   )}
 
                   <div className="mt-4 flex items-center justify-between">

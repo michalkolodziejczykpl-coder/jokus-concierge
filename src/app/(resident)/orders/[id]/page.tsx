@@ -14,6 +14,7 @@ import { createClient } from '@/lib/supabase/server';
 import { formatPLN, formatDayHeader, formatSlotRange } from '@/lib/utils/formatters';
 import type { OrderStatus } from '@/lib/types/orderStatus';
 import OrderAutoRefresh from './OrderAutoRefresh';
+import LiveTrackingView from './LiveTrackingView';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -147,6 +148,11 @@ export default async function OrderDetailPage({ params }: PageProps) {
   }
 
   const isTerminal = order.status === 'completed' || order.status === 'cancelled';
+  const isInFlight =
+    order.status === 'in_progress' ||
+    order.status === 'in_transit' ||
+    order.status === 'at_pickup' ||
+    order.status === 'in_return';
   const slotEndIso = order.scheduled_at
     ? new Date(
         new Date(order.scheduled_at).getTime() +
@@ -189,6 +195,8 @@ export default async function OrderDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {isInFlight && <LiveTrackingView orderId={order.id} />}
 
       <section className="mt-6 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
