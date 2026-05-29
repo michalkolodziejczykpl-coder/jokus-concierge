@@ -22,7 +22,7 @@ End-of-setup, pre-Phase-1. As of late May 2026:
 - ✅ Minimal post-login placeholder at `(resident)/home/page.tsx` — shows user email + sign-out form. Will be replaced by the real tile grid in Phase 1.
 - ✅ Public `/privacy` and `/data-deletion` pages (Polish, RODO-minimal — placeholder text, must be lawyer-reviewed before public launch).
 - ✅ `node_modules` installed locally. `npm run dev`, `npm run build`, `npm run typecheck` all green.
-- ✅ Deployed to Vercel (production: https://migmig-concierge.vercel.app, auto-deploys from `main`). Vercel Authentication ("Standard Protection") explicitly disabled on Production so public pages and Facebook/Google crawlers can reach them.
+- ✅ Deployed to Vercel (production: https://www.migmig.pl, auto-deploys from `main`; Vercel internal URL https://migmig-concierge.vercel.app still works as fallback). Vercel Authentication ("Standard Protection") explicitly disabled on Production so public pages and Facebook/Google crawlers can reach them.
 - ✅ OAuth: **Google only**, end-to-end verified on localhost and prod. Facebook is paused pending Meta Business Verification (1–5 day review); Apple deferred to Stage 2 native.
 - ❌ Business logic — none. No order flow, no slot picker, no payments, no tracking, no marketplace. Edge Functions still TODO-only stubs.
 - ❌ No tests. Per roadmap Faza 6 — premature for solo scaffold.
@@ -33,12 +33,13 @@ The full design spec lives in `docs/` — 15 markdown files + 2 SQL files. The r
 
 These are the actual deployed resources — use them when configuring env vars, OAuth allow-lists, or debugging production:
 
-- **Production URL**: https://migmig-concierge.vercel.app (canonical, stable across deploys)
+- **Production URL**: https://www.migmig.pl (canonical; apex `migmig.pl` 307-redirects to www). Vercel internal URL https://migmig-concierge.vercel.app still resolves as fallback.
 - **Supabase project**: https://uveeqjidyuumcddnfnop.supabase.co (region Stockholm, EU-North-1)
 - **GitHub**: https://github.com/michalkolodziejczykpl-coder/migmig-concierge (private)
 - **Vercel team / project**: `migmig-s-projects` / `migmig-concierge` (Hobby plan)
 - **Google Cloud OAuth project**: `MIGMIG Concierge` (project number 862680181705), Web Client `MIGMIG Web Client`. App is in Testing mode — Google shows the "unverified app" warning until verified.
-- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, migmig-concierge.vercel.app/**, _-migmig-s-projects.vercel.app/\*\*, _.migmig.pl/\*\* (future custom domain).
+- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, www.migmig.pl/**, migmig.pl/**, _.migmig.pl/**, migmig-concierge.vercel.app/**, _-migmig-s-projects.vercel.app/\*\* (preview deploys).
+- **Custom domain `migmig.pl`**: registered at cyber_Folks, DNS managed there. Apex A record → `216.198.79.1` (Vercel); `www` CNAME → `649dbf5c4524d786.vercel-dns-017.com`. SSL auto-provisioned by Vercel (Let's Encrypt).
 
 ## Three non-negotiable UX requirements
 
