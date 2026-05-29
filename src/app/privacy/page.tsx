@@ -5,9 +5,9 @@ import Link from 'next/link';
 import Footer from '@/components/shared/Footer';
 
 export const metadata = {
-  title: 'Polityka prywatności | MIGMIG Concierge',
+  title: 'Polityka prywatności | JOKUS Concierge',
   description:
-    'Polityka prywatności serwisu MIGMIG Concierge — administrator danych, cel przetwarzania, prawa użytkownika.'
+    'Polityka prywatności serwisu JOKUS Concierge — administrator danych, cel przetwarzania, prawa użytkownika.'
 };
 
 export default function PrivacyPage() {
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           </h2>
           <p>
             Administratorem Twoich danych osobowych jest <strong>JOKUS Sp. z o.o.</strong> z
-            siedzibą we Wrocławiu, NIP 9131639730 (dalej: „MIGMIG"). Kontakt:{' '}
+            siedzibą we Wrocławiu, NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
             <a
               className="text-brand hover:underline"
               href="mailto:michal.kolodziejczyk.pl@gmail.com"

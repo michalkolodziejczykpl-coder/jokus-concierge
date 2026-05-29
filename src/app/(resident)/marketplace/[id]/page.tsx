@@ -124,7 +124,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
           <BuyButton listingId={listing.id} itemPrice={listing.price} />
         ) : (
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
-            Sprzedawca zaznaczył tylko odbiór osobisty — dostawa MIGMIG niedostępna.
+            Sprzedawca zaznaczył tylko odbiór osobisty — dostawa JOKUS niedostępna.
           </div>
         )}
       </section>

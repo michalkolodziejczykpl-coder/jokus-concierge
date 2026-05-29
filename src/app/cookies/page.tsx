@@ -6,9 +6,9 @@ import Footer from '@/components/shared/Footer';
 import { COMPANY } from '@/lib/constants';
 
 export const metadata = {
-  title: 'Polityka cookies | MIGMIG Concierge',
+  title: 'Polityka cookies | JOKUS Concierge',
   description:
-    'Jakie pliki cookies wykorzystuje serwis MIGMIG Concierge i jak nimi zarządzać. Stosujemy wyłącznie cookies niezbędne do działania serwisu.'
+    'Jakie pliki cookies wykorzystuje serwis JOKUS Concierge i jak nimi zarządzać. Stosujemy wyłącznie cookies niezbędne do działania serwisu.'
 };
 
 export default function CookiesPage() {
@@ -35,7 +35,7 @@ export default function CookiesPage() {
             2. Jakie cookies stosujemy
           </h2>
           <p>
-            Serwis MIGMIG Concierge ({COMPANY.legalName}, NIP {COMPANY.nip}) stosuje{' '}
+            Serwis JOKUS Concierge ({COMPANY.legalName}, NIP {COMPANY.nip}) stosuje{' '}
             <strong>wyłącznie pliki cookies niezbędne</strong> do prawidłowego działania serwisu:
           </p>
           <ul className="list-disc space-y-1 pl-6">

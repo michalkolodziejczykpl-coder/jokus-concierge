@@ -5,7 +5,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col gap-8">
       <header className="text-center">
-        <h1 className="text-2xl font-bold">Zaloguj się do MIGMIG</h1>
+        <h1 className="text-2xl font-bold">Zaloguj się do JOKUS</h1>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
           Bez hasła. Bez emaila. W 10 sekund.
         </p>

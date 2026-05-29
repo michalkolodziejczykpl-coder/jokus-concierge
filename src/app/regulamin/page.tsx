@@ -1,5 +1,5 @@
 // Regulamin (Terms of Service) — public page, no auth required.
-// Full Polish draft tailored to MIGMIG. Required by Przelewy24 verification and by
+// Full Polish draft tailored to JOKUS. Required by Przelewy24 verification and by
 // Polish law (ustawa o świadczeniu usług drogą elektroniczną, art. 8).
 // MUST be reviewed by a lawyer before public launch — see the notice at the bottom.
 
@@ -8,9 +8,9 @@ import Footer from '@/components/shared/Footer';
 import { COMPANY, SLOT_HOLD_TTL_SECONDS } from '@/lib/constants';
 
 export const metadata = {
-  title: 'Regulamin | MIGMIG Concierge',
+  title: 'Regulamin | JOKUS Concierge',
   description:
-    'Regulamin świadczenia usług drogą elektroniczną w serwisie MIGMIG Concierge — zasady zamawiania, płatności, reklamacji i odstąpienia od umowy.'
+    'Regulamin świadczenia usług drogą elektroniczną w serwisie JOKUS Concierge — zasady zamawiania, płatności, reklamacji i odstąpienia od umowy.'
 };
 
 export default function RegulaminPage() {
@@ -22,7 +22,7 @@ export default function RegulaminPage() {
         </Link>
 
         <h1 className="mt-6 text-3xl font-bold tracking-tight">
-          Regulamin serwisu MIGMIG Concierge
+          Regulamin serwisu JOKUS Concierge
         </h1>
         <p className="mt-2 text-sm text-neutral-500">Wersja 1.0 · obowiązuje od 30 maja 2026 r.</p>
 
@@ -32,7 +32,7 @@ export default function RegulaminPage() {
           </h2>
           <p>
             Niniejszy Regulamin określa zasady korzystania z serwisu internetowego i aplikacji
-            MIGMIG Concierge (dalej: „Serwis"), dostępnego pod adresem{' '}
+            JOKUS Concierge (dalej: „Serwis"), dostępnego pod adresem{' '}
             <a className="text-brand hover:underline" href="https://www.migmig.pl">
               www.migmig.pl
             </a>
@@ -41,7 +41,7 @@ export default function RegulaminPage() {
           </p>
           <p>
             Operatorem Serwisu jest <strong>{COMPANY.legalName}</strong> z siedzibą w mieście{' '}
-            {COMPANY.city}, NIP {COMPANY.nip} (dalej: „Operator" lub „MIGMIG"). Kontakt z
+            {COMPANY.city}, NIP {COMPANY.nip} (dalej: „Operator" lub „JOKUS"). Kontakt z
             Operatorem:{' '}
             <a className="text-brand hover:underline" href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}
@@ -63,7 +63,7 @@ export default function RegulaminPage() {
             </li>
             <li>
               <strong>Jokusor</strong> — osoba lub podmiot realizujący zlecone usługi w ramach
-              modelu franczyzowego MIGMIG.
+              modelu franczyzowego JOKUS.
             </li>
             <li>
               <strong>Usługa</strong> — usługa osiedlowa zamawiana przez Mieszkańca (m.in. zakupy,
@@ -133,7 +133,7 @@ export default function RegulaminPage() {
           <p>
             Płatności obsługiwane są przez operatora płatności{' '}
             <strong>{COMPANY.paymentProvider}</strong>, m.in. metodą BLIK. Operator płatności
-            przetwarza dane transakcji zgodnie z własnym regulaminem. MIGMIG nie przechowuje danych
+            przetwarza dane transakcji zgodnie z własnym regulaminem. JOKUS nie przechowuje danych
             kart płatniczych.
           </p>
 

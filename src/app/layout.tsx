@@ -4,8 +4,8 @@ import CookieBanner from '@/components/shared/CookieBanner';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MIGMIG Concierge',
-  description: 'Platforma franczyzowa usług osiedlowych — MIGMIG',
+  title: 'JOKUS Concierge',
+  description: 'Platforma franczyzowa usług osiedlowych — JOKUS',
   manifest: '/manifest.json'
 };
 

@@ -74,7 +74,7 @@ export const CONDITION_LABELS: Record<ListingCondition, string> = {
 };
 
 export const DELIVERY_OPTION_LABELS: Record<DeliveryOption, string> = {
-  migmig_only: 'Tylko dostawa MIGMIG',
+  migmig_only: 'Tylko dostawa JOKUS',
   pickup_only: 'Tylko odbiór osobisty',
-  migmig_or_pickup: 'Dostawa MIGMIG lub odbiór osobisty'
+  migmig_or_pickup: 'Dostawa JOKUS lub odbiór osobisty'
 };

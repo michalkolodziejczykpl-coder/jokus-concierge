@@ -5,8 +5,8 @@ import Link from 'next/link';
 import Footer from '@/components/shared/Footer';
 
 export const metadata = {
-  title: 'Usunięcie danych | MIGMIG Concierge',
-  description: 'Jak usunąć konto i wszystkie dane osobowe z serwisu MIGMIG Concierge.'
+  title: 'Usunięcie danych | JOKUS Concierge',
+  description: 'Jak usunąć konto i wszystkie dane osobowe z serwisu JOKUS Concierge.'
 };
 
 export default function DataDeletionPage() {
@@ -44,7 +44,7 @@ export default function DataDeletionPage() {
             michal.kolodziejczyk.pl@gmail.com
           </p>
           <p>
-            z tytułem <em>„Usunięcie konta MIGMIG"</em> i z adresu e-mail, którego użyłeś do
+            z tytułem <em>„Usunięcie konta JOKUS"</em> i z adresu e-mail, którego użyłeś do
             rejestracji. Konto usuniemy w ciągu 30 dni od otrzymania zgłoszenia (zwykle szybciej).
           </p>
 

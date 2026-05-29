@@ -9,7 +9,7 @@ export default function LandingPage() {
     <div className="flex min-h-screen flex-col">
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-8 px-6 py-16 text-center">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">MIGMIG Concierge</h1>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">JOKUS Concierge</h1>
           <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
             Twoje osiedlowe usługi w jednej aplikacji — zakupy, paczki, pies, fachowiec,
             marketplace.

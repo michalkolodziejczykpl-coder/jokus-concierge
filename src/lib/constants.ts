@@ -1,12 +1,12 @@
 // Cross-cutting constants. Keep small — module-specific values belong in their own files.
 
-export const APP_NAME = 'MIGMIG Concierge';
+export const APP_NAME = 'JOKUS Concierge';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
 // Company / operator data. Single source of truth for footer, legal pages and invoices.
 export const COMPANY = {
   legalName: 'JOKUS Sp. z o.o.',
-  brandName: 'MIGMIG Concierge',
+  brandName: 'JOKUS Concierge',
   nip: '9131639730',
   city: 'Wrocław',
   // TODO: uzupełnić pełny adres rejestrowy + KRS + REGON przed publicznym launchem.

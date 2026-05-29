@@ -87,7 +87,7 @@ export default async function MarketplacePage() {
             Marketplace osiedlowy
           </h1>
           <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-            Kup od sąsiadów — odbiór osobisty lub dostawa przez MIGMIG.
+            Kup od sąsiadów — odbiór osobisty lub dostawa przez JOKUS.
           </p>
         </div>
         <Link
