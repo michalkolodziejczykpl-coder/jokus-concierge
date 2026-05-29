@@ -11,7 +11,9 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { CheckCircle2, Clock } from 'lucide-react';
+import { COMPANY } from '@/lib/constants';
 import {
   formatCountdown,
   formatDayHeader,
@@ -46,6 +48,7 @@ export default function HoldView({
   const [secondsLeft, setSecondsLeft] = useState(() => computeSecondsLeft(holdExpiresAt));
   const [cancelling, setCancelling] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [accepted, setAccepted] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const expiredHandledRef = useRef(false);
@@ -79,7 +82,7 @@ export default function HoldView({
   }
 
   async function mockPay() {
-    if (paying || cancelling || expired) return;
+    if (paying || cancelling || expired || !accepted) return;
     setPaying(true);
     setPayError(null);
     try {
@@ -138,6 +141,57 @@ export default function HoldView({
         </div>
       </div>
 
+      {/* Informacja dla konsumenta przed zawarciem umowy (ustawa o prawach konsumenta) */}
+      <div className="rounded-2xl border border-neutral-200 bg-white p-5 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+        <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+          Podsumowanie zamówienia
+        </h3>
+        <dl className="mt-3 space-y-1.5 text-neutral-700 dark:text-neutral-300">
+          <div className="flex justify-between gap-4">
+            <dt className="text-neutral-500">Sprzedawca</dt>
+            <dd className="text-right">
+              {COMPANY.legalName}, NIP {COMPANY.nip}
+            </dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-neutral-500">Termin realizacji</dt>
+            <dd className="text-right">{formatSlotRange(scheduledAt, slotEndAt)}</dd>
+          </div>
+          <div className="flex justify-between gap-4 border-t border-neutral-200 pt-2 dark:border-neutral-800">
+            <dt className="font-medium text-neutral-900 dark:text-neutral-100">Razem do zapłaty</dt>
+            <dd className="text-right font-semibold text-neutral-900 dark:text-neutral-100">
+              {formatPLN(totalPrice)}
+            </dd>
+          </div>
+        </dl>
+        <p className="mt-3 text-xs text-neutral-500">
+          Cena zawiera wszystkie podatki. Płatność obsługuje {COMPANY.paymentProvider}. Po opłaceniu
+          zlecenie zostanie przekazane jokusorowi do akceptacji i realizacji.
+        </p>
+      </div>
+
+      {/* Zgoda na Regulamin + utrata prawa odstąpienia po wykonaniu usługi */}
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
+        <input
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 accent-orange-600"
+        />
+        <span>
+          Akceptuję{' '}
+          <Link href="/regulamin" target="_blank" className="text-brand hover:underline">
+            Regulamin
+          </Link>{' '}
+          oraz{' '}
+          <Link href="/privacy" target="_blank" className="text-brand hover:underline">
+            Politykę prywatności
+          </Link>
+          . Żądam rozpoczęcia realizacji usługi w wybranym terminie i przyjmuję do wiadomości, że po
+          jej pełnym wykonaniu utracę prawo odstąpienia od umowy.
+        </span>
+      </label>
+
       {payError && (
         <div
           role="alert"
@@ -151,7 +205,7 @@ export default function HoldView({
         <button
           type="button"
           onClick={mockPay}
-          disabled={expired || cancelling || paying}
+          disabled={expired || cancelling || paying || !accepted}
           className="flex-1 rounded-xl bg-orange-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {paying ? 'Płacę…' : `Zapłać BLIK · ${formatPLN(totalPrice)}`}
@@ -167,8 +221,8 @@ export default function HoldView({
       </div>
 
       <p className="text-xs text-neutral-500 dark:text-neutral-500">
-        Płatność BLIK to obecnie mock (sprint 4) — po kliknięciu zlecenie idzie do akceptacji
-        przez jokusora. Sprint 3c podmieni mock na realny przekierowanie do Przelewy24.
+        Płatność BLIK to obecnie mock (sprint 4) — po kliknięciu zlecenie idzie do akceptacji przez
+        jokusora. Sprint 3c podmieni mock na realny przekierowanie do Przelewy24.
       </p>
     </section>
   );

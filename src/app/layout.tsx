@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/components/shared/Providers';
+import CookieBanner from '@/components/shared/CookieBanner';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pl">
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
+        <CookieBanner />
       </body>
     </html>
   );
