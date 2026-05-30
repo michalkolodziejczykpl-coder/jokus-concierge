@@ -1,6 +1,7 @@
 'use client';
 
-// Create / edit a product category. POST/PATCH /api/admin/product-categories.
+// Create / edit a product category. Slug auto-fills from the name until the
+// admin edits it by hand. POST/PATCH /api/admin/product-categories.
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,20 +13,48 @@ type Errors = Record<string, string>;
 const inputClass =
   'mt-0 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-100';
 
+const PL_MAP: Record<string, string> = {
+  ą: 'a',
+  ć: 'c',
+  ę: 'e',
+  ł: 'l',
+  ń: 'n',
+  ó: 'o',
+  ś: 's',
+  ż: 'z',
+  ź: 'z'
+};
+
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/[ąćęłńóśżź]/g, (ch) => PL_MAP[ch] ?? ch)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export default function CategoryForm({ initial }: { initial: Initial }) {
   const router = useRouter();
   const isEdit = Boolean(initial.id);
+  const [name, setName] = useState(initial.name);
+  const [slug, setSlug] = useState(initial.slug);
+  const [slugTouched, setSlugTouched] = useState(Boolean(initial.slug));
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [serverError, setServerError] = useState<string | null>(null);
+
+  function onNameChange(v: string) {
+    setName(v);
+    if (!slugTouched) setSlug(slugify(v));
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
     const fd = new FormData(e.currentTarget);
     const body = {
-      name: String(fd.get('name') ?? '').trim(),
-      slug: String(fd.get('slug') ?? '').trim(),
+      name: name.trim(),
+      slug: slug.trim(),
       sort_order: String(fd.get('sort_order') ?? '0')
     };
     const valid = productCategorySchema.safeParse(body);
@@ -71,23 +100,26 @@ export default function CategoryForm({ initial }: { initial: Initial }) {
           Nazwa
         </span>
         <input
-          name="name"
           type="text"
           required
-          defaultValue={initial.name}
+          value={name}
+          onChange={(e) => onNameChange(e.target.value)}
           className={inputClass}
         />
         {errors.name && <span className="mt-1 block text-xs text-red-600">{errors.name}</span>}
       </label>
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-neutral-800 dark:text-neutral-200">
-          Slug
+          Slug (wylicza się sam z nazwy)
         </span>
         <input
-          name="slug"
           type="text"
           required
-          defaultValue={initial.slug}
+          value={slug}
+          onChange={(e) => {
+            setSlug(e.target.value);
+            setSlugTouched(true);
+          }}
           className={inputClass}
         />
         {errors.slug && <span className="mt-1 block text-xs text-red-600">{errors.slug}</span>}

@@ -7,7 +7,7 @@
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Briefcase, ClipboardCheck, ShoppingBag } from 'lucide-react';
+import { Briefcase, ClipboardCheck, ShoppingBag, ShoppingBasket } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ModuleGrid } from '@/components/resident/ModuleGrid';
 
@@ -86,6 +86,30 @@ export default async function ResidentHomePage() {
       <ModuleGrid />
 
       <section className="mt-10">
+        <Link
+          href="/sklep"
+          className="group flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-700 dark:hover:bg-orange-950/30"
+        >
+          <div className="flex items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+              <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div>
+              <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
+                Zakupy spożywcze
+              </h2>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                Złóż koszyk — jokusor zrobi zakupy i dostarczy.
+              </p>
+            </div>
+          </div>
+          <span className="text-sm font-medium text-orange-600 group-hover:underline dark:text-orange-400">
+            Otwórz →
+          </span>
+        </Link>
+      </section>
+
+      <section className="mt-4">
         <Link
           href="/marketplace"
           className="group flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-700 dark:hover:bg-orange-950/30"
