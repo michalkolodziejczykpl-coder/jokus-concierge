@@ -7,7 +7,7 @@
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Briefcase, ShoppingBag } from 'lucide-react';
+import { Briefcase, ClipboardCheck, ShoppingBag } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ModuleGrid } from '@/components/resident/ModuleGrid';
 
@@ -34,9 +34,11 @@ export default async function ResidentHomePage() {
     .select('role')
     .eq('id', user.id)
     .maybeSingle();
-  if ((profile as { role?: string } | null)?.role === 'jokusor') {
+  const role = (profile as { role?: string } | null)?.role;
+  if (role === 'jokusor') {
     redirect('/dashboard');
   }
+  const isAdmin = role === 'admin';
 
   const displayName =
     (user.user_metadata?.full_name as string | undefined)?.split(' ')[0] ??
@@ -54,6 +56,32 @@ export default async function ResidentHomePage() {
           W czym możemy pomóc?
         </p>
       </header>
+
+      {isAdmin && (
+        <section className="mb-8">
+          <Link
+            href="/jokusors"
+            className="group flex items-center justify-between gap-4 rounded-2xl border border-orange-200 bg-orange-50 p-5 transition hover:border-orange-300 hover:bg-orange-100 dark:border-orange-900/40 dark:bg-orange-950/30 dark:hover:border-orange-700"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-600 text-white">
+                <ClipboardCheck className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
+                  Zgłoszenia jokusorów
+                </h2>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Panel administratora — weryfikacja i akceptacja kandydatów.
+                </p>
+              </div>
+            </div>
+            <span className="text-sm font-medium text-orange-700 group-hover:underline dark:text-orange-400">
+              Otwórz →
+            </span>
+          </Link>
+        </section>
+      )}
 
       <ModuleGrid />
 
