@@ -26,9 +26,12 @@ export async function POST(_request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
   }
 
-  const { data, error } = await supabase.rpc('create_marketplace_purchase' as never, {
-    p_listing_id: id
-  } as never);
+  const { data, error } = await supabase.rpc(
+    'create_marketplace_purchase' as never,
+    {
+      p_listing_id: id
+    } as never
+  );
 
   if (error) {
     const msg = (error.message || '').toLowerCase();
@@ -45,10 +48,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
       return NextResponse.json({ error: 'marketplace_module_missing' }, { status: 500 });
 
     console.error('[POST /api/marketplace/listings/[id]/buy] rpc', error);
-    return NextResponse.json(
-      { error: 'buy_failed', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'buy_failed', message: error.message }, { status: 500 });
   }
 
   // RPC returns uuid (the new order id) as the data payload

@@ -57,9 +57,7 @@ function Field({
       {hint && !error && (
         <span className="mt-1 block text-xs text-neutral-500 dark:text-neutral-500">{hint}</span>
       )}
-      {error && (
-        <span className="mt-1 block text-xs text-red-600 dark:text-red-400">{error}</span>
-      )}
+      {error && <span className="mt-1 block text-xs text-red-600 dark:text-red-400">{error}</span>}
     </label>
   );
 }

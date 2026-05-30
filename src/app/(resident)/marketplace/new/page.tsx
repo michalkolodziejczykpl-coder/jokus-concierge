@@ -23,9 +23,7 @@ export default async function NewListingPage() {
     .eq('is_default', true)
     .maybeSingle();
 
-  const addr = addrRow as
-    | (PickupAddress & { estate_id: string | null })
-    | null;
+  const addr = addrRow as (PickupAddress & { estate_id: string | null }) | null;
 
   if (!addr?.estate_id) {
     // No default address → need it both to know estate AND pre-fill pickup

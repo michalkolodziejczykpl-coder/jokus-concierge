@@ -8,10 +8,7 @@ import { ChevronLeft, ImageOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatPLN } from '@/lib/utils/formatters';
 import type { OrderStatus } from '@/lib/types/orderStatus';
-import {
-  CATEGORY_LABELS,
-  type ListingCategory
-} from '@/lib/types/marketplace';
+import { CATEGORY_LABELS, type ListingCategory } from '@/lib/types/marketplace';
 
 type PurchaseRow = {
   id: string;
@@ -94,7 +91,10 @@ export default async function MyPurchasesPage() {
         {purchases.length === 0 ? (
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
             Jeszcze nic nie kupiłeś/aś. Wróć do{' '}
-            <Link href="/marketplace" className="text-orange-600 hover:underline dark:text-orange-400">
+            <Link
+              href="/marketplace"
+              className="text-orange-600 hover:underline dark:text-orange-400"
+            >
               marketplace osiedla
             </Link>
             .
@@ -105,7 +105,7 @@ export default async function MyPurchasesPage() {
               const listing = p.marketplace_listings;
               const order = p.orders;
               const orderStatusLabel = order
-                ? ORDER_STATUS_LABEL[order.status] ?? order.status
+                ? (ORDER_STATUS_LABEL[order.status] ?? order.status)
                 : 'Brak zamówienia';
               const total = p.item_price + (p.delivery_price ?? 0);
               return (
@@ -137,7 +137,10 @@ export default async function MyPurchasesPage() {
                       <span className="font-medium text-neutral-900 dark:text-neutral-100">
                         {formatPLN(total)}
                       </span>
-                      <span className="text-xs text-neutral-500"> ({formatPLN(p.item_price)} + dostawa)</span>
+                      <span className="text-xs text-neutral-500">
+                        {' '}
+                        ({formatPLN(p.item_price)} + dostawa)
+                      </span>
                     </p>
                     <p className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
                       Status dostawy:{' '}

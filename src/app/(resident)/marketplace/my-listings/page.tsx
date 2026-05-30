@@ -1,7 +1,7 @@
 // /marketplace/my-listings — own listings, any status (active/reserved/sold/archived).
 //
 // Differs from /marketplace browse: no estate filter, no exclude-own, shows
-// status badge per listing.
+// status badge per listing + edit/delete actions.
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -15,6 +15,7 @@ import {
   type ListingCondition,
   type ListingStatus
 } from '@/lib/types/marketplace';
+import ListingCardActions from '@/components/marketplace/ListingCardActions';
 
 type Row = {
   id: string;
@@ -151,6 +152,7 @@ export default async function MyListingsPage() {
                       </div>
                     </div>
                   </Link>
+                  <ListingCardActions listingId={l.id} status={l.status} />
                 </li>
               );
             })}

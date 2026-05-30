@@ -63,16 +63,17 @@ export default function BuyButton({ listingId, itemPrice }: Props) {
         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-600 px-6 py-4 text-base font-semibold text-white shadow-sm transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <ShoppingBag className="h-5 w-5" aria-hidden="true" />
-        {busy
-          ? 'Tworzę zamówienie…'
-          : `Kup z dostawą · ${formatPLN(itemPrice + DELIVERY_PRICE)}`}
+        {busy ? 'Tworzę zamówienie…' : `Kup z dostawą · ${formatPLN(itemPrice + DELIVERY_PRICE)}`}
       </button>
       <p className="text-xs text-neutral-500 dark:text-neutral-500">
         W tym {formatPLN(itemPrice)} za przedmiot + {formatPLN(DELIVERY_PRICE)} za dostawę przez
         jokusora. Po kliknięciu wybierzesz termin i zapłacisz.
       </p>
       {error && (
-        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+        <p
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200"
+        >
           {error}
         </p>
       )}

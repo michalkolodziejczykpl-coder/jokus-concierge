@@ -1,10 +1,10 @@
 // /marketplace/[id] — listing detail.
 // Anyone on the same estate (or the seller themselves) can view.
-// Buy button is hidden for the seller's own listing.
+// Buy button is hidden for the seller's own listing; buyers get a chat + report.
 
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { ChevronLeft, MapPin, Package2, Tag } from 'lucide-react';
+import { ChevronLeft, MapPin, Package2, Pencil, Tag } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatPLN } from '@/lib/utils/formatters';
 import {
@@ -15,6 +15,8 @@ import {
 } from '@/lib/types/marketplace';
 import BuyButton from './BuyButton';
 import Gallery from './Gallery';
+import ReportButton from '@/components/marketplace/ReportButton';
+import Conversation from '@/components/marketplace/Conversation';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -113,8 +115,24 @@ export default async function ListingDetailPage({ params }: PageProps) {
 
       <section className="mt-8">
         {isOwn ? (
-          <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
-            To Twoje ogłoszenie. Kupujący zobaczą tu przycisk &ldquo;Kup z dostawą&rdquo;.
+          <div className="space-y-3">
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
+              To Twoje ogłoszenie. Wiadomości od kupujących znajdziesz w{' '}
+              <Link
+                href="/marketplace/messages"
+                className="text-orange-600 hover:underline dark:text-orange-400"
+              >
+                skrzynce wiadomości
+              </Link>
+              .
+            </div>
+            <Link
+              href={`/marketplace/${listing.id}/edit`}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-900"
+            >
+              <Pencil className="h-4 w-4" aria-hidden="true" />
+              Edytuj ogłoszenie
+            </Link>
           </div>
         ) : listing.status !== 'active' ? (
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
@@ -128,6 +146,23 @@ export default async function ListingDetailPage({ params }: PageProps) {
           </div>
         )}
       </section>
+
+      {!isOwn && (
+        <section className="mt-8">
+          <Conversation
+            listingId={listing.id}
+            otherId={listing.seller_id}
+            meId={user.id}
+            otherLabel="Sprzedawca"
+          />
+        </section>
+      )}
+
+      {!isOwn && (
+        <section className="mt-10 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+          <ReportButton listingId={listing.id} />
+        </section>
+      )}
     </main>
   );
 }

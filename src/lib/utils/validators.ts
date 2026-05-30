@@ -69,10 +69,7 @@ export const createListingSchema = z.object({
     .enum(['migmig_only', 'pickup_only', 'migmig_or_pickup'])
     .default('migmig_or_pickup'),
   pickup_address: pickupAddressSchema,
-  photos: z
-    .array(z.string().url())
-    .max(3, 'Maksymalnie 3 zdjęcia')
-    .default([])
+  photos: z.array(z.string().url()).max(3, 'Maksymalnie 3 zdjęcia').default([])
 });
 
 export type CreateListingParsed = z.infer<typeof createListingSchema>;
@@ -141,3 +138,38 @@ export function customFieldsToZodSchema(fields: CustomField[]) {
 
   return z.object(shape);
 }
+
+// ============================================================================
+// Marketplace — listing edit (partial). Photos are edited separately.
+// ============================================================================
+
+export const updateListingSchema = z
+  .object({
+    title: z.string().trim().min(3, 'Tytuł min 3 znaki').max(100).optional(),
+    description: z.string().trim().max(2000).optional().or(z.literal('')),
+    category: z
+      .enum(['electronics', 'clothing', 'books', 'home', 'kids', 'sports', 'other'])
+      .optional(),
+    price: z.coerce
+      .number({ invalid_type_error: 'Cena musi być liczbą' })
+      .min(5, 'Minimalna cena 5 zł')
+      .max(50_000, 'Maksymalna cena 50 000 zł')
+      .optional(),
+    condition: z.enum(['new', 'like_new', 'good', 'used', 'for_parts']).optional(),
+    delivery_option: z.enum(['migmig_only', 'pickup_only', 'migmig_or_pickup']).optional()
+  })
+  .refine((obj) => Object.keys(obj).length > 0, { message: 'Brak zmian do zapisania' });
+
+export type UpdateListingParsed = z.infer<typeof updateListingSchema>;
+
+// ============================================================================
+// Marketplace — buyer/seller message
+// ============================================================================
+
+export const marketplaceMessageSchema = z.object({
+  listing_id: z.string().uuid(),
+  recipient_id: z.string().uuid(),
+  content: z.string().trim().min(1, 'Wpisz treść wiadomości').max(2000, 'Maksymalnie 2000 znaków')
+});
+
+export type MarketplaceMessageParsed = z.infer<typeof marketplaceMessageSchema>;

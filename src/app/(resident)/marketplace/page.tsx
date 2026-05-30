@@ -1,11 +1,21 @@
 // /marketplace — neighbourhood C2C grid.
 //
 // Lists listings WHERE estate_id = my default address.estate_id AND status='active'
-// AND seller_id != me. Future sprints add: filters, search, photos, distance.
+// AND seller_id != me. Supports search (?q), filters (?category, ?condition,
+// ?maxPrice) and sort (?sort) — all driven from the URL by <MarketplaceFilters>.
 
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-import { ChevronLeft, ImageOff, Plus, Receipt, ShoppingBag, Tag } from 'lucide-react';
+import {
+  ChevronLeft,
+  ImageOff,
+  MessagesSquare,
+  Plus,
+  Receipt,
+  ShoppingBag,
+  Tag
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatPLN } from '@/lib/utils/formatters';
 import {
@@ -14,6 +24,7 @@ import {
   type ListingCategory,
   type ListingCondition
 } from '@/lib/types/marketplace';
+import MarketplaceFilters from '@/components/marketplace/MarketplaceFilters';
 
 type ListingRow = {
   id: string;
@@ -25,7 +36,27 @@ type ListingRow = {
   created_at: string;
 };
 
-export default async function MarketplacePage() {
+const CATEGORIES: ListingCategory[] = [
+  'electronics',
+  'clothing',
+  'books',
+  'home',
+  'kids',
+  'sports',
+  'other'
+];
+const CONDITIONS: ListingCondition[] = ['new', 'like_new', 'good', 'used', 'for_parts'];
+
+type SearchParams = Promise<{
+  q?: string;
+  category?: string;
+  condition?: string;
+  maxPrice?: string;
+  sort?: string;
+}>;
+
+export default async function MarketplacePage({ searchParams }: { searchParams: SearchParams }) {
+  const sp = await searchParams;
   const supabase = await createClient();
   const {
     data: { user }
@@ -47,16 +78,37 @@ export default async function MarketplacePage() {
     redirect('/onboarding/address?next=/marketplace');
   }
 
-  // Three parallel fetches: active others' listings, my listings count, my purchases count
-  const [{ data: rows }, myListingsCount, myPurchasesCount] = await Promise.all([
-    supabase
-      .from('marketplace_listings')
-      .select('id, title, category, price, condition, photos, created_at')
-      .eq('estate_id', estateId)
-      .eq('status', 'active')
-      .neq('seller_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(60),
+  // Sanitise filter inputs from the URL.
+  const q = (sp.q ?? '').trim().slice(0, 80);
+  const category = CATEGORIES.includes(sp.category as ListingCategory)
+    ? (sp.category as ListingCategory)
+    : null;
+  const condition = CONDITIONS.includes(sp.condition as ListingCondition)
+    ? (sp.condition as ListingCondition)
+    : null;
+  const maxPrice = Number(sp.maxPrice);
+  const hasMaxPrice = Number.isFinite(maxPrice) && maxPrice > 0;
+  const sort = sp.sort === 'cheapest' || sp.sort === 'priciest' ? sp.sort : 'newest';
+
+  // Build the filtered query.
+  let query = supabase
+    .from('marketplace_listings')
+    .select('id, title, category, price, condition, photos, created_at')
+    .eq('estate_id', estateId)
+    .eq('status', 'active')
+    .neq('seller_id', user.id);
+
+  if (q) query = query.ilike('title', `%${q}%`);
+  if (category) query = query.eq('category', category);
+  if (condition) query = query.eq('condition', condition);
+  if (hasMaxPrice) query = query.lte('price', maxPrice);
+
+  if (sort === 'cheapest') query = query.order('price', { ascending: true });
+  else if (sort === 'priciest') query = query.order('price', { ascending: false });
+  else query = query.order('created_at', { ascending: false });
+
+  const [{ data: rows }, myListingsCount, myPurchasesCount, unreadCount] = await Promise.all([
+    query.limit(60),
     supabase
       .from('marketplace_listings')
       .select('id', { count: 'exact', head: true })
@@ -64,12 +116,19 @@ export default async function MarketplacePage() {
     supabase
       .from('marketplace_purchases')
       .select('id', { count: 'exact', head: true })
-      .eq('buyer_id', user.id)
+      .eq('buyer_id', user.id),
+    supabase
+      .from('marketplace_messages')
+      .select('id', { count: 'exact', head: true })
+      .eq('recipient_id', user.id)
+      .is('read_at', null)
   ]);
 
   const listings = (rows as unknown as ListingRow[] | null) ?? [];
   const myListingsN = myListingsCount.count ?? 0;
   const myPurchasesN = myPurchasesCount.count ?? 0;
+  const unreadN = unreadCount.count ?? 0;
+  const isFiltered = Boolean(q || category || condition || hasMaxPrice);
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-6 sm:px-6">
@@ -99,7 +158,7 @@ export default async function MarketplacePage() {
         </Link>
       </header>
 
-      <nav className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <nav className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Link
           href="/marketplace/my-listings"
           className="group flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition hover:border-orange-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-orange-700"
@@ -132,9 +191,37 @@ export default async function MarketplacePage() {
             {myPurchasesN}
           </span>
         </Link>
+        <Link
+          href="/marketplace/messages"
+          className="group flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition hover:border-orange-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-orange-700"
+        >
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+              <MessagesSquare className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
+              Wiadomości
+            </span>
+          </div>
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              unreadN > 0
+                ? 'bg-orange-600 text-white'
+                : 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'
+            }`}
+          >
+            {unreadN}
+          </span>
+        </Link>
       </nav>
 
       <section className="mt-8">
+        <Suspense fallback={null}>
+          <MarketplaceFilters />
+        </Suspense>
+      </section>
+
+      <section className="mt-6">
         {listings.length === 0 ? (
           <div className="flex flex-col items-center gap-2 rounded-2xl border border-neutral-200 bg-neutral-50 p-12 text-center dark:border-neutral-800 dark:bg-neutral-900">
             <ShoppingBag
@@ -142,7 +229,9 @@ export default async function MarketplacePage() {
               aria-hidden="true"
             />
             <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              Na razie pusto — bądź pierwszy/a i wystaw coś na swoim osiedlu.
+              {isFiltered
+                ? 'Brak ogłoszeń pasujących do filtrów. Spróbuj je poluzować.'
+                : 'Na razie pusto — bądź pierwszy/a i wystaw coś na swoim osiedlu.'}
             </p>
           </div>
         ) : (
