@@ -15,6 +15,7 @@ import { formatPLN, formatDayHeader, formatSlotRange } from '@/lib/utils/formatt
 import type { OrderStatus } from '@/lib/types/orderStatus';
 import OrderAutoRefresh from './OrderAutoRefresh';
 import LiveTrackingView from './LiveTrackingView';
+import OrderChat from '@/components/shared/OrderChat';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -42,10 +43,7 @@ type OrderDetail = {
   modules: { name: string; estimated_duration_min: number } | null;
 };
 
-const STATUS_VIEW: Record<
-  OrderStatus,
-  { label: string; tone: string; description: string }
-> = {
+const STATUS_VIEW: Record<OrderStatus, { label: string; tone: string; description: string }> = {
   draft: {
     label: 'Wersja robocza',
     tone: 'border-neutral-300 bg-neutral-100 text-neutral-700',
@@ -218,9 +216,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
           {jokusorName && (
             <div className="flex justify-between gap-3">
               <dt className="text-neutral-600 dark:text-neutral-400">Jokusor</dt>
-              <dd className="font-medium text-neutral-900 dark:text-neutral-100">
-                {jokusorName}
-              </dd>
+              <dd className="font-medium text-neutral-900 dark:text-neutral-100">{jokusorName}</dd>
             </div>
           )}
           {order.pickup_address && (
@@ -238,12 +234,20 @@ export default async function OrderDetailPage({ params }: PageProps) {
           )}
           <div className="flex justify-between gap-3">
             <dt className="text-neutral-600 dark:text-neutral-400">ID zamówienia</dt>
-            <dd className="font-mono text-xs text-neutral-700 dark:text-neutral-300">
-              {order.id}
-            </dd>
+            <dd className="font-mono text-xs text-neutral-700 dark:text-neutral-300">{order.id}</dd>
           </div>
         </dl>
       </section>
+
+      {order.jokusor_id && order.status !== 'cancelled' && (
+        <section className="mt-6">
+          <OrderChat
+            orderId={order.id}
+            meId={user.id}
+            otherLabel={user.id === order.resident_id ? 'Jokusor' : 'Klient'}
+          />
+        </section>
+      )}
 
       {/* Auto-refresh keeps the status fresh while the order is in flight */}
       {!isTerminal && <OrderAutoRefresh />}
