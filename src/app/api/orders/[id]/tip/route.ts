@@ -1,10 +1,11 @@
 // POST /api/orders/[id]/tip — resident tips the jokusor after completion.
-// MOCK PAYMENT: recorded as payment_status='paid', payment_method='mock' until
-// the real Przelewy24 integration (sprint 3c). RLS tips_insert_resident.
+// MOCK PAYMENT (payment_status='paid', payment_method='mock') until P24/3c,
+// and gated by isMockPaymentAllowed (review must-fix #5). RLS tips_insert_resident.
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { tipSchema } from '@/lib/utils/validators';
+import { isMockPaymentAllowed } from '@/lib/payments/mockGate';
 
 type RouteContext = { params: Promise<{ id: string }> };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -18,6 +19,13 @@ export async function POST(request: Request, { params }: RouteContext) {
     data: { user }
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+
+  if (!isMockPaymentAllowed(user.email)) {
+    return NextResponse.json(
+      { error: 'mock_payments_closed', message: 'Płatności są obecnie w fazie zamkniętych testów.' },
+      { status: 403 }
+    );
+  }
 
   let raw: unknown;
   try {

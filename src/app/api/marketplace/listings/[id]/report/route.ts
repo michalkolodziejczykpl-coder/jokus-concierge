@@ -1,6 +1,6 @@
 // POST /api/marketplace/listings/[id]/report
-// Calls the SECURITY DEFINER function report_listing (bumps reports_count;
-// flips moderation_status to 'pending' at 3 reports). Non-owners only.
+// Calls report_listing (SECURITY DEFINER): dedupes per (listing, reporter),
+// bumps reports_count, flips moderation_status to 'pending' at 3 reports.
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
@@ -31,6 +31,8 @@ export async function POST(_request: Request, { params }: RouteContext) {
       return NextResponse.json({ error: 'listing_not_found' }, { status: 404 });
     if (msg.includes('cannot_report_own'))
       return NextResponse.json({ error: 'cannot_report_own' }, { status: 409 });
+    if (msg.includes('already_reported'))
+      return NextResponse.json({ error: 'already_reported' }, { status: 409 });
     console.error('[POST /api/marketplace/listings/[id]/report] rpc', error);
     return NextResponse.json({ error: 'report_failed', message: error.message }, { status: 500 });
   }

@@ -1,10 +1,9 @@
 // POST /api/admin/jokusors/[userId]/reject — admin rejects a jokusor application.
-// Caller must be an admin. Marks the jokusors row rejected + inactive; the
-// user's role stays 'resident'.
+// Marks the jokusors row rejected + inactive; the user's role stays 'resident'.
 
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin } from '@/lib/auth/guards';
 
 type RouteContext = { params: Promise<{ userId: string }> };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -15,19 +14,8 @@ export async function POST(_request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: 'invalid_id' }, { status: 400 });
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
-  const { data: profile } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-  if ((profile as { role?: string } | null)?.role !== 'admin') {
-    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
-  }
+  const gate = await requireAdmin();
+  if (gate.error) return NextResponse.json({ error: gate.error }, { status: gate.status });
 
   const admin = createAdminClient();
   const { error } = await admin

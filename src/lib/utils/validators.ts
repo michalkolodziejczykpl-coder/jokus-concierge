@@ -253,3 +253,13 @@ export const tipSchema = z.object({
 });
 
 export type TipParsed = z.infer<typeof tipSchema>;
+
+// ============================================================================
+// Order chat message
+// ============================================================================
+
+export const orderMessageSchema = z.object({
+  content: z.string().trim().min(1, 'Wpisz treść').max(2000, 'Maksymalnie 2000 znaków')
+});
+
+export type OrderMessageParsed = z.infer<typeof orderMessageSchema>;

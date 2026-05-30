@@ -3,15 +3,11 @@
 // (resident <-> assigned jokusor). Caller must be one of the two parties.
 
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+import { orderMessageSchema } from '@/lib/utils/validators';
 
 type RouteContext = { params: Promise<{ id: string }> };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-const bodySchema = z.object({
-  content: z.string().trim().min(1, 'Wpisz treść').max(2000)
-});
 
 export async function POST(request: Request, { params }: RouteContext) {
   const { id } = await params;
@@ -31,7 +27,7 @@ export async function POST(request: Request, { params }: RouteContext) {
   } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
-  const parsed = bodySchema.safeParse(raw);
+  const parsed = orderMessageSchema.safeParse(raw);
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'validation_failed', issues: parsed.error.flatten() },

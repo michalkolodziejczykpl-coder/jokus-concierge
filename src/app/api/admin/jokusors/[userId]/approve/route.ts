@@ -1,30 +1,13 @@
 // POST /api/admin/jokusors/[userId]/approve — admin approves a jokusor application.
-// Caller must be an admin. Uses the service-role client to flip users.role to
-// 'jokusor' and activate the jokusors row (both bypass RLS deliberately).
+// Uses the service-role client to flip users.role to 'jokusor' and activate the
+// jokusors row (both bypass RLS deliberately). Caller must be an admin.
 
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin } from '@/lib/auth/guards';
 
 type RouteContext = { params: Promise<{ userId: string }> };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) return { error: 'unauthenticated' as const, status: 401 };
-  const { data: profile } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-  if ((profile as { role?: string } | null)?.role !== 'admin') {
-    return { error: 'forbidden' as const, status: 403 };
-  }
-  return { error: null };
-}
 
 export async function POST(_request: Request, { params }: RouteContext) {
   const { userId } = await params;
