@@ -12,6 +12,12 @@ const TILES = [
     desc: 'Dodawaj, edytuj i wyceniaj usługi.',
     Icon: Boxes
   },
+  {
+    href: '/products',
+    title: 'Produkty (sklep)',
+    desc: 'Katalog spożywczy: produkty i kategorie.',
+    Icon: ShoppingCart
+  },
   { href: '/estates', title: 'Osiedla', desc: 'Zarządzaj osiedlami i ich modułami.', Icon: MapPin },
   {
     href: '/jokusors',
