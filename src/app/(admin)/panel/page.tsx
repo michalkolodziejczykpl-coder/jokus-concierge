@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ChevronLeft, Boxes, MapPin, ClipboardCheck } from 'lucide-react';
+import { ChevronLeft, Boxes, MapPin, ClipboardCheck, ShoppingCart } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 const TILES = [

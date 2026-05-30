@@ -315,3 +315,34 @@ export const moduleActivationSchema = z.object({
   price_override: z.coerce.number().min(0).max(100_000).nullable().optional()
 });
 export type ModuleActivationParsed = z.infer<typeof moduleActivationSchema>;
+
+// ============================================================================
+// Grocery catalog (G1) — categories + products
+// ============================================================================
+
+export const productCategorySchema = z.object({
+  name: z.string().trim().min(2, 'Podaj nazwę').max(60),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/, 'Slug: małe litery, cyfry, myślniki')
+    .min(2)
+    .max(60),
+  sort_order: z.coerce.number().int().min(0).max(9999)
+});
+export type ProductCategoryParsed = z.infer<typeof productCategorySchema>;
+
+export const productSchema = z.object({
+  category_id: z.string().uuid().nullable(),
+  name: z.string().trim().min(2, 'Podaj nazwę').max(120),
+  brand: z.string().trim().max(80).optional().or(z.literal('')),
+  unit: z.string().trim().min(1, 'Podaj jednostkę').max(20),
+  estimated_price: z.coerce
+    .number({ invalid_type_error: 'Cena musi być liczbą' })
+    .min(0)
+    .max(100_000),
+  image_url: z.string().trim().url().optional().or(z.literal('')),
+  is_active: z.boolean(),
+  sort_order: z.coerce.number().int().min(0).max(9999)
+});
+export type ProductParsed = z.infer<typeof productSchema>;

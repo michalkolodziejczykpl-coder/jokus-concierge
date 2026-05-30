@@ -29,8 +29,7 @@ export default function DeleteButton({
       const res = await fetch(url, { method: 'DELETE' });
       if (!res.ok) {
         const d = (await res.json().catch(() => ({}))) as { error?: string };
-        if ((d.error === 'module_in_use' || d.error === 'estate_in_use') && inUseMessage)
-          setError(inUseMessage);
+        if (d.error && d.error.endsWith('_in_use') && inUseMessage) setError(inUseMessage);
         else setError(`Nie udało się usunąć (${d.error ?? res.status}).`);
         setBusy(false);
         return;
