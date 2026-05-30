@@ -263,3 +263,55 @@ export const orderMessageSchema = z.object({
 });
 
 export type OrderMessageParsed = z.infer<typeof orderMessageSchema>;
+
+// ============================================================================
+// Admin — modules, estates, per-estate activation
+// ============================================================================
+
+export const moduleSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]+$/, 'Slug: małe litery, cyfry i myślniki')
+    .min(2)
+    .max(60),
+  name: z.string().trim().min(2, 'Podaj nazwę').max(80),
+  description: z.string().trim().max(500).optional().or(z.literal('')),
+  category: z.enum([
+    'delivery',
+    'shopping',
+    'transport',
+    'home_pet',
+    'errands',
+    'professional',
+    'marketplace'
+  ]),
+  icon_name: z.string().trim().max(40).optional().or(z.literal('')),
+  base_price: z.coerce.number({ invalid_type_error: 'Cena musi być liczbą' }).min(0).max(100_000),
+  price_unit: z.enum(['fixed', 'hourly', 'per_km', 'percent']),
+  estimated_duration_min: z.coerce.number().int().min(1, 'Min 1 min').max(1440),
+  requires_pickup: z.boolean(),
+  requires_age_verification: z.boolean(),
+  is_global: z.boolean(),
+  sort_order: z.coerce.number().int().min(0).max(9999)
+});
+export type ModuleParsed = z.infer<typeof moduleSchema>;
+
+export const estateSchema = z.object({
+  name: z.string().trim().min(2, 'Podaj nazwę').max(80),
+  city: z.string().trim().min(2, 'Podaj miasto').max(80),
+  voivodeship: z.string().trim().max(80).optional().or(z.literal('')),
+  postal_codes: z
+    .array(z.string().regex(/^\d{2}-\d{3}$/, 'Kod w formacie 00-000'))
+    .min(1, 'Podaj co najmniej jeden kod pocztowy')
+    .max(200),
+  is_active: z.boolean()
+});
+export type EstateParsed = z.infer<typeof estateSchema>;
+
+export const moduleActivationSchema = z.object({
+  module_id: z.string().uuid(),
+  active: z.boolean(),
+  price_override: z.coerce.number().min(0).max(100_000).nullable().optional()
+});
+export type ModuleActivationParsed = z.infer<typeof moduleActivationSchema>;

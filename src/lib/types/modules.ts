@@ -93,3 +93,11 @@ export const MODULE_CATEGORY_LABELS: Record<ModuleCategory, string> = {
   professional: 'Przypilnuj fachowca',
   marketplace: 'Marketplace'
 };
+
+/** Polish labels for price units (admin module form + listings). */
+export const PRICE_UNIT_LABELS: Record<PriceUnit, string> = {
+  fixed: 'stała (za usługę)',
+  hourly: 'za godzinę',
+  per_km: 'za kilometr',
+  percent: 'procent wartości'
+};

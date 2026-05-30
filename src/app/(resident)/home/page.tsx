@@ -60,7 +60,7 @@ export default async function ResidentHomePage() {
       {isAdmin && (
         <section className="mb-8">
           <Link
-            href="/jokusors"
+            href="/panel"
             className="group flex items-center justify-between gap-4 rounded-2xl border border-orange-200 bg-orange-50 p-5 transition hover:border-orange-300 hover:bg-orange-100 dark:border-orange-900/40 dark:bg-orange-950/30 dark:hover:border-orange-700"
           >
             <div className="flex items-center gap-3">
@@ -69,10 +69,10 @@ export default async function ResidentHomePage() {
               </span>
               <div>
                 <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
-                  Zgłoszenia jokusorów
+                  Panel administratora
                 </h2>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                  Panel administratora — weryfikacja i akceptacja kandydatów.
+                  Moduły, ceny, osiedla, zgłoszenia jokusorów.
                 </p>
               </div>
             </div>
