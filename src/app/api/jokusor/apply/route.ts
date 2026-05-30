@@ -53,6 +53,18 @@ export async function POST(request: Request) {
   }
   const d = parsed.data;
 
+  // Storage RLS stops a user from WRITING into someone else's folder, but the
+  // applicant could still send a path that points at a different user's file.
+  // The admin page mints signed URLs with the service role, so it would happily
+  // surface that wrong document. Enforce the prefix here.
+  const ownPrefix = `${user.id}/`;
+  if (!d.background_check_url.startsWith(ownPrefix)) {
+    return NextResponse.json({ error: 'invalid_document_path' }, { status: 400 });
+  }
+  if (d.insurance_doc_url && !d.insurance_doc_url.startsWith(ownPrefix)) {
+    return NextResponse.json({ error: 'invalid_document_path' }, { status: 400 });
+  }
+
   const payload = {
     user_id: user.id,
     estate_id: d.estate_id,

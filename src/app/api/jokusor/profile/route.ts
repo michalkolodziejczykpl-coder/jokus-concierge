@@ -37,6 +37,18 @@ export async function PATCH(request: Request) {
     );
   }
   const d = parsed.data;
+
+  // Photo must be a public URL of an object in our own jokusor-photos bucket,
+  // under the caller's own folder. Otherwise a jokusor could set an arbitrary
+  // external URL as their public photo (tracking pixel, defacement, etc).
+  if (d.public_photo_url) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+    const expectedPrefix = `${supabaseUrl}/storage/v1/object/public/jokusor-photos/${user.id}/`;
+    if (!d.public_photo_url.startsWith(expectedPrefix)) {
+      return NextResponse.json({ error: 'invalid_photo_url' }, { status: 400 });
+    }
+  }
+
   const now = new Date().toISOString();
 
   const { error: uErr } = await supabase
