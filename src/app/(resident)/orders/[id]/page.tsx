@@ -16,6 +16,7 @@ import type { OrderStatus } from '@/lib/types/orderStatus';
 import OrderAutoRefresh from './OrderAutoRefresh';
 import LiveTrackingView from './LiveTrackingView';
 import OrderChat from '@/components/shared/OrderChat';
+import RatingTip from '@/components/resident/RatingTip';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -155,6 +156,25 @@ export default async function OrderDetailPage({ params }: PageProps) {
     jokusorPhoto = (jp as { public_photo_url?: string | null } | null)?.public_photo_url ?? null;
   }
 
+  // Rating + tip state (resident, completed orders only).
+  const isResidentViewer = user.id === order.resident_id;
+  let myRatingStars: number | null = null;
+  let myRatingComment: string | null = null;
+  let tipTotal = 0;
+  if (order.status === 'completed' && isResidentViewer && order.jokusor_id) {
+    const [{ data: r }, { data: t }] = await Promise.all([
+      supabase.from('ratings').select('stars, comment').eq('order_id', order.id).maybeSingle(),
+      supabase.from('tips').select('amount').eq('order_id', order.id)
+    ]);
+    const rr = r as { stars: number; comment: string | null } | null;
+    myRatingStars = rr?.stars ?? null;
+    myRatingComment = rr?.comment ?? null;
+    tipTotal = ((t as { amount: number }[] | null) ?? []).reduce(
+      (sum, x) => sum + Number(x.amount),
+      0
+    );
+  }
+
   const isTerminal = order.status === 'completed' || order.status === 'cancelled';
   const isInFlight =
     order.status === 'in_progress' ||
@@ -258,6 +278,17 @@ export default async function OrderDetailPage({ params }: PageProps) {
           </div>
         </dl>
       </section>
+
+      {isResidentViewer && order.status === 'completed' && order.jokusor_id && (
+        <section className="mt-6">
+          <RatingTip
+            orderId={order.id}
+            existingStars={myRatingStars}
+            existingComment={myRatingComment}
+            tippedTotal={tipTotal}
+          />
+        </section>
+      )}
 
       {order.jokusor_id && order.status !== 'cancelled' && (
         <section className="mt-6">

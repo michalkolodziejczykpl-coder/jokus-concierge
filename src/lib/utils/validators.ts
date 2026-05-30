@@ -232,3 +232,24 @@ export const jokusorProfileSchema = z.object({
 });
 
 export type JokusorProfileParsed = z.infer<typeof jokusorProfileSchema>;
+
+// ============================================================================
+// Ratings + tips (after a completed order)
+// ============================================================================
+
+export const ratingSchema = z.object({
+  stars: z.coerce.number().int().min(1, 'Wybierz ocenę').max(5),
+  comment: z.string().trim().max(500).optional().or(z.literal(''))
+});
+
+export type RatingParsed = z.infer<typeof ratingSchema>;
+
+export const tipSchema = z.object({
+  amount: z.coerce
+    .number({ invalid_type_error: 'Kwota musi być liczbą' })
+    .positive('Kwota musi być dodatnia')
+    .min(1, 'Minimalny napiwek 1 zł')
+    .max(1000, 'Maksymalny napiwek 1000 zł')
+});
+
+export type TipParsed = z.infer<typeof tipSchema>;
