@@ -173,3 +173,29 @@ export const marketplaceMessageSchema = z.object({
 });
 
 export type MarketplaceMessageParsed = z.infer<typeof marketplaceMessageSchema>;
+
+// ============================================================================
+// Jokusor onboarding — self-application
+// ============================================================================
+
+export const jokusorApplicationSchema = z.object({
+  estate_id: z.string().uuid('Wybierz osiedle'),
+  service_postal_codes: z
+    .array(z.string().regex(/^\d{2}-\d{3}$/, 'Kod w formacie 00-000'))
+    .min(1, 'Podaj co najmniej jeden kod pocztowy')
+    .max(50, 'Maksymalnie 50 kodów'),
+  bio: z.string().trim().max(1000).optional().or(z.literal('')),
+  business_name: z.string().trim().max(160).optional().or(z.literal('')),
+  nip: z
+    .string()
+    .trim()
+    .regex(/^\d{10}$/, 'NIP to 10 cyfr')
+    .optional()
+    .or(z.literal('')),
+  bank_account: z.string().trim().max(40).optional().or(z.literal('')),
+  // Storage object PATHS (private bucket), not public URLs.
+  background_check_url: z.string().trim().min(1, 'Wymagane zaświadczenie o niekaralności'),
+  insurance_doc_url: z.string().trim().optional().or(z.literal(''))
+});
+
+export type JokusorApplicationParsed = z.infer<typeof jokusorApplicationSchema>;
