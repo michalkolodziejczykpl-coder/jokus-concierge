@@ -199,3 +199,36 @@ export const jokusorApplicationSchema = z.object({
 });
 
 export type JokusorApplicationParsed = z.infer<typeof jokusorApplicationSchema>;
+
+// ============================================================================
+// Profile editing — resident + jokusor
+// ============================================================================
+
+export const residentProfileSchema = z.object({
+  full_name: z.string().trim().min(2, 'Podaj imię i nazwisko').max(120),
+  phone: z.string().trim().max(20).optional().or(z.literal('')),
+  address: addressInputSchema
+});
+
+export type ResidentProfileParsed = z.infer<typeof residentProfileSchema>;
+
+export const jokusorProfileSchema = z.object({
+  full_name: z.string().trim().min(2, 'Podaj imię i nazwisko').max(120),
+  phone: z.string().trim().max(20).optional().or(z.literal('')),
+  bio: z.string().trim().max(1000).optional().or(z.literal('')),
+  service_postal_codes: z
+    .array(z.string().regex(/^\d{2}-\d{3}$/, 'Kod w formacie 00-000'))
+    .min(1, 'Podaj co najmniej jeden kod pocztowy')
+    .max(50),
+  business_name: z.string().trim().max(160).optional().or(z.literal('')),
+  nip: z
+    .string()
+    .trim()
+    .regex(/^\d{10}$/, 'NIP to 10 cyfr')
+    .optional()
+    .or(z.literal('')),
+  bank_account: z.string().trim().max(40).optional().or(z.literal('')),
+  public_photo_url: z.string().trim().url().optional().or(z.literal(''))
+});
+
+export type JokusorProfileParsed = z.infer<typeof jokusorProfileSchema>;

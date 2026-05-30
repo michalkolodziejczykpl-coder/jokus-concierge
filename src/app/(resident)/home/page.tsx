@@ -134,7 +134,12 @@ export default async function ResidentHomePage() {
       </section>
 
       <footer className="mt-16 flex items-center justify-between border-t border-neutral-200 pt-6 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-500">
-        <span>{user.email}</span>
+        <Link
+          href="/profile"
+          className="font-medium text-neutral-600 hover:text-neutral-900 hover:underline dark:text-neutral-300"
+        >
+          Mój profil
+        </Link>
         <form action={signOut}>
           <button
             type="submit"

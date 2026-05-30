@@ -114,21 +114,29 @@ export default async function JokusorDashboard() {
             Zalogowany/a jako {fullName}
           </p>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
+        <div className="flex items-center gap-2">
+          <Link
+            href="/profile"
             className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
           >
-            Wyloguj
-          </button>
-        </form>
+            Mój profil
+          </Link>
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
+            >
+              Wyloguj
+            </button>
+          </form>
+        </div>
       </header>
 
       <section className="mt-8">
         {orders.length === 0 ? (
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-8 text-center text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-            Brak aktywnych zleceń. Zostań przy aplikacji — gdy mieszkaniec opłaci zamówienie,
-            pojawi się tutaj.
+            Brak aktywnych zleceń. Zostań przy aplikacji — gdy mieszkaniec opłaci zamówienie, pojawi
+            się tutaj.
           </div>
         ) : (
           <ul className="space-y-4">

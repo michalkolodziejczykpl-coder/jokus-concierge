@@ -145,6 +145,16 @@ export default async function OrderDetailPage({ params }: PageProps) {
     jokusorName = (jokRow as { full_name?: string | null } | null)?.full_name ?? null;
   }
 
+  let jokusorPhoto: string | null = null;
+  if (order.jokusor_id) {
+    const { data: jp } = await supabase
+      .from('jokusors')
+      .select('public_photo_url')
+      .eq('user_id', order.jokusor_id)
+      .maybeSingle();
+    jokusorPhoto = (jp as { public_photo_url?: string | null } | null)?.public_photo_url ?? null;
+  }
+
   const isTerminal = order.status === 'completed' || order.status === 'cancelled';
   const isInFlight =
     order.status === 'in_progress' ||
@@ -214,9 +224,19 @@ export default async function OrderDetailPage({ params }: PageProps) {
             </div>
           )}
           {jokusorName && (
-            <div className="flex justify-between gap-3">
+            <div className="flex items-center justify-between gap-3">
               <dt className="text-neutral-600 dark:text-neutral-400">Jokusor</dt>
-              <dd className="font-medium text-neutral-900 dark:text-neutral-100">{jokusorName}</dd>
+              <dd className="flex items-center gap-2 font-medium text-neutral-900 dark:text-neutral-100">
+                {jokusorPhoto && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={jokusorPhoto}
+                    alt={jokusorName}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                )}
+                {jokusorName}
+              </dd>
             </div>
           )}
           {order.pickup_address && (
