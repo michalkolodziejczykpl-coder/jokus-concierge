@@ -1,59 +1,101 @@
 # REVIEW_BRIEF.md — Brief dla Claude Code (lub innego reviewera)
 
-Ten plik jest specjalnie dla osoby (lub agenta) wykonującego pierwszą rewizję szkieletu.
+Ten plik jest dla osoby/agenta robiącego review **Fazy 1** projektu JOKUS Concierge
+(dawniej MIGMIG). Zaktualizowany 2026-05-30 — to NIE jest już sam szkielet, w repo
+jest działająca logika kilku pionowych funkcji.
 
-## Kontekst — co rewizujesz
+## Kontekst — stan na dziś
 
-To jest **świeży scaffold** projektu MIGMIG Concierge wygenerowany z pakietu specyfikacji (`docs/` + `INSTRUCTIONS_FOR_COWORK.md`). NIE rewizujesz produkcyjnego kodu — nie ma jeszcze logiki biznesowej. Rewizja ma odpowiedzieć na trzy pytania:
+Stack: Next.js 16 (App Router) + React 19 + TypeScript strict + Supabase (Postgres + Auth + Realtime + Storage). UI po polsku, kod po angielsku. Marka w aplikacji: **JOKUS Concierge** (spółka JOKUS Sp. z o.o., NIP 9131639730). Hosting: Vercel (prod https://www.migmig.pl — domena docelowa jokus.pl jeszcze nieprzepięta).
 
-1. Czy struktura projektu zgadza się ze specyfikacją (`PROJECT_TREE.md` + `docs/`)?
-2. Czy stuby plików są semantycznie poprawne (importy, typy, konwencje Next.js 14 + Supabase SSR)?
-3. Czy są oczywiste pułapki, które ugryzą nas w Fazie 1 (np. źle zdefiniowany middleware Supabase, błędna konfiguracja Tailwind)?
+Zbudowane i wdrożone na prod funkcje (poza oryginalnym scaffoldem):
 
-## Suggested review prompt (skopiuj do Claude Code lub Cursor)
+- **Sprint A — compliance**: `/regulamin`, `/cookies`, `<Footer>` z NIP, baner cookies (tylko niezbędne), checkbox akceptacji + info dla konsumenta przed płatnością (`HoldView`). Strony prawne to DRAFT do recenzji prawnika.
+- **Rebrand** MIGMIG → JOKUS w tekstach UI (wewn. wartości `migmig_*` w bazie zostawione celowo).
+- **Sprint D-2 — marketplace**: wyszukiwarka + filtry (URL-driven), edycja/usuwanie (soft-delete) własnych ogłoszeń, zgłaszanie (SECURITY DEFINER `report_listing`), czat kupujący↔sprzedawca (`marketplace_messages`).
+- **Sprint E — jokusor**: samodzielna rejestracja z uploadem dokumentów (zaświadczenie o niekaralności OBOWIĄZKOWE) do PRYWATNEGO bucketu; panel admina (`/jokusors`) z podpisanymi URL-ami i akceptacją/odrzuceniem; akceptacja zmienia `users.role`→`jokusor` (service role). Edycja profili (mieszkaniec + jokusor) na `/profile`. Publiczne zdjęcie jokusora. Czat jokusor↔klient przy zamówieniu (`order_messages`). Oceny (1-5 + komentarz) i napiwki na zakończonym zleceniu.
+- **Sprint 5b — tracking**: mapa Leaflet (z CDN) z pozycją jokusora + mieszkańca, wibracja przy zbliżeniu.
+
+## Migracje SQL do zastosowania (poza repo, w Supabase)
+
+Te migracje są w `supabase/migrations/`, ale część była wgrywana ręcznie w SQL Editorze. Reviewer powinien sprawdzić ich poprawność i RLS:
+
+- `20260530000001_marketplace_report.sql` — `report_listing()` SECURITY DEFINER.
+- `20260530000002_jokusor_onboarding.sql` — `jokusors_insert_own` (utwardzone), bucket `jokusor-documents` (prywatny) + polityki storage.
+- `20260530000003_order_messages.sql` — tabela + RLS.
+- `20260530000004_jokusor_profile_photo.sql` — kolumna + bucket `jokusor-photos` (publiczny).
+
+## Suggested review prompt (skopiuj do Claude Code)
 
 ```
-Jesteś senior fullstack engineer robiącym code review szkieletu projektu Next.js 14 + Supabase.
+Jesteś senior fullstack engineer (Next.js 16 App Router + Supabase RLS) robiącym
+security-first code review Fazy 1. Najpierw przeczytaj CLAUDE.md, potem
+REVIEW_BRIEF.md. Skup się na poprawności i bezpieczeństwie, nie na stylu.
 
-Najpierw przeczytaj CLAUDE.md i SETUP_GUIDE.md, potem PROJECT_TREE.md i docs/architecture/01_overview.md.
+Zweryfikuj konkretnie:
 
-Następnie zweryfikuj:
+1. RLS / AUTORYZACJA. Dla każdego nowego route handlera w src/app/api/** sprawdź,
+   czy autoryzacja jest egzekwowana po stronie serwera I przez RLS, nie tylko w UI:
+   - /api/marketplace/listings/[id] (PATCH/DELETE), /report
+   - /api/marketplace/messages
+   - /api/orders/[id]/messages, /rating, /tip
+   - /api/jokusor/apply, /api/jokusor/profile, /api/profile
+   - /api/admin/jokusors/[userId]/approve|reject
+   Czy któryś endpoint pozwala działać w cudzym imieniu? Czy walidacja Zod jest
+   po stronie serwera?
 
-1. STRUKTURA — czy drzewo katalogów w src/, supabase/, public/ zgadza się 1:1 z PROJECT_TREE.md. Wymień rozbieżności.
+2. SERVICE ROLE. createAdminClient() (service role, omija RLS) jest używany w
+   panelu admina /(admin)/jokusors i w approve/reject. Czy każde takie użycie jest
+   poprzedzone sprawdzeniem users.role==='admin'? Czy service role nie wycieka do
+   komponentu klienckiego?
 
-2. KONFIGURACJA — przeczytaj package.json, tsconfig.json, next.config.js, tailwind.config.ts, postcss.config.js. Czy wszystkie wersje są kompatybilne? Czy brakuje jakiegoś dev-deps potrzebnego do `npm run build` na czystej maszynie?
+3. ESKALACJA UPRAWNIEŃ. Polityka jokusors_insert_own wymusza is_active=false +
+   onboarding_status in (pending, documents_review). users_update_own używa
+   current_role_id() by zablokować zmianę roli. Czy da się to obejść? Czy mieszkaniec
+   może sam zostać jokusorem/adminem?
 
-3. SUPABASE CLIENTS — porównaj src/lib/supabase/{client,server,admin,middleware}.ts z aktualną dokumentacją @supabase/ssr 0.5.x. Czy `cookies()` w server.ts jest wywoływane poprawnie dla Next.js 14? Czy middleware refresh działa?
+4. STORAGE. Bucket jokusor-documents jest prywatny (dokumenty wrażliwe, w tym
+   zaświadczenie o niekaralności) — czy polityki pozwalają czytać tylko właścicielowi/
+   adminowi (przez signed URL)? Bucket jokusor-photos jest publiczny — czy to OK dla
+   wizerunku? Czy ścieżki plików są ograniczone do folderu {uid}/?
 
-4. AUTH FLOW — prześledź ścieżkę: src/app/(auth)/login/page.tsx → OAuthButtons.tsx → signInWithOAuth → /(auth)/callback/route.ts. Czy exchangeCodeForSession jest wywoływane poprawnie?
+5. SECURITY DEFINER report_listing — czy bezpieczna (search_path, brak SQL injection,
+   blokada zgłaszania własnego)? Brak dedupe per-user to znany kompromis.
 
-5. MIGRACJE SQL — otwórz supabase/migrations/20260516000001_initial_schema.sql i 02_rls_policies.sql. Czy zawierają tabele opisane w docs/architecture/01_overview.md i docs/modules/*? Czy są tabele wymienione w spec, których brakuje w SQL?
+6. PŁATNOŚCI-MOCK. Zamówienia (mock_pay_order) i napiwki (/tip → payment_status='paid',
+   payment_method='mock') NIE pobierają realnych pieniędzy — Przelewy24 dochodzi w
+   sprincie 3c. Sprawdź, czy nigdzie nie zakładamy, że płatność jest prawdziwa, i czy
+   te miejsca są wyraźnie oznaczone.
 
-6. EDGE FUNCTIONS — czy 4 stuby w supabase/functions/ wskazują na właściwe odpowiedzialności wg docs/api/01_endpoints.md i docs/architecture/04_realtime_tracking.md?
+7. REALTIME / CZAT. Marketplace i order chat działają przez polling co 5s + odczyt z
+   bazy (RLS uczestnicy). Czy zapytania .or(...)/.eq('order_id') nie ujawniają cudzych
+   wiadomości? Tracking to broadcast (bez zapisu do bazy — wymóg RODO).
 
-7. RYZYKA — wymień 5 największych ryzyk technicznych, które widzisz na podstawie spec, jeszcze przed napisaniem pierwszej linijki logiki biznesowej. Dla każdego: jak je zmitygować w Fazie 0/1.
+8. NEXT 16. cookies()/headers()/params/searchParams są async — czy wszędzie await?
+   Czy nie ma kolizji tras (np. /profile jest celowo poza grupami ról)?
 
-8. CO POMINIĘTO — czy są pliki, które spec wymaga, a których w scaffoldzie nie ma? (Sprawdź sekcję "Pakiet dla Cowork" w MIGMIG_Concierge_koncepcja_v2.docx jeśli dołączony, inaczej w PROJECT_TREE.md.)
+9. RYZYKA. Wymień 5 największych ryzyk przed launchem + mitygacje.
 
-Format raportu:
-- Krótkie executive summary (5-10 zdań).
-- Per sekcja: ✓ OK / ⚠️ wymaga uwagi / ❌ błąd. Krótki opis + konkretna sugestia naprawy.
-- Lista TODO w priorytecie (must-fix przed Fazą 1 → nice-to-have).
+Format: executive summary (5-10 zdań), potem per punkt ✓/⚠️/❌ z konkretną sugestią,
+na końcu lista must-fix → nice-to-have.
 ```
 
-## Co rewizer powinien dostać oprócz tego promptu
+## Świadome kompromisy (NIE zgłaszaj jako błędy — to znane decyzje)
 
-- Cały folder `C:\Projekty\jokusMigMig` (lub repo na GitHubie po push z `SETUP_GUIDE.md` część I1)
-- Dostęp do `MIGMIG_Concierge_koncepcja_v2.docx` (referenced spec — opcjonalnie)
+- Płatności zamówień i napiwki są **mock** do sprintu 3c (Przelewy24 czeka na weryfikację).
+- Czat (marketplace + zamówienia) na **pollingu co 5s**, nie Realtime postgres_changes.
+- `report_listing` bez dedupe per-user (brak tabeli zgłoszeń) — MVP.
+- Kafelki mapy z OpenStreetMap (darmowe) — przy skali zmienić na płatnego dostawcę.
+- Strony prawne (regulamin/prywatność/cookies) to **draft do recenzji prawnika**.
+- Facebook login **odłożony** do weryfikacji Meta (tylko Google działa).
+- `database.ts` to generyczny stub → liczne `as never` przy insertach (znane, REVIEW_REPORT #5).
+- Brak testów (roadmap Faza 6).
 
-## Czego NIE rewizować w tym etapie
+## Czego NIE rewizować
 
-- Wydajność (nic nie chodzi jeszcze)
-- Bezpieczeństwo niskopoziomowe (RLS będziemy oddzielnie audytować w Fazie 1)
-- Style komponentów (poza login/landing nie ma jeszcze UI)
-- Testy (Faza 6 wg roadmap)
-- SEO/accessibility (Faza 6)
+- Wydajność na skali, SEO/a11y, testy (Faza 6).
+- Styl komponentów (chyba że łamie dostępność lub czytelność).
 
 ## Po review
 
-Wynik (lista ⚠️ i ❌) wraca jako issues w repo `migmig-concierge` na GitHub. Adresujemy je przed startem Fazy 1.
+Wynik (⚠️ i ❌) jako issues w repo `migmig-concierge` na GitHub. Must-fixy adresujemy przed publicznym launchem (zwłaszcza punkty 1-5: autoryzacja, service role, eskalacja uprawnień, storage).

@@ -22,6 +22,7 @@ import {
   haversineDistanceM,
   type LatLng
 } from '@/lib/tracking/geo';
+import TrackingMap from '@/components/resident/TrackingMap';
 
 type Props = {
   orderId: string;
@@ -48,6 +49,7 @@ export default function LiveTrackingView({ orderId }: Props) {
 
   const channelRef = useRef<RealtimeChannel | null>(null);
   const supabaseRef = useRef<BrowserSupabase | null>(null);
+  const closeAlertedRef = useRef(false);
 
   // Subscribe to the jokusor's broadcast channel
   useEffect(() => {
@@ -116,6 +118,19 @@ export default function LiveTrackingView({ orderId }: Props) {
       : null;
   const eta = distance !== null ? etaSeconds(distance) : null;
 
+  // Buzz once when the jokusor gets close (<200 m); reset past 350 m (hysteresis).
+  useEffect(() => {
+    if (distance === null) return;
+    if (distance < 200 && !closeAlertedRef.current) {
+      closeAlertedRef.current = true;
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate?.([200, 100, 200]);
+      }
+    } else if (distance > 350) {
+      closeAlertedRef.current = false;
+    }
+  }, [distance]);
+
   return (
     <section className="mt-6 rounded-2xl border-2 border-green-500/40 bg-green-50 p-6 dark:border-green-500/30 dark:bg-green-950/20">
       <header className="flex items-center gap-3">
@@ -166,6 +181,13 @@ export default function LiveTrackingView({ orderId }: Props) {
           <p className="text-xs text-green-800/80 dark:text-green-200/80">{residentGeoError}</p>
         )}
       </div>
+
+      {hasPos && jokusorPos && (
+        <TrackingMap
+          jokusor={{ lat: jokusorPos.lat, lng: jokusorPos.lng }}
+          resident={residentPos}
+        />
+      )}
 
       <p className="mt-4 text-xs text-green-900/60 dark:text-green-200/60">
         Pozycja na żywo nie jest zapisywana w bazie — strumień działa tylko podczas tego widoku.
