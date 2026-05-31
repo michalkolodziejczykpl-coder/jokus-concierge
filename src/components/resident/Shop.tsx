@@ -1,12 +1,13 @@
 'use client';
 
-// Grocery shop (G2): browse products by category + search, favourite them, and
-// build a cart. Cart + favourites are user-owned rows (RLS), mutated directly
-// via the browser Supabase client. Checkout (turning the cart into a "Zakupy"
-// order) lands in G3 — here the cart just persists.
+// Grocery shop (G2+G3): browse, favourite, build a cart, and check out into a
+// "Zakupy" order. Cart + favourites are user-owned rows (RLS), mutated directly
+// via the browser Supabase client. Checkout posts to /api/sklep/checkout, then
+// routes to the slot picker (existing flow → payment).
 
 import { useMemo, useRef, useState } from 'react';
-import { Heart, ImageOff, Minus, Plus, ShoppingCart, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Heart, ImageOff, Minus, Plus, RotateCcw, ShoppingCart, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { formatPLN } from '@/lib/utils/formatters';
 
@@ -27,6 +28,7 @@ type Props = {
   categories: Category[];
   initialCart: { product_id: string; quantity: number }[];
   initialFavorites: string[];
+  recentProducts: Product[];
 };
 
 export default function Shop({
@@ -34,8 +36,10 @@ export default function Shop({
   products,
   categories,
   initialCart,
-  initialFavorites
+  initialFavorites,
+  recentProducts
 }: Props) {
+  const router = useRouter();
   const supabaseRef = useRef<ReturnType<typeof createClient> | null>(null);
   if (supabaseRef.current === null) supabaseRef.current = createClient();
   const supabase = supabaseRef.current;
@@ -48,6 +52,8 @@ export default function Shop({
   const [query, setQuery] = useState('');
   const [onlyFavs, setOnlyFavs] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const priceById = useMemo(
     () => new Map(products.map((p) => [p.id, p.estimated_price])),
@@ -105,6 +111,30 @@ export default function Shop({
     }
   }
 
+  async function checkout() {
+    if (checkingOut || cartCount === 0) return;
+    setCheckingOut(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch('/api/sklep/checkout', { method: 'POST' });
+      if (!res.ok) {
+        const d = (await res.json().catch(() => ({}))) as { error?: string };
+        setCheckoutError(
+          d.error === 'no_default_address'
+            ? 'Najpierw ustaw adres dostawy w profilu.'
+            : `Nie udało się złożyć zamówienia (${d.error ?? res.status}).`
+        );
+        setCheckingOut(false);
+        return;
+      }
+      const { order_id } = (await res.json()) as { order_id: string };
+      router.push(`/orders/${order_id}/slots`);
+    } catch {
+      setCheckoutError('Błąd sieci.');
+      setCheckingOut(false);
+    }
+  }
+
   const pill = 'rounded-full px-3 py-1.5 text-sm font-medium transition border';
   const pillOn = 'border-orange-500 bg-orange-600 text-white';
   const pillOff =
@@ -112,7 +142,28 @@ export default function Shop({
 
   return (
     <div className="pb-28">
-      {/* Search + filters */}
+      {recentProducts.length > 0 && (
+        <section className="mb-5">
+          <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+            <RotateCcw className="h-4 w-4 text-orange-600" aria-hidden="true" />
+            Ostatnio kupione
+          </h2>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {recentProducts.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setQty(p.id, (cart.get(p.id) ?? 0) + 1)}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-700 dark:bg-neutral-950 dark:text-neutral-200"
+              >
+                <Plus className="h-3.5 w-3.5 text-orange-600" aria-hidden="true" />
+                {p.name}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="space-y-3">
         <input
           type="search"
@@ -151,7 +202,6 @@ export default function Shop({
         </div>
       </div>
 
-      {/* Product grid */}
       <section className="mt-6">
         {filtered.length === 0 ? (
           <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
@@ -238,7 +288,6 @@ export default function Shop({
         )}
       </section>
 
-      {/* Sticky cart bar */}
       {cartCount > 0 && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/95">
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -253,13 +302,22 @@ export default function Shop({
             </button>
             <button
               type="button"
-              disabled
-              title="Składanie zamówienia dojdzie w kolejnym kroku"
-              className="cursor-not-allowed rounded-xl bg-orange-600/60 px-5 py-2.5 text-sm font-semibold text-white"
+              onClick={checkout}
+              disabled={checkingOut}
+              className="rounded-xl bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700 disabled:opacity-50"
             >
-              Zamów (wkrótce)
+              {checkingOut ? 'Składam…' : 'Zamów'}
             </button>
           </div>
+
+          {checkoutError && (
+            <p
+              className="mx-auto max-w-5xl px-4 pb-2 text-right text-xs text-red-600 dark:text-red-400 sm:px-6"
+              role="alert"
+            >
+              {checkoutError}
+            </p>
+          )}
 
           {cartOpen && (
             <div className="mx-auto max-h-72 max-w-5xl overflow-y-auto border-t border-neutral-200 px-4 py-3 dark:border-neutral-800 sm:px-6">
@@ -288,7 +346,8 @@ export default function Shop({
                 })}
               </ul>
               <p className="mt-3 text-xs text-neutral-500">
-                Ceny są orientacyjne — ostateczna kwota wg paragonu po zakupach jokusora.
+                Ceny są orientacyjne — ostateczna kwota wg paragonu po zakupach jokusora. Doliczana
+                jest opłata za usługę.
               </p>
             </div>
           )}

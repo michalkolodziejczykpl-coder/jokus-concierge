@@ -17,6 +17,7 @@ import OrderAutoRefresh from './OrderAutoRefresh';
 import LiveTrackingView from './LiveTrackingView';
 import OrderChat from '@/components/shared/OrderChat';
 import RatingTip from '@/components/resident/RatingTip';
+import ReorderButton from '@/components/resident/ReorderButton';
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -175,6 +176,22 @@ export default async function OrderDetailPage({ params }: PageProps) {
     );
   }
 
+  const { data: orderItemRows } = await supabase
+    .from('order_items')
+    .select('name_snapshot, unit, quantity, estimated_unit_price, note')
+    .eq('order_id', order.id)
+    .order('created_at', { ascending: true });
+  const orderItems =
+    (orderItemRows as
+      | {
+          name_snapshot: string;
+          unit: string;
+          quantity: number;
+          estimated_unit_price: number;
+          note: string | null;
+        }[]
+      | null) ?? [];
+
   const isTerminal = order.status === 'completed' || order.status === 'cancelled';
   const isInFlight =
     order.status === 'in_progress' ||
@@ -278,6 +295,38 @@ export default async function OrderDetailPage({ params }: PageProps) {
           </div>
         </dl>
       </section>
+
+      {orderItems.length > 0 && (
+        <section className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-950">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            Lista zakupów
+          </h2>
+          <ul className="mt-3 divide-y divide-neutral-100 dark:divide-neutral-800">
+            {orderItems.map((it, i) => (
+              <li key={i} className="flex items-center justify-between gap-3 py-2 text-sm">
+                <span className="min-w-0 flex-1 text-neutral-800 dark:text-neutral-200">
+                  {it.name_snapshot}{' '}
+                  <span className="text-neutral-500">
+                    × {it.quantity} {it.unit}
+                  </span>
+                  {it.note && <span className="block text-xs text-neutral-500">{it.note}</span>}
+                </span>
+                <span className="shrink-0 text-neutral-600 dark:text-neutral-400">
+                  {formatPLN(it.estimated_unit_price * it.quantity)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-neutral-500">
+            Ceny orientacyjne; ostateczna kwota wg paragonu po zakupach.
+          </p>
+          {isResidentViewer && (
+            <div className="mt-4">
+              <ReorderButton orderId={order.id} />
+            </div>
+          )}
+        </section>
+      )}
 
       {isResidentViewer && order.status === 'completed' && order.jokusor_id && (
         <section className="mt-6">

@@ -1,5 +1,5 @@
-// /sklep — grocery shop (resident). Browse the catalog, favourite, build a cart.
-// Checkout into a "Zakupy" order comes in G3.
+// /sklep — grocery shop (resident). Browse the catalog, favourite, build a cart,
+// check out into a "Zakupy" order. Shows a "recently bought" quick-add row.
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -25,18 +25,30 @@ export default async function ShopPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const [{ data: cats }, { data: prods }, { data: cartRows }, { data: favRows }] =
-    await Promise.all([
-      supabase.from('product_categories').select('id, name').order('sort_order').order('name'),
-      supabase
-        .from('products')
-        .select('id, name, brand, unit, estimated_price, image_url, category_id')
-        .eq('is_active', true)
-        .order('sort_order')
-        .order('name'),
-      supabase.from('cart_items').select('product_id, quantity').eq('user_id', user.id),
-      supabase.from('favorites').select('product_id').eq('user_id', user.id)
-    ]);
+  const [
+    { data: cats },
+    { data: prods },
+    { data: cartRows },
+    { data: favRows },
+    { data: recentRows }
+  ] = await Promise.all([
+    supabase.from('product_categories').select('id, name').order('sort_order').order('name'),
+    supabase
+      .from('products')
+      .select('id, name, brand, unit, estimated_price, image_url, category_id')
+      .eq('is_active', true)
+      .order('sort_order')
+      .order('name'),
+    supabase.from('cart_items').select('product_id, quantity').eq('user_id', user.id),
+    supabase.from('favorites').select('product_id').eq('user_id', user.id),
+    supabase
+      .from('order_items')
+      .select('product_id, created_at, orders!inner(resident_id)')
+      .eq('orders.resident_id', user.id)
+      .not('product_id', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(40)
+  ]);
 
   const categories = (cats as Category[] | null) ?? [];
   const products = (prods as unknown as Product[] | null) ?? [];
@@ -44,6 +56,20 @@ export default async function ShopPage() {
   const initialFavorites = ((favRows as { product_id: string }[] | null) ?? []).map(
     (f) => f.product_id
   );
+
+  // Recently bought: distinct product ids (newest first) → product objects that
+  // are still in the active catalog.
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const seen = new Set<string>();
+  const recentProducts: Product[] = [];
+  for (const r of (recentRows as { product_id: string | null }[] | null) ?? []) {
+    const pid = r.product_id;
+    if (!pid || seen.has(pid)) continue;
+    seen.add(pid);
+    const p = byId.get(pid);
+    if (p) recentProducts.push(p);
+    if (recentProducts.length >= 10) break;
+  }
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-6 sm:px-6">
@@ -76,6 +102,7 @@ export default async function ShopPage() {
             categories={categories}
             initialCart={initialCart}
             initialFavorites={initialFavorites}
+            recentProducts={recentProducts}
           />
         )}
       </div>
