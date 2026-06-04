@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGMIG Concierge — pre-Phase-1 fixes
+-- JOKUS Concierge — pre-Phase-1 fixes
 -- ============================================================================
 -- Naprawia 4 must-fix-y z REVIEW_REPORT.md (2026-05-23):
 --   (1) brak triggera tworzącego public.users po auth signup → OAuth zostawiał

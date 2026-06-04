@@ -18,7 +18,7 @@ Dane do zaseedowania w `migrations/20260516000003_seed_modules.sql`.
 - Wymaga pełnomocnictwa pocztowego (przewodnik w aplikacji)
 - Custom fields: `mail_office` (select: Poczta Polska / paczkomat pocztowy), `power_of_attorney_uploaded` (bool, wymagane)
 
-### `package-delivery-c2c` — Dostawa z marketplace MIGMIG
+### `package-delivery-c2c` — Dostawa z marketplace JOKUS
 
 - Cena bazowa: 5 zł (w obrębie osiedla) lub 12 zł (osiedle-osiedle)
 - Czas: 30 min
@@ -125,8 +125,8 @@ Dane do zaseedowania w `migrations/20260516000003_seed_modules.sql`.
 Mieszkaniec nie kontaktuje się sam z fachowcem (hydraulik, elektryk, ślusarz). Zamiast tego:
 
 1. Mieszkaniec opisuje problem w aplikacji
-2. MIGMIG wysyła jokusora, który ocenia problem na miejscu
-3. Jokusor wzywa zaufanego fachowca z bazy MIGMIG
+2. JOKUS wysyła jokusora, który ocenia problem na miejscu
+3. Jokusor wzywa zaufanego fachowca z bazy JOKUS
 4. Jokusor jest na miejscu podczas naprawy (mieszkaniec może być w pracy)
 5. Jokusor odbiera fakturę i robi zdjęcia po naprawie
 6. Mieszkaniec płaci za usługę fachowca + opłatę za pilnowanie (np. 50 zł/godz)

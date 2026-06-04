@@ -168,7 +168,7 @@ Logika:
 | GET    | `/api/marketplace/listings/[id]`          | Szczegóły                                    | session      |
 | PATCH  | `/api/marketplace/listings/[id]`          | Edycja własnego                              | seller       |
 | DELETE | `/api/marketplace/listings/[id]`          | Usuń                                         | seller       |
-| POST   | `/api/marketplace/listings/[id]/buy`      | Kup z dostawą MIGMIG                         | buyer        |
+| POST   | `/api/marketplace/listings/[id]/buy`      | Kup z dostawą JOKUS                         | buyer        |
 | POST   | `/api/marketplace/listings/[id]/report`   | Zgłoś                                        | session      |
 | POST   | `/api/marketplace/listings/[id]/messages` | Wyślij wiadomość                             | session      |
 | GET    | `/api/marketplace/listings/[id]/messages` | Pobierz wątek                                | participants |
@@ -244,7 +244,7 @@ Format błędów (zgodny z RFC 7807):
 
 ```typescript
 {
-  type: string;      // 'https://migmig.pl/errors/slot-not-available'
+  type: string;      // 'https://jokus.pl/errors/slot-not-available'
   title: string;     // 'Brak dostępnych slotów'
   status: number;    // 409
   detail: string;    // user-facing message po PL

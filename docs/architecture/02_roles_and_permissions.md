@@ -18,7 +18,7 @@ Gość = brak rekordu w `public.users` (tylko sesja anonimowa lub niezarejestrow
 
 ## Rola: Admin (Michał)
 
-**Cel:** zarządzanie całą siecią MIGMIG.
+**Cel:** zarządzanie całą siecią JOKUS.
 
 ### Może:
 
@@ -46,7 +46,7 @@ Na start jedno (Michał). Tabela `users` przewiduje rozszerzenie o `admin_scope`
 
 ## Rola: Jokusor
 
-**Cel:** świadczenie usług na swoim osiedlu pod marką MIGMIG.
+**Cel:** świadczenie usług na swoim osiedlu pod marką JOKUS.
 
 ### Może:
 
@@ -81,8 +81,8 @@ Na start jedno (Michał). Tabela `users` przewiduje rozszerzenie o `admin_scope`
 
 - Składać zamówienia w modułach włączonych dla jego osiedla
 - Wystawiać ogłoszenia na mini-marketplace (limit 10 aktywnych)
-- Kupować z marketplace + zamawiać dostawę MIGMIG kuriera
-- Płacić (BLIK, karta, w przyszłości portfel MIGMIG)
+- Kupować z marketplace + zamawiać dostawę JOKUS kuriera
+- Płacić (BLIK, karta, w przyszłości portfel JOKUS)
 - Oceniać jokusora i dawać napiwki po zakończeniu zlecenia
 - Czatować z jokusorem podczas trwania zlecenia
 - Proponować nowe moduły (np. „brakuje mi mycia okien")

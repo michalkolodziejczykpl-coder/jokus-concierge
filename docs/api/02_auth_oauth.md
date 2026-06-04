@@ -2,7 +2,7 @@
 
 ## Wymaganie biznesowe
 
-Mieszkaniec, który widzi MIGMIG po raz pierwszy, ma być **w aplikacji w 10 sekund** bez wpisywania emaila i hasła. Każda dodatkowa friction redukuje konwersję o ~20%.
+Mieszkaniec, który widzi JOKUS po raz pierwszy, ma być **w aplikacji w 10 sekund** bez wpisywania emaila i hasła. Każda dodatkowa friction redukuje konwersję o ~20%.
 
 Rozwiązanie: trzy OAuth providers + magic link email jako fallback.
 
@@ -66,9 +66,9 @@ Email:
 
 **Authentication → URL Configuration:**
 
-- Site URL: `https://migmig.pl`
+- Site URL: `https://jokus.pl`
 - Redirect URLs:
-  - `https://migmig.pl/auth/callback`
+  - `https://jokus.pl/auth/callback`
   - `http://localhost:3000/auth/callback` (dev)
 
 ## Implementacja w kodzie
@@ -196,7 +196,7 @@ Pierwszy raz po OAuth:
    - Pole z Mapbox geocoding autocomplete
    - Weryfikacja czy adres jest w obsługiwanym osiedlu
    - Jeśli tak: zapisz address + redirect do /home
-   - Jeśli nie: pokaż "MIGMIG jeszcze nie dotarł" + email signup do listy oczekujących
+   - Jeśli nie: pokaż "JOKUS jeszcze nie dotarł" + email signup do listy oczekujących
 4. /home                           ← kafelki modułów
 ```
 
@@ -247,7 +247,7 @@ Konto Michała (admin) ma:
 ```
 ┌──────────────────────────────────┐
 │                                  │
-│         MIGMIG Concierge         │
+│         JOKUS Concierge         │
 │      Twój osiedlowy asystent     │
 │                                  │
 │  ┌────────────────────────────┐  │

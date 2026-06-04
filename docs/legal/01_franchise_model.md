@@ -1,8 +1,8 @@
-# Model franczyzowy MIGMIG
+# Model franczyzowy JOKUS
 
 ## Zasada
 
-JOKUS Sp. z o.o. (Wrocław, NIP 9131639730) jest **organizatorem sieci**. Jokusorzy są **niezależnymi przedsiębiorcami** świadczącymi usługi pod marką MIGMIG na podstawie umowy franczyzowej.
+JOKUS Sp. z o.o. (Wrocław, NIP 9131639730) jest **organizatorem sieci**. Jokusorzy są **niezależnymi przedsiębiorcami** świadczącymi usługi pod marką JOKUS na podstawie umowy franczyzowej.
 
 To **NIE jest zatrudnienie** — jokusor:
 
@@ -76,7 +76,7 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
 ## Co dostaje jokusor w zamian za abonament/prowizję
 
 1. **Marka i marketing**
-   - Logo MIGMIG, materiały promocyjne
+   - Logo JOKUS, materiały promocyjne
    - SEO, kanały social, content
    - Lokalne kampanie reklamowe
 
@@ -101,7 +101,7 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
    - Polisa OC zbiorowa (grupowa, taniej niż indywidualnie)
 
 6. **Płatności**
-   - Mieszkaniec płaci przez MIGMIG (Przelewy24)
+   - Mieszkaniec płaci przez JOKUS (Przelewy24)
    - Jokusor dostaje rozliczenie tygodniowe lub miesięczne
    - Brak ryzyka nieuczciwych klientów
 
@@ -119,7 +119,7 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
 
 2. **Dokumenty**
    - Zaświadczenie o niekaralności (KRK) — wymagane przed startem
-   - Polisa OC zawodowa (zbiorowa MIGMIG lub własna, min 100k PLN)
+   - Polisa OC zawodowa (zbiorowa JOKUS lub własna, min 100k PLN)
    - Auto z aktualną OC + ważnym przeglądem (jeśli moduły transportowe)
    - Prawo jazdy kat. B (jeśli moduły transportowe)
 
@@ -136,7 +136,7 @@ Próg rentowności (na pokrycie kosztów stałych): **6 aktywnych jokusorów w h
 
 5. **Standardy obsługi**
    - Punktualność (max 10 min spóźnienia)
-   - Schludny ubiór (oficjalny T-shirt MIGMIG opcjonalny)
+   - Schludny ubiór (oficjalny T-shirt JOKUS opcjonalny)
    - Komunikacja kulturalna (audyty wyrywkowe przez admina)
 
 ## Umowa franczyzowa — kluczowe punkty
@@ -250,7 +250,7 @@ Po osiągnięciu pewnych progów jokusor dostaje benefity:
 
 Po rozwiązaniu umowy:
 
-- Jokusor usuwa logo i materiały MIGMIG
+- Jokusor usuwa logo i materiały JOKUS
 - Dane historyczne zleceń: anonimizowane po 90 dniach (RODO)
 - Mieszkańcy z osiedla jokusora są ponownie przydzielani do innego (lub dostają informację o czasowym braku obsługi)
 - Wypłata salda + ostatniej faktury w 14 dni

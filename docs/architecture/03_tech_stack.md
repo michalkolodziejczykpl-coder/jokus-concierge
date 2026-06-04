@@ -99,7 +99,7 @@ Trzy buckety:
 - 50 000 darmowych load'ów map miesięcznie (Google: 28 000)
 - Directions API: $0.50/1000 requests (Google: $5/1000)
 - Distance Matrix: $1/1000 elements (Google: $5/1000)
-- Lepsza customizacja stylu (branding MIGMIG)
+- Lepsza customizacja stylu (branding JOKUS)
 - Można self-hostować tiles dla offline
 
 **Co używamy:**
@@ -185,7 +185,7 @@ Z poprzedniego projektu (JOKUS Concierge) masz już doświadczenie z integracją
 - Supabase: $25 (Pro)
 - Mapbox: $0 (free tier)
 - OpenAI: ~$10 (Whisper + embeddings)
-- Domena migmig.pl: ~$15/rok = $1.25/mies
+- Domena jokus.pl: ~$15/rok = $1.25/mies
 - **Razem: ~$36/mies (~145 zł)**
 
 ### Skala (3000-5000 użytkowników)

@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGMIG Concierge — Row Level Security policies
+-- JOKUS Concierge — Row Level Security policies
 -- ============================================================================
 -- Wszystkie tabele mają włączone RLS. Polityki dla trzech ról:
 --   - resident: widzi/edytuje tylko swoje dane

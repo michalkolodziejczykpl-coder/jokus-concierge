@@ -285,7 +285,7 @@ Regex match przed odpaleniem AI — oszczędność czasu i pewność.
 Pierwszy raz user otwiera mikrofon:
 
 ```
-"Witaj! Jestem MIGMIG AI. Mogę Ci pomóc szybciej zamówić usługę.
+"Witaj! Jestem JOKUS AI. Mogę Ci pomóc szybciej zamówić usługę.
 
 Po prostu powiedz, co potrzebujesz — np.:
 • "Wyprowadź mojego psa"

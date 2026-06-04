@@ -115,7 +115,7 @@ To docelowe doświadczenie — **0 kliknięć**.
 │
 [Szczegóły ogłoszenia]
 ├── Galeria zdjęć, opis, sprzedawca
-├── Klik #2: [🚚 Kup z dostawą MIGMIG 255 zł]
+├── Klik #2: [🚚 Kup z dostawą JOKUS 255 zł]
 │
 [Wybór slotu dostawy]
 ├── ◉ Dziś po 18:00
@@ -182,7 +182,7 @@ Cel: wezwać hydraulika.
 ## Flow 7: Logowanie pierwszy raz
 
 ```
-[Strona startowa migmig.pl]
+[Strona startowa jokus.pl]
 ├── "Zacznij" — klik #1
 │
 [Login screen]

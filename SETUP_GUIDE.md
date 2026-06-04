@@ -1,4 +1,4 @@
-# MIGMIG Concierge — przewodnik setup krok po kroku
+# JOKUS Concierge — przewodnik setup krok po kroku
 
 Zakładam: Windows, zero doświadczenia z Next.js/Supabase. Każdy krok ma "gdzie wejść / co kliknąć". Czas całkowity: 2–4 godziny rozłożone na dzień.
 
@@ -133,7 +133,7 @@ Jeśli pokaże "0 errors" — wszystko OK. Jeśli błędy — zgłoś mi, zobacz
 
 1. Wejdź na **https://console.cloud.google.com** → zaloguj się tym samym kontem co aplikacja będzie używać (gmail.com OK).
 2. Górna belka → menu wyboru projektu → **New Project**:
-   - **Project name:** `MIGMIG`
+   - **Project name:** `JOKUS`
    - Klik **Create**, poczekaj 30 s, wybierz projekt z listy.
 
 ### D2. OAuth consent screen
@@ -141,10 +141,10 @@ Jeśli pokaże "0 errors" — wszystko OK. Jeśli błędy — zgłoś mi, zobacz
 1. Lewe menu → **APIs & Services** → **OAuth consent screen**.
 2. **User Type:** External → **Create**.
 3. Wypełnij:
-   - **App name:** `MIGMIG`
+   - **App name:** `JOKUS`
    - **User support email:** `michal.kolodziejczyk.pl@gmail.com`
    - **App logo:** możesz pominąć na start
-   - **Application home page:** `https://migmig.pl` (na razie nie istnieje — to OK)
+   - **Application home page:** `https://jokus.pl` (na razie nie istnieje — to OK)
    - **Authorized domains:** dodaj `supabase.co` (Supabase trzyma callbacki)
    - **Developer contact:** ten sam email
 4. **Save and Continue** → na ekranie "Scopes" tylko **Save and Continue** (domyślne wystarczą).
@@ -154,7 +154,7 @@ Jeśli pokaże "0 errors" — wszystko OK. Jeśli błędy — zgłoś mi, zobacz
 
 1. APIs & Services → **Credentials** → **Create Credentials** → **OAuth client ID**.
 2. **Application type:** Web application.
-3. **Name:** `MIGMIG Supabase`.
+3. **Name:** `JOKUS Supabase`.
 4. **Authorized redirect URIs:** wklej callback Supabase (znajdziesz go w Supabase: Authentication → Providers → Google → "Callback URL (for OAuth)" — wygląda np. `https://abcd1234.supabase.co/auth/v1/callback`).
 5. **Create** → pojawi się modal z **Client ID** i **Client Secret** — skopiuj oba.
 
@@ -175,12 +175,12 @@ Jeśli chcesz na początek tylko Google — pomiń, wrócisz za miesiąc. Kompon
 2. Górne menu → **My Apps** → **Create App**.
 3. **Use case:** "Authenticate and request data from users with Facebook Login" → Next.
 4. **App type:** Business → Next.
-5. **App name:** `MIGMIG`, **Contact email:** twój. → Create app (poprosi o hasło FB).
+5. **App name:** `JOKUS`, **Contact email:** twój. → Create app (poprosi o hasło FB).
 
 ### E2. Facebook Login
 
 1. W panelu aplikacji → "Add Products" → znajdź **Facebook Login** → **Set up**.
-2. Platform: **Web** (na razie). Site URL: `https://migmig.pl` (placeholder).
+2. Platform: **Web** (na razie). Site URL: `https://jokus.pl` (placeholder).
 3. Lewe menu: **Facebook Login → Settings**:
    - **Valid OAuth Redirect URIs:** ten sam callback co w Google (`https://abcd.supabase.co/auth/v1/callback`).
    - Save changes.
@@ -241,7 +241,7 @@ Wprowadź dopiero przy Fazie 3 — w Fazach 0–2 jest niepotrzebne. Tutaj instr
 
 ### H3. Webhook URL (skonfigurujesz po pierwszym deploy)
 
-W panelu Przelewy24: **Ustawienia → URL powiadomień**: `https://migmig.pl/api/webhooks/przelewy24` (na razie nieaktywne, wpiszesz po deploy do Vercel).
+W panelu Przelewy24: **Ustawienia → URL powiadomień**: `https://jokus.pl/api/webhooks/przelewy24` (na razie nieaktywne, wpiszesz po deploy do Vercel).
 
 ### H4. Przejście na produkcję
 
@@ -275,11 +275,11 @@ Wymaga: numer KRS, KRS firmy z CEIDG/KRS, regulamin sklepu, polityka prywatnośc
 4. **Deploy** → pierwszy build trwa 1–3 min.
 5. Po sukcesie dostajesz URL `migmig-concierge-xxx.vercel.app` — sprawdź czy się otwiera.
 
-### I3. Domena migmig.pl
+### I3. Domena jokus.pl
 
-1. W Vercel projekt → **Settings → Domains** → wpisz `migmig.pl` → Add.
+1. W Vercel projekt → **Settings → Domains** → wpisz `jokus.pl` → Add.
 2. Vercel pokaże 2 rekordy DNS do dodania u rejestratora (A record + CNAME).
-3. Wejdź do panelu Twojego rejestratora domeny (kto rejestrował migmig.pl?), znajdź sekcję DNS, dodaj rekordy. Propagacja: 15 min – 24 h.
+3. Wejdź do panelu Twojego rejestratora domeny (kto rejestrował jokus.pl?), znajdź sekcję DNS, dodaj rekordy. Propagacja: 15 min – 24 h.
 
 ---
 
@@ -288,7 +288,7 @@ Wymaga: numer KRS, KRS firmy z CEIDG/KRS, regulamin sklepu, polityka prywatnośc
 Aplikacja jako PWA potrzebuje ikon w `public/icons/`. Najszybciej:
 
 1. **https://realfavicongenerator.net** lub **https://www.pwabuilder.com/imageGenerator**
-2. Wrzuć logo MIGMIG (kwadrat min 512×512 px, jeśli nie masz — na razie placeholder, np. **https://placehold.co/512x512/FF5A1F/FFFFFF.png?text=MM**).
+2. Wrzuć logo JOKUS (kwadrat min 512×512 px, jeśli nie masz — na razie placeholder, np. **https://placehold.co/512x512/FF5A1F/FFFFFF.png?text=MM**).
 3. Pobierz wygenerowany zestaw i wrzuć do `public/icons/`:
    - `icon-192.png` (192×192)
    - `icon-512.png` (512×512)
@@ -301,7 +301,7 @@ Aplikacja jako PWA potrzebuje ikon w `public/icons/`. Najszybciej:
 
 Wszystko powyżej zrobione? Sprawdź:
 
-- [ ] `npm run dev` w `C:\Projekty\jokusMigMig` → otwiera się http://localhost:3000 z napisem "MIGMIG Concierge"
+- [ ] `npm run dev` w `C:\Projekty\jokusMigMig` → otwiera się http://localhost:3000 z napisem "JOKUS Concierge"
 - [ ] Klik "Zaloguj się" → "Kontynuuj z Google" → realny redirect do Google → po zalogowaniu wracasz na `/home` (na razie 404 to OK, ekran zbudujemy w Fazie 1)
 - [ ] Supabase → Authentication → Users — widzisz swojego użytkownika
 - [ ] Supabase → Table Editor → widzisz tabele `users`, `orders`, `modules`, itd. (~20 tabel)

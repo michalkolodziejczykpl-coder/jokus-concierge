@@ -237,7 +237,7 @@ Jeśli adres nie pasuje do żadnego osiedla LUB osiedle nie ma żadnego jokusora
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│ 🚧 MIGMIG jeszcze nie dotarł na Twoje osiedle            │
+│ 🚧 JOKUS jeszcze nie dotarł na Twoje osiedle            │
 │                                                          │
 │ Pracujemy nad rozszerzaniem sieci. Zostaw maila —        │
 │ powiadomimy Cię, gdy uruchomimy usługi w Twojej okolicy. │

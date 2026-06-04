@@ -1,8 +1,8 @@
-# MIGMIG Concierge
+# JOKUS Concierge
 
 Platforma franczyzowa usług osiedlowych. JOKUS Sp. z o.o., Wrocław.
 
-- Marka: **MIGMIG**, domena: migmig.pl
+- Marka: **JOKUS**, domena: jokus.pl
 - Etap 1: PWA (Next.js 14 + Supabase)
 - Etap 2: React Native (Android + iOS) — po osiągnięciu 3000 DAU
 - Język: UI po polsku, kod i komentarze po angielsku

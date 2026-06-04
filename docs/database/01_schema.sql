@@ -1,5 +1,5 @@
 -- ============================================================================
--- MIGMIG Concierge — Schema PostgreSQL (Supabase)
+-- JOKUS Concierge — Schema PostgreSQL (Supabase)
 -- Version: 1.0
 -- ============================================================================
 -- WYMAGANIA:
@@ -88,7 +88,7 @@ CREATE TABLE users (
 CREATE INDEX idx_users_role ON users(role) WHERE deleted_at IS NULL;
 CREATE INDEX idx_users_email ON users(email) WHERE deleted_at IS NULL;
 
--- Osiedla obsługiwane przez MIGMIG (definicja geograficzna)
+-- Osiedla obsługiwane przez JOKUS (definicja geograficzna)
 CREATE TABLE estates (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,                    -- 'Krzyki', 'Stare Miasto'

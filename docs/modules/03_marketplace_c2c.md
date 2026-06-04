@@ -2,13 +2,13 @@
 
 ## Koncepcja
 
-Mieszkańcy osiedla mogą sprzedawać/kupować rzeczy od siebie nawzajem, z opcją zamówienia dostawy przez jokusora MIGMIG. Lokalne OLX/Vinted z transportem w jednym kliknięciu.
+Mieszkańcy osiedla mogą sprzedawać/kupować rzeczy od siebie nawzajem, z opcją zamówienia dostawy przez jokusora JOKUS. Lokalne OLX/Vinted z transportem w jednym kliknięciu.
 
 ## Dlaczego C2C a nie B2C na start
 
 1. **Niska bariera wejścia** — każdy mieszkaniec może wystawić ogłoszenie (zero onboarding sprzedawców).
 2. **Network effect** — im więcej mieszkańców, tym więcej ogłoszeń, tym więcej kupujących.
-3. **Niska odpowiedzialność prawna** — MIGMIG to platforma, nie sprzedawca (nie odpowiada za gwarancję).
+3. **Niska odpowiedzialność prawna** — JOKUS to platforma, nie sprzedawca (nie odpowiada za gwarancję).
 4. **Naturalna ścieżka do B2C** — po walidacji modelu można dopisać sprzedawców biznesowych.
 
 ## Customer journey
@@ -28,7 +28,7 @@ Mieszkańcy osiedla mogą sprzedawać/kupować rzeczy od siebie nawzajem, z opcj
 1. `/marketplace` — przeglądanie ogłoszeń
 2. Filtry: kategoria, cena, odległość
 3. Klika ogłoszenie → szczegóły
-4. „Kup z dostawą MIGMIG" → wybór slotu dla jokusora
+4. „Kup z dostawą JOKUS" → wybór slotu dla jokusora
 5. Płatność (cena + dostawa)
 6. Śledzenie jokusora live
 7. Po dostawie: ocena (zarówno jokusora, jak i sprzedawcy)
@@ -79,7 +79,7 @@ CREATE TABLE marketplace_purchases (
   buyer_id uuid NOT NULL REFERENCES users(id),
   seller_id uuid NOT NULL REFERENCES users(id),
   delivery_order_id uuid REFERENCES orders(id),
-  -- powiązanie z normalnym zamówieniem MIGMIG na dostawę
+  -- powiązanie z normalnym zamówieniem JOKUS na dostawę
   item_price numeric(10,2) NOT NULL,
   delivery_price numeric(10,2),
   payment_status text NOT NULL DEFAULT 'pending',
@@ -97,15 +97,15 @@ Problem: jak chronić kupującego przed oszustwem (sprzedawca wziął kasę, nic
 
 **Rozwiązanie:**
 
-1. **Kupujący płaci MIGMIG** (BLIK) cenę przedmiotu + dostawę.
-2. MIGMIG trzyma pieniądze przedmiotu na koncie escrow.
+1. **Kupujący płaci JOKUS** (BLIK) cenę przedmiotu + dostawę.
+2. JOKUS trzyma pieniądze przedmiotu na koncie escrow.
 3. Sprzedawca dostaje notyfikację: „Twoje pieniądze (250 zł) są zabezpieczone".
 4. Jokusor odbiera przedmiot od sprzedawcy.
 5. Jokusor dostarcza do kupującego — kupujący ma 15 minut na sprawdzenie.
-6. Jeśli kupujący potwierdzi „OK" w aplikacji → MIGMIG przelewa pieniądze sprzedawcy (minus prowizja 5%).
+6. Jeśli kupujący potwierdzi „OK" w aplikacji → JOKUS przelewa pieniądze sprzedawcy (minus prowizja 5%).
 7. Jeśli kupujący zgłosi reklamację w ciągu 15 minut → spór trafia do admina.
 
-**Prowizja MIGMIG od marketplace:** 5% wartości przedmiotu (dodatkowo do opłaty za dostawę).
+**Prowizja JOKUS od marketplace:** 5% wartości przedmiotu (dodatkowo do opłaty za dostawę).
 
 **Alternatywa:** „Płać przy odbiorze" — kupujący płaci jokusorowi gotówką lub BLIKiem na miejscu. Mniej bezpieczne ale czasem preferowane.
 
@@ -196,7 +196,7 @@ export const FORBIDDEN_CATEGORIES = [
 │ ...                                                      │
 ├──────────────────────────────────────────────────────────┤
 │ ┌──────────────────────────────────────────────────────┐ │
-│ │ 🚚 Kup z dostawą MIGMIG — 255 zł (250 + 5 zł)        │ │
+│ │ 🚚 Kup z dostawą JOKUS — 255 zł (250 + 5 zł)        │ │
 │ │ Jokusor odbiera od sprzedawcy i przywozi do Ciebie.  │ │
 │ │ [Wybierz slot →]                                     │ │
 │ └──────────────────────────────────────────────────────┘ │
@@ -210,5 +210,5 @@ export const FORBIDDEN_CATEGORIES = [
 - `<ListingCard>` — kafelek ogłoszenia w gridzie
 - `<ListingForm>` — formularz dodawania/edycji
 - `<ListingGallery>` — galeria zdjęć z lightboxem
-- `<DeliveryRequestModal>` — modal zamawiania dostawy MIGMIG
+- `<DeliveryRequestModal>` — modal zamawiania dostawy JOKUS
 - `<EscrowStatusBadge>` — status płatności (pending/paid/released)

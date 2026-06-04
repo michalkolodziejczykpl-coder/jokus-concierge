@@ -69,7 +69,7 @@ Układ:
 ```
 
 - Komponenty: `<ModuleTile>`, `<ActiveOrderBanner>`, `<VoiceButton>` (FAB)
-- Empty state: jeśli brak modułów (poza zasięgiem) → ekran "MIGMIG jeszcze nie tutaj"
+- Empty state: jeśli brak modułów (poza zasięgiem) → ekran "JOKUS jeszcze nie tutaj"
 
 ### `/modules/[slug]` — Formularz modułu
 
@@ -168,7 +168,7 @@ status='completed'
 - Form z polami: tytuł, opis, kategoria, cena, kondycja
 - Upload zdjęć (max 5)
 - Adres odbioru (z profilu lub manual)
-- Delivery option (MIGMIG-only / pickup-only / both)
+- Delivery option (JOKUS-only / pickup-only / both)
 - Submit
 
 ### `/marketplace/[id]` — Szczegóły ogłoszenia

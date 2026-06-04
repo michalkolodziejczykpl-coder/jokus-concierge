@@ -1,17 +1,17 @@
 # REVIEW_BRIEF.md — Brief dla Claude Code (lub innego reviewera)
 
 Ten plik jest dla osoby/agenta robiącego review **Fazy 1** projektu JOKUS Concierge
-(dawniej MIGMIG). Zaktualizowany 2026-05-30 — to NIE jest już sam szkielet, w repo
+(dawniej JOKUS). Zaktualizowany 2026-05-30 — to NIE jest już sam szkielet, w repo
 jest działająca logika kilku pionowych funkcji.
 
 ## Kontekst — stan na dziś
 
-Stack: Next.js 16 (App Router) + React 19 + TypeScript strict + Supabase (Postgres + Auth + Realtime + Storage). UI po polsku, kod po angielsku. Marka w aplikacji: **JOKUS Concierge** (spółka JOKUS Sp. z o.o., NIP 9131639730). Hosting: Vercel (prod https://www.migmig.pl — domena docelowa jokus.pl jeszcze nieprzepięta).
+Stack: Next.js 16 (App Router) + React 19 + TypeScript strict + Supabase (Postgres + Auth + Realtime + Storage). UI po polsku, kod po angielsku. Marka w aplikacji: **JOKUS Concierge** (spółka JOKUS Sp. z o.o., NIP 9131639730). Hosting: Vercel (prod https://www.jokus.pl — domena docelowa jokus.pl jeszcze nieprzepięta).
 
 Zbudowane i wdrożone na prod funkcje (poza oryginalnym scaffoldem):
 
 - **Sprint A — compliance**: `/regulamin`, `/cookies`, `<Footer>` z NIP, baner cookies (tylko niezbędne), checkbox akceptacji + info dla konsumenta przed płatnością (`HoldView`). Strony prawne to DRAFT do recenzji prawnika.
-- **Rebrand** MIGMIG → JOKUS w tekstach UI (wewn. wartości `migmig_*` w bazie zostawione celowo).
+- **Rebrand** JOKUS → JOKUS w tekstach UI (wewn. wartości `migmig_*` w bazie zostawione celowo).
 - **Sprint D-2 — marketplace**: wyszukiwarka + filtry (URL-driven), edycja/usuwanie (soft-delete) własnych ogłoszeń, zgłaszanie (SECURITY DEFINER `report_listing`), czat kupujący↔sprzedawca (`marketplace_messages`).
 - **Sprint E — jokusor**: samodzielna rejestracja z uploadem dokumentów (zaświadczenie o niekaralności OBOWIĄZKOWE) do PRYWATNEGO bucketu; panel admina (`/jokusors`) z podpisanymi URL-ami i akceptacją/odrzuceniem; akceptacja zmienia `users.role`→`jokusor` (service role). Edycja profili (mieszkaniec + jokusor) na `/profile`. Publiczne zdjęcie jokusora. Czat jokusor↔klient przy zamówieniu (`order_messages`). Oceny (1-5 + komentarz) i napiwki na zakończonym zleceniu.
 - **Sprint 5b — tracking**: mapa Leaflet (z CDN) z pozycją jokusora + mieszkańca, wibracja przy zbliżeniu.

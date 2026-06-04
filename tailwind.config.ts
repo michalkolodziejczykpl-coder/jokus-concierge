@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // MIGMIG brand placeholder — finalize with design pass
+        // JOKUS brand placeholder — finalize with design pass
         brand: {
           DEFAULT: '#FF5A1F',
           50: '#FFF1EB',

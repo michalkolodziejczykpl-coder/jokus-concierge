@@ -11,14 +11,14 @@
 - [ ] Wykonanie `01_schema.sql` + `02_rls_policies.sql`
 - [ ] Konfiguracja OAuth providers (Google, Facebook — Apple później)
 - [ ] Założenie kont: Mapbox, OpenAI, Przelewy24 (sandbox), Sentry
-- [ ] Domeny migmig.pl, migmig.com.pl — DNS na Vercel
+- [ ] Domeny jokus.pl, migmig.com.pl — DNS na Vercel
 - [ ] Konfiguracja CI (GitHub Actions: lint, typecheck)
 - [ ] First deploy do Vercel (preview environment)
 - [ ] Konfiguracja PostHog na Cyberfolks VPS
 
 ### Definition of Done
 
-- Aplikacja deploy'uje się na migmig.pl
+- Aplikacja deploy'uje się na jokus.pl
 - Można się zalogować przez Google
 - Po zalogowaniu pojawia się ekran "Hello, [imię]"
 - Baza ma seed'owane moduły
@@ -167,7 +167,7 @@ Jokusor może:
 
 ## Faza 4: Marketplace C2C (3-4 tygodnie)
 
-**Cel:** dodać mini-marketplace z dostawą MIGMIG.
+**Cel:** dodać mini-marketplace z dostawą JOKUS.
 
 ### Sprint 4.1 — Lista i ogłoszenia (1 tydzień)
 
@@ -179,7 +179,7 @@ Jokusor może:
 ### Sprint 4.2 — Komunikacja + zakup (1 tydzień)
 
 - [ ] Czat między kupującym a sprzedawcą
-- [ ] Modal "Kup z dostawą MIGMIG"
+- [ ] Modal "Kup z dostawą JOKUS"
 - [ ] Wybór slotu dostawy
 - [ ] Płatność BLIK + escrow
 
@@ -201,7 +201,7 @@ Jokusor może:
 ### Definition of Done
 
 - Mieszkaniec może wystawić ogłoszenie z zdjęciami
-- Może kupić ogłoszenie sąsiada z dostawą MIGMIG
+- Może kupić ogłoszenie sąsiada z dostawą JOKUS
 - Escrow chroni obie strony
 - Auto-moderacja działa
 - Admin może rozstrzygać spory
@@ -310,4 +310,4 @@ Faza 7 (RN): **3-4 miesiące** + okres pracy z App Store.
 - B2B segment (firmy zamawiające dla pracowników)
 - API dla zewnętrznych aplikacji (dev-friendly tier)
 - White-label dla deweloperów osiedli (apartamentowiec dla mieszkańców)
-- Subskrypcja "MIGMIG Plus" dla power-userów
+- Subskrypcja "JOKUS Plus" dla power-userów

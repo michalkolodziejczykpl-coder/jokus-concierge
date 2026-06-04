@@ -1,6 +1,6 @@
 {
-  "name": "MIGMIG Concierge",
-  "short_name": "MIGMIG",
+  "name": "JOKUS Concierge",
+  "short_name": "JOKUS",
   "description": "Twoje osiedlowe usługi — zakupy, paczki, pies, fachowiec, marketplace.",
   "start_url": "/home",
   "display": "standalone",

@@ -33,8 +33,8 @@ export default function RegulaminPage() {
           <p>
             Niniejszy Regulamin określa zasady korzystania z serwisu internetowego i aplikacji
             JOKUS Concierge (dalej: „Serwis"), dostępnego pod adresem{' '}
-            <a className="text-brand hover:underline" href="https://www.migmig.pl">
-              www.migmig.pl
+            <a className="text-brand hover:underline" href="https://www.jokus.pl">
+              www.jokus.pl
             </a>
             , oraz zasady świadczenia usług drogą elektroniczną zgodnie z ustawą z dnia 18 lipca
             2002 r. o świadczeniu usług drogą elektroniczną.
