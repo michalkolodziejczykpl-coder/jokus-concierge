@@ -31,9 +31,9 @@ export default function PrivacyPage() {
             NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
             <a
               className="text-brand hover:underline"
-              href="mailto:michal.kolodziejczyk.pl@gmail.com"
+              href="mailto:biuro@jokus.pl"
             >
-              michal.kolodziejczyk.pl@gmail.com
+              biuro@jokus.pl
             </a>
             .
           </p>

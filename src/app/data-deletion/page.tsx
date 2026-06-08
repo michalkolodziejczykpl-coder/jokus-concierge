@@ -41,7 +41,7 @@ export default function DataDeletionPage() {
           </h2>
           <p>Wyślij wiadomość na adres:</p>
           <p className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 font-mono text-sm dark:border-neutral-800 dark:bg-neutral-900">
-            michal.kolodziejczyk.pl@gmail.com
+            biuro@jokus.pl
           </p>
           <p>
             z tytułem <em>„Usunięcie konta JOKUS"</em> i z adresu e-mail, którego użyłeś do

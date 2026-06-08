@@ -19,7 +19,7 @@ export const COMPANY = {
   registryCourt:
     'Sąd Rejonowy dla Wrocławia-Fabrycznej we Wrocławiu, IX Wydział Gospodarczy Krajowego Rejestru Sądowego',
   shareCapitalPln: '5 000,00 zł',
-  email: 'michal.kolodziejczyk.pl@gmail.com',
+  email: 'biuro@jokus.pl',
   // Address for consumer returns / withdrawal statements.
   returnAddress: 'JOKUS Sp. z o.o., ul. Kwiatowa 8, 55-330 Księginice',
   paymentProvider: 'Przelewy24 (PayPro S.A.)',
