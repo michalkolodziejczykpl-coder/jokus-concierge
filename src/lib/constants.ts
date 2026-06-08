@@ -3,15 +3,25 @@
 export const APP_NAME = 'JOKUS Concierge';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
-// Company / operator data. Single source of truth for footer, legal pages and invoices.
+// Company / operator data — single source of truth for footer, legal pages, invoices.
+// Registry data per KRS (odpis z 09.11.2024).
 export const COMPANY = {
   legalName: 'JOKUS Sp. z o.o.',
+  legalNameFull: 'JOKUS Spółka z ograniczoną odpowiedzialnością',
   brandName: 'JOKUS Concierge',
   nip: '9131639730',
-  city: 'Wrocław',
-  // TODO: uzupełnić pełny adres rejestrowy + KRS + REGON przed publicznym launchem.
-  addressLine: 'Wrocław',
+  krs: '0001128971',
+  regon: '529737219',
+  street: 'ul. Kwiatowa 8',
+  postalCode: '55-330',
+  city: 'Księginice',
+  addressLine: 'ul. Kwiatowa 8, 55-330 Księginice',
+  registryCourt:
+    'Sąd Rejonowy dla Wrocławia-Fabrycznej we Wrocławiu, IX Wydział Gospodarczy Krajowego Rejestru Sądowego',
+  shareCapitalPln: '5 000,00 zł',
   email: 'michal.kolodziejczyk.pl@gmail.com',
+  // Address for consumer returns / withdrawal statements.
+  returnAddress: 'JOKUS Sp. z o.o., ul. Kwiatowa 8, 55-330 Księginice',
   paymentProvider: 'Przelewy24 (PayPro S.A.)',
   marketplaceCommissionPct: 5,
   inspectionWindowMinutes: 15

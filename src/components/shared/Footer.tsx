@@ -22,10 +22,11 @@ export default function Footer() {
           <p className="font-semibold text-neutral-800 dark:text-neutral-200">
             {COMPANY.brandName}
           </p>
+          <p>{COMPANY.legalName}</p>
+          <p>{COMPANY.addressLine}</p>
           <p>
-            {COMPANY.legalName} · {COMPANY.city}
+            NIP {COMPANY.nip} · KRS {COMPANY.krs}
           </p>
-          <p>NIP {COMPANY.nip}</p>
           <p>
             <a className="hover:underline" href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}

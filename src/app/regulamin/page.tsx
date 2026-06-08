@@ -31,8 +31,8 @@ export default function RegulaminPage() {
             § 1. Postanowienia ogólne
           </h2>
           <p>
-            Niniejszy Regulamin określa zasady korzystania z serwisu internetowego i aplikacji
-            JOKUS Concierge (dalej: „Serwis"), dostępnego pod adresem{' '}
+            Niniejszy Regulamin określa zasady korzystania z serwisu internetowego i aplikacji JOKUS
+            Concierge (dalej: „Serwis"), dostępnego pod adresem{' '}
             <a className="text-brand hover:underline" href="https://www.jokus.pl">
               www.jokus.pl
             </a>
@@ -40,9 +40,10 @@ export default function RegulaminPage() {
             2002 r. o świadczeniu usług drogą elektroniczną.
           </p>
           <p>
-            Operatorem Serwisu jest <strong>{COMPANY.legalName}</strong> z siedzibą w mieście{' '}
-            {COMPANY.city}, NIP {COMPANY.nip} (dalej: „Operator" lub „JOKUS"). Kontakt z
-            Operatorem:{' '}
+            Operatorem Serwisu jest <strong>{COMPANY.legalName}</strong> z siedzibą pod adresem{' '}
+            {COMPANY.addressLine}, KRS {COMPANY.krs}, REGON {COMPANY.regon}, NIP {COMPANY.nip},
+            kapitał zakładowy {COMPANY.shareCapitalPln}, {COMPANY.registryCourt} (dalej: „Operator"
+            lub „JOKUS"). Kontakt z Operatorem:{' '}
             <a className="text-brand hover:underline" href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}
             </a>
@@ -167,8 +168,9 @@ export default function RegulaminPage() {
           <p>
             Składając Zlecenie z terminem realizacji wcześniejszym niż upływ 14 dni, Mieszkaniec
             żąda rozpoczęcia świadczenia Usługi przed upływem terminu na odstąpienie i przyjmuje do
-            wiadomości utratę tego prawa po pełnym wykonaniu Usługi. Odstąpienie należy zgłosić na
-            adres e-mail Operatora.
+            wiadomości utratę tego prawa po pełnym wykonaniu Usługi. Oświadczenie o odstąpieniu oraz
+            zwrot towaru należy kierować na adres Operatora: {COMPANY.returnAddress}, lub na adres
+            e-mail {COMPANY.email}.
           </p>
 
           <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">

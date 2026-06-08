@@ -27,7 +27,8 @@ export default function PrivacyPage() {
           </h2>
           <p>
             Administratorem Twoich danych osobowych jest <strong>JOKUS Sp. z o.o.</strong> z
-            siedzibą we Wrocławiu, NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
+            siedzibą pod adresem ul. Kwiatowa 8, 55-330 Księginice, KRS 0001128971, REGON 529737219,
+            NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
             <a
               className="text-brand hover:underline"
               href="mailto:michal.kolodziejczyk.pl@gmail.com"
