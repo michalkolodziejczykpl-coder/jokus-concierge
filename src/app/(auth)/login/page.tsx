@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { OAuthButtons } from '@/components/shared/OAuthButtons';
+import PasswordLogin from '@/components/shared/PasswordLogin';
 
 export default function LoginPage() {
   return (
@@ -22,14 +23,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* TODO: Magic-link email fallback via supabase.auth.signInWithOtp */}
-      <button
-        type="button"
-        disabled
-        className="rounded-lg border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-400 dark:border-neutral-700"
-      >
-        Wyślij link do logowania na email (wkrótce)
-      </button>
+      <PasswordLogin />
 
       <p className="text-center text-xs text-neutral-500">
         Nie masz konta?{' '}
