@@ -57,7 +57,10 @@ export async function PATCH(request: Request) {
     .eq('id', user.id);
   if (uErr) {
     console.error('[PATCH /api/jokusor/profile] users', uErr);
-    return NextResponse.json({ error: 'user_update_failed', message: uErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'user_update_failed', message: uErr.message },
+      { status: 500 }
+    );
   }
 
   const { error: jErr } = await supabase
@@ -74,7 +77,10 @@ export async function PATCH(request: Request) {
     .eq('user_id', user.id);
   if (jErr) {
     console.error('[PATCH /api/jokusor/profile] jokusors', jErr);
-    return NextResponse.json({ error: 'jokusor_update_failed', message: jErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'jokusor_update_failed', message: jErr.message },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });

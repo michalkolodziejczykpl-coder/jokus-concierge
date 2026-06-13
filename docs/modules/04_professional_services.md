@@ -58,13 +58,13 @@ W przyszłości (etap 2): aplikacja dla fachowców z systemem zleceń + płatno�
 
 ## Cennik
 
-| Czynność                        | Cena                                                              |
-| ------------------------------- | ----------------------------------------------------------------- |
-| Pilnowanie jokusora             | 50 zł/godz (min 1 godz)                                           |
-| Dojazd jokusora                 | wliczone                                                          |
-| Wezwanie fachowca               | wliczone (admin negocjuje z fachowcami)                           |
-| Praca fachowca                  | wg cennika fachowca (15-200 zł/godz w zależności od specjalności) |
-| Materiały                       | wg paragonu fachowca                                              |
+| Czynność                       | Cena                                                              |
+| ------------------------------ | ----------------------------------------------------------------- |
+| Pilnowanie jokusora            | 50 zł/godz (min 1 godz)                                           |
+| Dojazd jokusora                | wliczone                                                          |
+| Wezwanie fachowca              | wliczone (admin negocjuje z fachowcami)                           |
+| Praca fachowca                 | wg cennika fachowca (15-200 zł/godz w zależności od specjalności) |
+| Materiały                      | wg paragonu fachowca                                              |
 | **Prowizja JOKUS od fachowca** | 10% wartości usługi fachowca                                      |
 
 ## Lista zaufanych fachowców

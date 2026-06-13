@@ -22,7 +22,10 @@ export async function POST(request: Request, { params }: RouteContext) {
 
   if (!isMockPaymentAllowed(user.email)) {
     return NextResponse.json(
-      { error: 'mock_payments_closed', message: 'Płatności są obecnie w fazie zamkniętych testów.' },
+      {
+        error: 'mock_payments_closed',
+        message: 'Płatności są obecnie w fazie zamkniętych testów.'
+      },
       { status: 403 }
     );
   }
@@ -46,7 +49,11 @@ export async function POST(request: Request, { params }: RouteContext) {
     .select('resident_id, jokusor_id, status')
     .eq('id', id)
     .maybeSingle();
-  const order = orderRow as { resident_id: string; jokusor_id: string | null; status: string } | null;
+  const order = orderRow as {
+    resident_id: string;
+    jokusor_id: string | null;
+    status: string;
+  } | null;
   if (!order) return NextResponse.json({ error: 'order_not_found' }, { status: 404 });
   if (order.resident_id !== user.id)
     return NextResponse.json({ error: 'not_your_order' }, { status: 403 });

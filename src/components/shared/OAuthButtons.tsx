@@ -28,8 +28,7 @@ const PROVIDERS: Array<{ id: Provider; label: string }> = [
 export function OAuthButtons({ className }: { className?: string }) {
   async function signIn(provider: Provider) {
     const supabase = createClient();
-    const origin =
-      typeof window !== 'undefined' ? window.location.origin : 'https://www.jokus.pl';
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.jokus.pl';
     await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${origin}/callback` }

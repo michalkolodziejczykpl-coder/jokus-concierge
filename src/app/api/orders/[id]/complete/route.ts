@@ -22,9 +22,12 @@ export async function POST(_request: Request, { params }: RouteContext) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
 
-  const { error } = await supabase.rpc('jokusor_complete_order' as never, {
-    p_order_id: id
-  } as never);
+  const { error } = await supabase.rpc(
+    'jokusor_complete_order' as never,
+    {
+      p_order_id: id
+    } as never
+  );
 
   if (error) {
     const msg = (error.message || '').toLowerCase();
@@ -39,10 +42,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
       );
 
     console.error('[POST /api/orders/[id]/complete] rpc', error);
-    return NextResponse.json(
-      { error: 'complete_failed', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'complete_failed', message: error.message }, { status: 500 });
   }
 
   return new NextResponse(null, { status: 204 });

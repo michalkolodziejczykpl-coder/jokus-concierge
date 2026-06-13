@@ -137,8 +137,8 @@ export default function SlotGrid({ orderId, slots }: Props) {
       </div>
 
       <p className="mt-6 text-xs text-neutral-500 dark:text-neutral-500">
-        Po kliknięciu slot zostanie zarezerwowany na 90 sekund — w tym czasie potwierdzasz
-        płatność BLIK.
+        Po kliknięciu slot zostanie zarezerwowany na 90 sekund — w tym czasie potwierdzasz płatność
+        BLIK.
       </p>
     </section>
   );

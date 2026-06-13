@@ -28,17 +28,27 @@ export default async function ResidentHomePage() {
     redirect('/login');
   }
 
-  // Role gate: send jokusors to their dashboard instead of the resident catalog
   const { data: profile } = await supabase
     .from('users')
-    .select('role')
+    .select('role, phone_verified')
     .eq('id', user.id)
     .maybeSingle();
-  const role = (profile as { role?: string } | null)?.role;
+  const row = profile as { role?: string; phone_verified?: boolean } | null;
+  const role = row?.role;
+  const isAdmin = role === 'admin';
+
+  // Phone-verification gate: every signed-in user (incl. Google accounts, which
+  // have no phone) must verify a number once before using the app. Admins are
+  // exempt to avoid locking the operator out; the Przelewy24 test account is
+  // exempt by being seeded with phone_verified=true (see task README).
+  if (!isAdmin && row?.phone_verified !== true) {
+    redirect('/rejestracja/uzupelnij');
+  }
+
+  // Role gate: send jokusors to their dashboard instead of the resident catalog
   if (role === 'jokusor') {
     redirect('/dashboard');
   }
-  const isAdmin = role === 'admin';
 
   const displayName =
     (user.user_metadata?.full_name as string | undefined)?.split(' ')[0] ??

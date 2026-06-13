@@ -36,7 +36,10 @@ export async function PATCH(request: Request) {
     .eq('id', user.id);
   if (uErr) {
     console.error('[PATCH /api/profile] users', uErr);
-    return NextResponse.json({ error: 'user_update_failed', message: uErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'user_update_failed', message: uErr.message },
+      { status: 500 }
+    );
   }
 
   const addrPayload = {
@@ -57,7 +60,10 @@ export async function PATCH(request: Request) {
     .select('id');
   if (aErr) {
     console.error('[PATCH /api/profile] address update', aErr);
-    return NextResponse.json({ error: 'address_update_failed', message: aErr.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'address_update_failed', message: aErr.message },
+      { status: 500 }
+    );
   }
 
   // No default address yet → create one.
@@ -67,7 +73,10 @@ export async function PATCH(request: Request) {
       .insert({ ...addrPayload, user_id: user.id, label: 'Dom', is_default: true } as never);
     if (insErr) {
       console.error('[PATCH /api/profile] address insert', insErr);
-      return NextResponse.json({ error: 'address_insert_failed', message: insErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'address_insert_failed', message: insErr.message },
+        { status: 500 }
+      );
     }
   }
 

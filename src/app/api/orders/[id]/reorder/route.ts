@@ -24,15 +24,19 @@ export async function POST(_request: Request, { params }: RouteContext) {
     .maybeSingle();
   const order = orderRow as { resident_id: string } | null;
   if (!order) return NextResponse.json({ error: 'order_not_found' }, { status: 404 });
-  if (order.resident_id !== user.id) return NextResponse.json({ error: 'not_your_order' }, { status: 403 });
+  if (order.resident_id !== user.id)
+    return NextResponse.json({ error: 'not_your_order' }, { status: 403 });
 
   const { data: itemRows } = await supabase
     .from('order_items')
     .select('product_id, quantity, note')
     .eq('order_id', id);
-  const items = ((itemRows as { product_id: string | null; quantity: number; note: string | null }[] | null) ?? [])
-    .filter((it) => it.product_id);
-  if (items.length === 0) return NextResponse.json({ error: 'nothing_to_reorder' }, { status: 409 });
+  const items = (
+    (itemRows as { product_id: string | null; quantity: number; note: string | null }[] | null) ??
+    []
+  ).filter((it) => it.product_id);
+  if (items.length === 0)
+    return NextResponse.json({ error: 'nothing_to_reorder' }, { status: 409 });
 
   const rows = items.map((it) => ({
     user_id: user.id,

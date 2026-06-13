@@ -28,7 +28,11 @@ export async function POST() {
     .select('id, base_price, estimated_duration_min')
     .eq('slug', GROCERY_SLUG)
     .maybeSingle();
-  const grocery = moduleRow as { id: string; base_price: number; estimated_duration_min: number } | null;
+  const grocery = moduleRow as {
+    id: string;
+    base_price: number;
+    estimated_duration_min: number;
+  } | null;
   if (!grocery) return NextResponse.json({ error: 'grocery_module_missing' }, { status: 503 });
 
   // Cart + product snapshot.
@@ -40,7 +44,9 @@ export async function POST() {
     console.error('[checkout] cart fetch', cartErr);
     return NextResponse.json({ error: 'cart_lookup_failed' }, { status: 500 });
   }
-  const cart = ((cartRaw as unknown as CartRow[] | null) ?? []).filter((c) => c.products && c.products.is_active);
+  const cart = ((cartRaw as unknown as CartRow[] | null) ?? []).filter(
+    (c) => c.products && c.products.is_active
+  );
   if (cart.length === 0) return NextResponse.json({ error: 'cart_empty' }, { status: 400 });
 
   // Default address.
@@ -55,7 +61,10 @@ export async function POST() {
     return NextResponse.json({ error: 'no_default_address' }, { status: 409 });
   }
 
-  const itemsTotal = cart.reduce((sum, c) => sum + Number(c.products!.estimated_price) * c.quantity, 0);
+  const itemsTotal = cart.reduce(
+    (sum, c) => sum + Number(c.products!.estimated_price) * c.quantity,
+    0
+  );
   const total = Number(grocery.base_price) + itemsTotal;
 
   // Create the draft order.

@@ -19,11 +19,11 @@ nowej migracji SQL — opisane niżej, do wgrania ręcznego w Supabase) oraz
 
 ## Co zostało naprawione w tej sesji (commit obecny)
 
-| # | Plik | Zmiana |
-|---|------|--------|
-| code-fix 1 | `src/app/api/jokusor/apply/route.ts` | Walidacja, że `background_check_url` i `insurance_doc_url` zaczynają się od `${user.id}/`. |
+| #          | Plik                                        | Zmiana                                                                                                    |
+| ---------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| code-fix 1 | `src/app/api/jokusor/apply/route.ts`        | Walidacja, że `background_check_url` i `insurance_doc_url` zaczynają się od `${user.id}/`.                |
 | code-fix 2 | `src/app/api/marketplace/messages/route.ts` | Sprzedawca może pisać tylko do tych, którzy do niego napisali; każdy inny może pisać tylko do sprzedawcy. |
-| code-fix 3 | `src/app/api/jokusor/profile/route.ts` | `public_photo_url` musi być publicznym URL-em z bucketa `jokusor-photos` pod folderem `${user.id}/`. |
+| code-fix 3 | `src/app/api/jokusor/profile/route.ts`      | `public_photo_url` musi być publicznym URL-em z bucketa `jokusor-photos` pod folderem `${user.id}/`.      |
 
 Zweryfikowane przez `npm run typecheck` + `npm run build` (oba zielone).
 
@@ -81,6 +81,7 @@ realnego przelewu. To **nie jest błąd w kodzie** (świadomy kompromis do
 sprintu 3c), tylko ryzyko operacyjne.
 
 **Mitygacja — wybierz jedno:**
+
 - Trzymać rejestrację za invite-codem do czasu Przelewy24.
 - Albo dodać gate w `mock_pay_order` (sprawdzić `users.role IN ('admin','tester')`).
 - Albo zaakceptować ryzyko, jeśli produkcja na razie jest "zamknięta dla zaproszonych".
@@ -161,20 +162,20 @@ Drobiazg, ale spójność.
 
 ### 1. RLS / autoryzacja
 
-| Endpoint | Status | Notatka |
-|---|---|---|
-| `POST /api/marketplace/listings` | ✓ | seller_id + estate_id serwerowo. |
-| `PATCH/DELETE /api/marketplace/listings/[id]` | ✓ | Defense-in-depth `.eq(seller_id)` + RLS. |
-| `POST /api/marketplace/listings/[id]/buy` | ✓ | Cała logika w `create_marketplace_purchase`. |
-| `POST /api/marketplace/listings/[id]/report` | ✓ | Brak dedupe = NTH-1. |
-| `POST /api/marketplace/messages` | ✓ po code-fix 2 | Wcześniej każdy mógł DM-ować dowolnego usera. |
-| `POST /api/orders/[id]/messages` | ✓ | Recipient liczony serwerowo z `orders.{resident,jokusor}_id`. |
-| `POST /api/orders/[id]/rating` | ✓ | Wszystkie warunki + duplicate via 23505. |
-| `POST /api/orders/[id]/tip` | ✓ (mock) | Mock-payment, patrz must-fix #5. |
-| `POST /api/jokusor/apply` | ✓ po code-fix 1 | Wcześniej można było wysłać cudzą ścieżkę dokumentu. |
-| `PATCH /api/jokusor/profile` | ✓ po code-fix 3 | Wcześniej `public_photo_url` mógł być dowolnym URL-em. |
-| `PATCH /api/profile` | ✓ | RLS + Zod + scope po `user_id`/`is_default`. |
-| `POST /api/admin/jokusors/[userId]/{approve,reject}` | ✓ | UUID + role check przed service-role. |
+| Endpoint                                             | Status          | Notatka                                                       |
+| ---------------------------------------------------- | --------------- | ------------------------------------------------------------- |
+| `POST /api/marketplace/listings`                     | ✓               | seller_id + estate_id serwerowo.                              |
+| `PATCH/DELETE /api/marketplace/listings/[id]`        | ✓               | Defense-in-depth `.eq(seller_id)` + RLS.                      |
+| `POST /api/marketplace/listings/[id]/buy`            | ✓               | Cała logika w `create_marketplace_purchase`.                  |
+| `POST /api/marketplace/listings/[id]/report`         | ✓               | Brak dedupe = NTH-1.                                          |
+| `POST /api/marketplace/messages`                     | ✓ po code-fix 2 | Wcześniej każdy mógł DM-ować dowolnego usera.                 |
+| `POST /api/orders/[id]/messages`                     | ✓               | Recipient liczony serwerowo z `orders.{resident,jokusor}_id`. |
+| `POST /api/orders/[id]/rating`                       | ✓               | Wszystkie warunki + duplicate via 23505.                      |
+| `POST /api/orders/[id]/tip`                          | ✓ (mock)        | Mock-payment, patrz must-fix #5.                              |
+| `POST /api/jokusor/apply`                            | ✓ po code-fix 1 | Wcześniej można było wysłać cudzą ścieżkę dokumentu.          |
+| `PATCH /api/jokusor/profile`                         | ✓ po code-fix 3 | Wcześniej `public_photo_url` mógł być dowolnym URL-em.        |
+| `PATCH /api/profile`                                 | ✓               | RLS + Zod + scope po `user_id`/`is_default`.                  |
+| `POST /api/admin/jokusors/[userId]/{approve,reject}` | ✓               | UUID + role check przed service-role.                         |
 
 ### 2. Service role
 

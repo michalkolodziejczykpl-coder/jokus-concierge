@@ -49,12 +49,15 @@ export async function POST(request: Request) {
     );
   }
 
-  const { data, error } = await supabase.rpc('create_slot_hold' as never, {
-    p_order_id: parsed.data.order_id,
-    p_jokusor_id: parsed.data.jokusor_id,
-    p_slot_start: parsed.data.slot_start,
-    p_slot_end: parsed.data.slot_end
-  } as never);
+  const { data, error } = await supabase.rpc(
+    'create_slot_hold' as never,
+    {
+      p_order_id: parsed.data.order_id,
+      p_jokusor_id: parsed.data.jokusor_id,
+      p_slot_start: parsed.data.slot_start,
+      p_slot_end: parsed.data.slot_end
+    } as never
+  );
 
   if (error) {
     // Map SQL-raised messages + Postgres error codes to HTTP statuses.
@@ -83,10 +86,7 @@ export async function POST(request: Request) {
     }
 
     console.error('[POST /api/slots/hold] rpc', error);
-    return NextResponse.json(
-      { error: 'hold_failed', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'hold_failed', message: error.message }, { status: 500 });
   }
 
   // RPC returns a single-row table; supabase-js gives us the array.

@@ -37,9 +37,12 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
   }
 
-  const { error } = await supabase.rpc('cancel_slot_hold' as never, {
-    p_time_slot_id: id
-  } as never);
+  const { error } = await supabase.rpc(
+    'cancel_slot_hold' as never,
+    {
+      p_time_slot_id: id
+    } as never
+  );
 
   if (error) {
     const msg = (error.message || '').toLowerCase();
@@ -55,10 +58,7 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
     }
 
     console.error('[DELETE /api/slots/hold/[id]] rpc', error);
-    return NextResponse.json(
-      { error: 'cancel_failed', message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'cancel_failed', message: error.message }, { status: 500 });
   }
 
   return new NextResponse(null, { status: 204 });

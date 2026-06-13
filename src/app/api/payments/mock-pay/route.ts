@@ -26,7 +26,10 @@ export async function POST(request: Request) {
 
   if (!isMockPaymentAllowed(user.email)) {
     return NextResponse.json(
-      { error: 'mock_payments_closed', message: 'Płatności są obecnie w fazie zamkniętych testów.' },
+      {
+        error: 'mock_payments_closed',
+        message: 'Płatności są obecnie w fazie zamkniętych testów.'
+      },
       { status: 403 }
     );
   }
@@ -46,9 +49,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error } = await supabase.rpc('mock_pay_order' as never, {
-    p_order_id: parsed.data.order_id
-  } as never);
+  const { error } = await supabase.rpc(
+    'mock_pay_order' as never,
+    {
+      p_order_id: parsed.data.order_id
+    } as never
+  );
 
   if (error) {
     const msg = (error.message || '').toLowerCase();

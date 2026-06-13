@@ -201,6 +201,46 @@ export const jokusorApplicationSchema = z.object({
 export type JokusorApplicationParsed = z.infer<typeof jokusorApplicationSchema>;
 
 // ============================================================================
+// Registration — email magic link → name + verified phone (SMS OTP)
+// ============================================================================
+
+/**
+ * Polish mobile number. Accepts either a bare 9-digit national number
+ * (`123456789`) or E.164 with the +48 prefix (`+48123456789`). Spaces and
+ * dashes are stripped before validation. Always normalised to `+48XXXXXXXXX`
+ * so the same string can be handed straight to Supabase `updateUser({ phone })`
+ * and `verifyOtp({ phone })`.
+ */
+export const plPhoneSchema = z
+  .string()
+  .trim()
+  .transform((v) => v.replace(/[\s-]/g, ''))
+  .refine((v) => /^(\+48)?\d{9}$/.test(v), 'Numer telefonu: +48 i 9 cyfr lub samo 9 cyfr')
+  .transform((v) => (v.startsWith('+48') ? v : `+48${v}`));
+
+/**
+ * Step 2 of email registration: the resident supplies their name and a phone
+ * number. The phone is not yet trusted — it becomes `phone_verified` only after
+ * the SMS OTP round-trip (see /api/register/confirm-phone).
+ */
+export const registerProfileSchema = z.object({
+  full_name: z.string().trim().min(2, 'Podaj imię i nazwisko').max(120),
+  phone: plPhoneSchema
+});
+
+export type RegisterProfileParsed = z.infer<typeof registerProfileSchema>;
+
+/**
+ * Body of POST /api/register/confirm-phone. Only the phone is sent; the server
+ * cross-checks it against the verified `auth.users` record before trusting it.
+ */
+export const confirmPhoneSchema = z.object({
+  phone: plPhoneSchema
+});
+
+export type ConfirmPhoneParsed = z.infer<typeof confirmPhoneSchema>;
+
+// ============================================================================
 // Profile editing — resident + jokusor
 // ============================================================================
 

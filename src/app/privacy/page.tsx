@@ -29,10 +29,7 @@ export default function PrivacyPage() {
             Administratorem Twoich danych osobowych jest <strong>JOKUS Sp. z o.o.</strong> z
             siedzibą pod adresem ul. Kwiatowa 8, 55-330 Księginice, KRS 0001128971, REGON 529737219,
             NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
-            <a
-              className="text-brand hover:underline"
-              href="mailto:biuro@jokus.pl"
-            >
+            <a className="text-brand hover:underline" href="mailto:biuro@jokus.pl">
               biuro@jokus.pl
             </a>
             .

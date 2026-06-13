@@ -38,7 +38,7 @@ These are the actual deployed resources — use them when configuring env vars, 
 - **GitHub**: https://github.com/michalkolodziejczykpl-coder/migmig-concierge (private)
 - **Vercel team / project**: `migmig-s-projects` / `migmig-concierge` (Hobby plan)
 - **Google Cloud OAuth project**: `JOKUS Concierge` (project number 862680181705), Web Client `JOKUS Web Client`. App is in Testing mode — Google shows the "unverified app" warning until verified.
-- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, www.jokus.pl/**, jokus.pl/**, _.jokus.pl/**, migmig-concierge.vercel.app/**, _-migmig-s-projects.vercel.app/\*\* (preview deploys).
+- **Supabase Auth → Redirect URLs allow-list**: localhost:3000/**, www.jokus.pl/**, jokus.pl/**, \_.jokus.pl/**, migmig-concierge.vercel.app/\*\*, \_-migmig-s-projects.vercel.app/\*\* (preview deploys).
 - **Custom domain `jokus.pl`**: registered at cyber_Folks, DNS managed there. Apex A record → `216.198.79.1` (Vercel); `www` CNAME → `649dbf5c4524d786.vercel-dns-017.com`. SSL auto-provisioned by Vercel (Let's Encrypt).
 
 ## Three non-negotiable UX requirements

@@ -38,14 +38,17 @@ export async function POST(request: Request, { params }: RouteContext) {
     .select('resident_id, jokusor_id, status')
     .eq('id', id)
     .maybeSingle();
-  const order = orderRow as { resident_id: string; jokusor_id: string | null; status: string } | null;
+  const order = orderRow as {
+    resident_id: string;
+    jokusor_id: string | null;
+    status: string;
+  } | null;
   if (!order) return NextResponse.json({ error: 'order_not_found' }, { status: 404 });
   if (order.resident_id !== user.id)
     return NextResponse.json({ error: 'not_your_order' }, { status: 403 });
   if (order.status !== 'completed')
     return NextResponse.json({ error: 'order_not_completed' }, { status: 409 });
-  if (!order.jokusor_id)
-    return NextResponse.json({ error: 'no_jokusor' }, { status: 409 });
+  if (!order.jokusor_id) return NextResponse.json({ error: 'no_jokusor' }, { status: 409 });
 
   const { error } = await supabase.from('ratings').insert({
     order_id: id,

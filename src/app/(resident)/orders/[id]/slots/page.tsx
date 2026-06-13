@@ -135,13 +135,12 @@ export default async function OrderSlotsPage({ params }: PageProps) {
 
     const ts = tsRow as unknown as TimeSlotRow;
     const parsed = parseTstzRange(ts.range);
-    const slotStart = parsed ? parsed[0] : order.scheduled_at ?? new Date().toISOString();
-    const slotEnd =
-      parsed
-        ? parsed[1]
-        : new Date(
-            new Date(slotStart).getTime() + (moduleData.estimated_duration_min ?? 20) * 60_000
-          ).toISOString();
+    const slotStart = parsed ? parsed[0] : (order.scheduled_at ?? new Date().toISOString());
+    const slotEnd = parsed
+      ? parsed[1]
+      : new Date(
+          new Date(slotStart).getTime() + (moduleData.estimated_duration_min ?? 20) * 60_000
+        ).toISOString();
 
     // Fetch jokusor name (full_name is in public.users)
     let jokusorName: string | null = null;

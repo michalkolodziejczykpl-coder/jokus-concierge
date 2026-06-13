@@ -131,9 +131,7 @@ export default function LiveTrackingShare({ orderId }: Props) {
                 className="h-4 w-4 text-neutral-500 dark:text-neutral-400"
                 aria-hidden="true"
               />
-              <span className="text-neutral-600 dark:text-neutral-400">
-                Tracking wyłączony
-              </span>
+              <span className="text-neutral-600 dark:text-neutral-400">Tracking wyłączony</span>
             </>
           )}
         </div>
