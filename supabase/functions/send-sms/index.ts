@@ -21,8 +21,10 @@
 import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 
 // Payload shape POSTed by the Send SMS Hook (confirmed against Supabase docs).
+// For an email-first signup the user has no confirmed phone yet, so adding one
+// is a PHONE CHANGE: the new number arrives in `phone_change`, not `phone`.
 interface SendSmsPayload {
-  user: { phone: string };
+  user: { phone?: string; phone_change?: string; new_phone?: string };
   sms: { otp: string };
 }
 
@@ -59,11 +61,17 @@ Deno.serve(async (req) => {
   }
 
   // 2. Extract phone (E.164 +48...) and OTP. SMSAPI wants the number WITHOUT
-  //    the leading '+', i.e. 48XXXXXXXXX.
-  const phone = payload.user?.phone?.replace(/[^\d]/g, '');
+  //    the leading '+', i.e. 48XXXXXXXXX. On a phone CHANGE (email-first signup
+  //    adding a number) the value is in phone_change, not phone — fall back.
+  const u = payload.user ?? {};
+  const rawPhone = u.phone || u.phone_change || u.new_phone || '';
+  const phone = rawPhone.replace(/[^\d]/g, '');
   const otp = payload.sms?.otp;
   if (!phone || !otp) {
-    console.error('[send-sms] payload missing phone or otp');
+    console.error(
+      '[send-sms] payload missing phone or otp',
+      JSON.stringify({ userKeys: Object.keys(u), hasOtp: Boolean(otp) })
+    );
     return new Response(JSON.stringify({ error: 'invalid_payload' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
