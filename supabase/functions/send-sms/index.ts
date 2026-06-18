@@ -113,7 +113,11 @@ Deno.serve(async (req) => {
   if (smsapiJson.error) {
     console.error('[send-sms] SMSAPI error', smsapiJson.error, smsapiJson.message);
     return new Response(
-      JSON.stringify({ error: 'smsapi_error', code: smsapiJson.error, message: smsapiJson.message }),
+      JSON.stringify({
+        error: 'smsapi_error',
+        code: smsapiJson.error,
+        message: smsapiJson.message
+      }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

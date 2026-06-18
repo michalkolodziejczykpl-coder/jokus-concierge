@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import ChangePassword from '@/components/shared/ChangePassword';
 import ResidentProfileForm from './ResidentProfileForm';
 import JokusorProfileForm from './JokusorProfileForm';
 
@@ -16,6 +17,10 @@ export default async function ProfilePage() {
     data: { user }
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
+
+  // Password management is for email/password accounts only. OAuth-only users
+  // (Google/Facebook) have no Supabase password to change.
+  const hasEmailIdentity = user.identities?.some((i) => i.provider === 'email') ?? false;
 
   const { data: profile } = await supabase
     .from('users')
@@ -112,6 +117,16 @@ export default async function ProfilePage() {
       </p>
 
       <div className="mt-8">{inner}</div>
+
+      <div className="mt-8">
+        {hasEmailIdentity ? (
+          <ChangePassword />
+        ) : (
+          <p className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+            Logujesz się przez Google — hasłem zarządzasz w swoim koncie Google.
+          </p>
+        )}
+      </div>
     </main>
   );
 }

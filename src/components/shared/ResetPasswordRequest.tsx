@@ -1,56 +1,46 @@
 'use client';
 
-// Passwordless email registration. The resident enters only their email; we
-// send a Supabase magic link that, when clicked, creates the account + session
-// and lands on /callback?next=/rejestracja/uzupelnij to finish the flow
-// (name + verified phone). No password is collected here by design.
+// Step 1 of password recovery (email accounts only). Sends a Supabase recovery
+// link; the link lands on /callback?type=recovery&next=/reset-haslo/nowe, which
+// verifies the token, sets a session, and forwards to the "set new password"
+// screen.
 //
-// emailRedirectTo uses the CURRENT origin (window.location.origin), not a fixed
-// APP_URL — same reasoning as OAuthButtons: the PKCE cookie is set on the origin
-// where the flow started, so the link must return to that same origin.
+// The confirmation message is intentionally NEUTRAL — it must not reveal whether
+// an account exists for the given address (account-enumeration protection).
+//
+// redirectTo uses the CURRENT origin (window.location.origin) so the link
+// returns to the host the request started on (jokus.pl AND migmig.pl).
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-export default function MagicLinkRegister() {
+export default function ResetPasswordRequest() {
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
-    setError(null);
 
-    const trimmed = email.trim();
     const supabase = createClient();
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.jokus.pl';
 
-    const { error: otpErr } = await supabase.auth.signInWithOtp({
-      email: trimmed,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${origin}/callback?next=/rejestracja/uzupelnij`
-      }
+    // Ignore the error on purpose: surfacing it would leak whether the account
+    // exists. Always show the same neutral confirmation.
+    await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${origin}/callback?next=/reset-haslo/nowe`
     });
 
-    if (otpErr) {
-      setError('Nie udało się wysłać linku. Sprawdź adres e-mail i spróbuj ponownie.');
-      setBusy(false);
-      return;
-    }
-
-    setSentTo(trimmed);
+    setSent(true);
     setBusy(false);
   }
 
-  if (sentTo) {
+  if (sent) {
     return (
       <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900/40 dark:bg-green-950/30 dark:text-green-300">
-        Sprawdź skrzynkę — wysłaliśmy link aktywacyjny na{' '}
-        <span className="font-semibold">{sentTo}</span>.
+        Jeśli konto istnieje, wysłaliśmy link do zmiany hasła. Sprawdź skrzynkę.
       </div>
     );
   }
@@ -70,13 +60,12 @@ export default function MagicLinkRegister() {
         aria-label="E-mail"
         className={inputClass}
       />
-      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={busy}
         className="rounded-lg bg-neutral-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-neutral-800 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
       >
-        {busy ? 'Wysyłam…' : 'Wyślij link aktywacyjny'}
+        {busy ? 'Wysyłam…' : 'Wyślij link do zmiany hasła'}
       </button>
     </form>
   );

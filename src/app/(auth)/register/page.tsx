@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { OAuthButtons } from '@/components/shared/OAuthButtons';
-import MagicLinkRegister from '@/components/shared/MagicLinkRegister';
+import EmailPasswordRegister from '@/components/shared/EmailPasswordRegister';
 
 export default function RegisterPage() {
   return (
@@ -8,8 +8,7 @@ export default function RegisterPage() {
       <header className="text-center">
         <h1 className="text-2xl font-bold">Załóż konto JOKUS</h1>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          Zarejestruj się przez Google albo e-mailem. Numer telefonu i adres podasz w kolejnych
-          krokach.
+          Przez Google albo e-mailem i hasłem. Numer telefonu potwierdzisz przy pierwszym logowaniu.
         </p>
       </header>
 
@@ -24,7 +23,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <MagicLinkRegister />
+      <EmailPasswordRegister />
 
       <p className="text-center text-xs text-neutral-500">
         Masz już konto?{' '}

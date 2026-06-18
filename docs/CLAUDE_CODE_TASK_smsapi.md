@@ -22,6 +22,7 @@ dokumentacji (linki niżej) — payload i podpis hooka oraz endpoint SMSAPI mog�
 ## Do zrobienia (kod)
 
 Utwórz `supabase/functions/send-sms/index.ts`:
+
 - Odczytaj sekret hooka z env `SEND_SMS_HOOK_SECRET` i zweryfikuj podpis przychodzącego
   żądania zgodnie z dokumentacją Supabase Send SMS Hook (Standard Webhooks — nagłówki
   `webhook-id`, `webhook-timestamp`, `webhook-signature`). Odrzuć (401) przy złym podpisie.

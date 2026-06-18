@@ -8,7 +8,7 @@ export default function LoginPage() {
       <header className="text-center">
         <h1 className="text-2xl font-bold">Zaloguj się do JOKUS</h1>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          Bez hasła. Bez emaila. W 10 sekund.
+          Wejdź przez Google albo e-mailem i hasłem.
         </p>
       </header>
 
@@ -24,6 +24,12 @@ export default function LoginPage() {
       </div>
 
       <PasswordLogin />
+
+      <p className="-mt-4 text-center text-xs text-neutral-500">
+        <Link href="/reset-haslo" className="font-medium text-brand hover:underline">
+          Nie pamiętasz hasła?
+        </Link>
+      </p>
 
       <p className="text-center text-xs text-neutral-500">
         Nie masz konta?{' '}

@@ -201,7 +201,18 @@ export const jokusorApplicationSchema = z.object({
 export type JokusorApplicationParsed = z.infer<typeof jokusorApplicationSchema>;
 
 // ============================================================================
-// Registration — email magic link → name + verified phone (SMS OTP)
+// Account password — email/password signup, reset, change
+// ============================================================================
+
+/**
+ * Account password. Minimum 8 characters; Supabase enforces any additional
+ * rules server-side. The "repeat password" match is a cross-field, UI-specific
+ * concern, so it's checked in the form rather than here.
+ */
+export const passwordSchema = z.string().min(8, 'Hasło musi mieć min. 8 znaków');
+
+// ============================================================================
+// Registration — email + password → name + verified phone (SMS OTP)
 // ============================================================================
 
 /**
