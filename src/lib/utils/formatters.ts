@@ -57,6 +57,13 @@ const DAY_KEY_FMT = new Intl.DateTimeFormat('en-CA', {
   timeZone: PL_TZ
 });
 
+const DATE_FMT = new Intl.DateTimeFormat('pl-PL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: PL_TZ
+});
+
 /**
  * Day header for slot grid: "poniedziałek, 25 maja".
  */
@@ -84,6 +91,13 @@ export function formatSlotRange(startIso: string, endIso: string): string {
  */
 export function dayKey(iso: string): string {
   return DAY_KEY_FMT.format(new Date(iso));
+}
+
+/**
+ * Full calendar date for display: "19 czerwca 2026".
+ */
+export function formatDate(iso: string): string {
+  return DATE_FMT.format(new Date(iso));
 }
 
 /**

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ChevronLeft, Boxes, MapPin, ClipboardCheck, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, Boxes, MapPin, ClipboardCheck, ShoppingCart, Users } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 const TILES = [
@@ -24,6 +24,12 @@ const TILES = [
     title: 'Zgłoszenia jokusorów',
     desc: 'Weryfikuj i akceptuj kandydatów.',
     Icon: ClipboardCheck
+  },
+  {
+    href: '/users',
+    title: 'Użytkownicy',
+    desc: 'Wszyscy użytkownicy i obszary jokusorów.',
+    Icon: Users
   }
 ] as const;
 
