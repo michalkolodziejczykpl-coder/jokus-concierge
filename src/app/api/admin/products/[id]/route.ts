@@ -37,6 +37,8 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       image_url: d.image_url || null,
       is_active: d.is_active,
       sort_order: d.sort_order,
+      old_price: d.old_price ?? null,
+      badge: d.badge || null,
       updated_at: new Date().toISOString()
     } as never)
     .eq('id', id)

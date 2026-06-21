@@ -31,7 +31,9 @@ export async function POST(request: Request) {
       estimated_price: d.estimated_price,
       image_url: d.image_url || null,
       is_active: d.is_active,
-      sort_order: d.sort_order
+      sort_order: d.sort_order,
+      old_price: d.old_price ?? null,
+      badge: d.badge || null
     } as never)
     .select('id')
     .single();

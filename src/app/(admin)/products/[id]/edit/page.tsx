@@ -15,6 +15,8 @@ type Prod = {
   image_url: string | null;
   is_active: boolean;
   sort_order: number | null;
+  old_price: number | null;
+  badge: string | null;
 };
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -36,7 +38,7 @@ export default async function EditProductPage({ params }: PageProps) {
     supabase
       .from('products')
       .select(
-        'id, category_id, name, brand, unit, estimated_price, image_url, is_active, sort_order'
+        'id, category_id, name, brand, unit, estimated_price, image_url, is_active, sort_order, old_price, badge'
       )
       .eq('id', id)
       .maybeSingle(),
@@ -68,7 +70,9 @@ export default async function EditProductPage({ params }: PageProps) {
             estimated_price: p.estimated_price,
             image_url: p.image_url ?? '',
             is_active: p.is_active,
-            sort_order: p.sort_order ?? 0
+            sort_order: p.sort_order ?? 0,
+            old_price: p.old_price ?? '',
+            badge: p.badge ?? ''
           }}
         />
       </div>

@@ -46,7 +46,9 @@ export default async function NewProductPage() {
             estimated_price: '',
             image_url: '',
             is_active: true,
-            sort_order: '0'
+            sort_order: '0',
+            old_price: '',
+            badge: ''
           }}
         />
       </div>

@@ -7,9 +7,10 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, ImageOff, Minus, Plus, RotateCcw, ShoppingCart, X } from 'lucide-react';
+import { Heart, Minus, Plus, RotateCcw, ShoppingCart, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { formatPLN } from '@/lib/utils/formatters';
+import { categoryIcon } from '@/lib/shop/categoryIcon';
 
 type Product = {
   id: string;
@@ -19,8 +20,10 @@ type Product = {
   estimated_price: number;
   image_url: string | null;
   category_id: string | null;
+  old_price: number | null;
+  badge: string | null;
 };
-type Category = { id: string; name: string };
+type Category = { id: string; name: string; slug: string | null };
 
 type Props = {
   userId: string;
@@ -60,6 +63,7 @@ export default function Shop({
     [products]
   );
   const productById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
+  const slugByCatId = useMemo(() => new Map(categories.map((c) => [c.id, c.slug])), [categories]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -181,16 +185,22 @@ export default function Shop({
           >
             Wszystko
           </button>
-          {categories.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => setActiveCat(c.id)}
-              className={`${pill} ${activeCat === c.id ? pillOn : pillOff}`}
-            >
-              {c.name}
-            </button>
-          ))}
+          {categories.map((c) => {
+            const Icon = categoryIcon(c.slug);
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setActiveCat(c.id)}
+                className={`${pill} inline-flex items-center gap-1.5 ${
+                  activeCat === c.id ? pillOn : pillOff
+                }`}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {c.name}
+              </button>
+            );
+          })}
           <button
             type="button"
             onClick={() => setOnlyFavs((v) => !v)}
@@ -212,6 +222,11 @@ export default function Shop({
             {filtered.map((p) => {
               const qty = cart.get(p.id) ?? 0;
               const fav = favs.has(p.id);
+              const Icon = categoryIcon(p.category_id ? slugByCatId.get(p.category_id) : null);
+              const hasDiscount = p.old_price != null && p.old_price > p.estimated_price;
+              const discountPct = hasDiscount
+                ? Math.round((1 - p.estimated_price / (p.old_price as number)) * 100)
+                : 0;
               return (
                 <li
                   key={p.id}
@@ -222,10 +237,23 @@ export default function Shop({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="grid h-full w-full place-items-center text-neutral-300">
-                        <ImageOff className="h-8 w-8" aria-hidden="true" />
+                      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-orange-50 to-neutral-100 text-orange-300 dark:from-neutral-900 dark:to-neutral-900 dark:text-neutral-700">
+                        <Icon className="h-12 w-12" aria-hidden="true" />
                       </div>
                     )}
+                    {hasDiscount ? (
+                      <span className="absolute left-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white shadow">
+                        -{discountPct}%
+                      </span>
+                    ) : p.badge === 'hit' ? (
+                      <span className="absolute left-2 top-2 rounded-full bg-orange-600 px-2 py-0.5 text-xs font-bold text-white shadow">
+                        Hit
+                      </span>
+                    ) : p.badge === 'promo' ? (
+                      <span className="absolute left-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white shadow">
+                        Promo
+                      </span>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => toggleFav(p.id)}
@@ -246,7 +274,12 @@ export default function Shop({
                       {p.brand && <p className="text-xs text-neutral-500">{p.brand}</p>}
                     </div>
                     <p className="text-sm font-bold text-orange-600 dark:text-orange-400">
-                      {formatPLN(p.estimated_price)}{' '}
+                      {formatPLN(p.estimated_price)}
+                      {hasDiscount && (
+                        <span className="ml-1.5 text-xs font-normal text-neutral-400 line-through">
+                          {formatPLN(p.old_price as number)}
+                        </span>
+                      )}{' '}
                       <span className="text-xs font-normal text-neutral-500">/ {p.unit}</span>
                     </p>
                     {qty === 0 ? (

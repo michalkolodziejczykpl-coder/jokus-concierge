@@ -7,7 +7,7 @@ import { ChevronLeft } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import Shop from '@/components/resident/Shop';
 
-type Category = { id: string; name: string };
+type Category = { id: string; name: string; slug: string | null };
 type Product = {
   id: string;
   name: string;
@@ -16,6 +16,8 @@ type Product = {
   estimated_price: number;
   image_url: string | null;
   category_id: string | null;
+  old_price: number | null;
+  badge: string | null;
 };
 
 export default async function ShopPage() {
@@ -32,10 +34,10 @@ export default async function ShopPage() {
     { data: favRows },
     { data: recentRows }
   ] = await Promise.all([
-    supabase.from('product_categories').select('id, name').order('sort_order').order('name'),
+    supabase.from('product_categories').select('id, name, slug').order('sort_order').order('name'),
     supabase
       .from('products')
-      .select('id, name, brand, unit, estimated_price, image_url, category_id')
+      .select('id, name, brand, unit, estimated_price, image_url, category_id, old_price, badge')
       .eq('is_active', true)
       .order('sort_order')
       .order('name'),

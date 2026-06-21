@@ -394,6 +394,11 @@ export const productSchema = z.object({
     .max(100_000),
   image_url: z.string().trim().url().optional().or(z.literal('')),
   is_active: z.boolean(),
-  sort_order: z.coerce.number().int().min(0).max(9999)
+  sort_order: z.coerce.number().int().min(0).max(9999),
+  old_price: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? undefined : v),
+    z.coerce.number().min(0).max(100_000).optional()
+  ),
+  badge: z.enum(['hit', 'promo']).optional().or(z.literal(''))
 });
 export type ProductParsed = z.infer<typeof productSchema>;

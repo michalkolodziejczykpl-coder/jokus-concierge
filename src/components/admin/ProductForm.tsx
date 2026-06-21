@@ -23,6 +23,8 @@ type Initial = {
   image_url: string;
   is_active: boolean;
   sort_order: number | string;
+  old_price: number | string;
+  badge: string;
 };
 type Errors = Record<string, string>;
 
@@ -121,7 +123,9 @@ export default function ProductForm({
         estimated_price: String(fd.get('estimated_price') ?? ''),
         image_url: imageUrl,
         is_active: fd.get('is_active') === 'on',
-        sort_order: String(fd.get('sort_order') ?? '0')
+        sort_order: String(fd.get('sort_order') ?? '0'),
+        old_price: String(fd.get('old_price') ?? ''),
+        badge: String(fd.get('badge') ?? '')
       };
       const valid = productSchema.safeParse(body);
       if (!valid.success) {
@@ -229,6 +233,31 @@ export default function ProductForm({
             defaultValue={String(initial.estimated_price)}
             className={inputClass}
           />
+        </Field>
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Field
+          label="Cena przed (opcjonalnie)"
+          error={errors.old_price}
+          hint="Cena sprzed promocji — pokazywana przekreślona, zniżka liczona automatycznie."
+        >
+          <input
+            name="old_price"
+            type="number"
+            min={0}
+            step="0.01"
+            defaultValue={initial.old_price === '' ? '' : String(initial.old_price)}
+            className={inputClass}
+            placeholder="np. 4,99"
+          />
+        </Field>
+        <Field label="Plakietka" error={errors.badge}>
+          <select name="badge" defaultValue={initial.badge} className={inputClass}>
+            <option value="">— brak —</option>
+            <option value="hit">Hit</option>
+            <option value="promo">Promocja</option>
+          </select>
         </Field>
       </div>
 
