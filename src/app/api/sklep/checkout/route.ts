@@ -2,9 +2,15 @@
 // Creates the order + order_items (price snapshot) and clears the cart, then
 // returns order_id so the client can continue to the slot picker + payment.
 // Prices are ESTIMATES; final total is settled from the receipt later (G4/3c).
+//
+// Service fee (billing v2): percent-priced module → max(min_price,
+// base_price% × basket), else flat base_price. The computed fee is PERSISTED
+// into orders.base_price — the earnings panel reads that frozen value, so
+// later admin changes to the rate/minimum never rewrite past orders.
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { toGr, percentServiceFeeGr } from '@/lib/payments/pricing';
 
 const GROCERY_SLUG = 'zakupy-spozywcze';
 
@@ -22,15 +28,19 @@ export async function POST() {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
 
-  // Grocery module (seeded). Service fee = its base_price.
+  // Grocery module (seeded) — carries the fee config (rate/min or flat).
+  // select('*') so this works before and after migration 20260706000001
+  // (min_price column); pre-migration min_price is undefined → treated as 0.
   const { data: moduleRow } = await supabase
     .from('modules')
-    .select('id, base_price, estimated_duration_min')
+    .select('*')
     .eq('slug', GROCERY_SLUG)
     .maybeSingle();
-  const grocery = moduleRow as {
+  const grocery = moduleRow as unknown as {
     id: string;
     base_price: number;
+    price_unit: string;
+    min_price?: number | null;
     estimated_duration_min: number;
   } | null;
   if (!grocery) return NextResponse.json({ error: 'grocery_module_missing' }, { status: 503 });
@@ -61,13 +71,21 @@ export async function POST() {
     return NextResponse.json({ error: 'no_default_address' }, { status: 409 });
   }
 
-  const itemsTotal = cart.reduce(
-    (sum, c) => sum + Number(c.products!.estimated_price) * c.quantity,
+  // Basket value + service fee, in grosze (no float drift).
+  const basketGr = cart.reduce(
+    (sum, c) => sum + toGr(Number(c.products!.estimated_price)) * c.quantity,
     0
   );
-  const total = Number(grocery.base_price) + itemsTotal;
+  const feeGr =
+    grocery.price_unit === 'percent'
+      ? percentServiceFeeGr(
+          basketGr,
+          Number(grocery.base_price),
+          toGr(Number(grocery.min_price ?? 0))
+        )
+      : toGr(Number(grocery.base_price));
 
-  // Create the draft order.
+  // Create the draft order. base_price = the fee actually charged (frozen).
   const { data: orderRow, error: orderErr } = await supabase
     .from('orders')
     .insert({
@@ -76,8 +94,8 @@ export async function POST() {
       estate_id: address.estate_id,
       address_id: address.id,
       status: 'draft',
-      base_price: grocery.base_price,
-      total_price: total,
+      base_price: feeGr / 100,
+      total_price: (feeGr + basketGr) / 100,
       custom_data: {},
       estimated_duration_min: grocery.estimated_duration_min,
       created_via: 'tile'
