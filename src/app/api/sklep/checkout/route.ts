@@ -29,18 +29,16 @@ export async function POST() {
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
 
   // Grocery module (seeded) — carries the fee config (rate/min or flat).
-  // select('*') so this works before and after migration 20260706000001
-  // (min_price column); pre-migration min_price is undefined → treated as 0.
   const { data: moduleRow } = await supabase
     .from('modules')
-    .select('*')
+    .select('id, base_price, price_unit, min_price, estimated_duration_min')
     .eq('slug', GROCERY_SLUG)
     .maybeSingle();
-  const grocery = moduleRow as unknown as {
+  const grocery = moduleRow as {
     id: string;
     base_price: number;
     price_unit: string;
-    min_price?: number | null;
+    min_price: number | null;
     estimated_duration_min: number;
   } | null;
   if (!grocery) return NextResponse.json({ error: 'grocery_module_missing' }, { status: 503 });

@@ -21,11 +21,9 @@ export default async function EditModulePage({ params }: PageProps) {
     .maybeSingle();
   if ((profile as { role?: string } | null)?.role !== 'admin') redirect('/home');
 
-  // select('*') so the page works before and after migration 20260706000001
-  // (min_price column) — hence the unknown hop; regen types removes it.
   const { data: row } = await supabase.from('modules').select('*').eq('id', id).maybeSingle();
   if (!row) notFound();
-  const m = row as unknown as Module;
+  const m = row as Module;
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">

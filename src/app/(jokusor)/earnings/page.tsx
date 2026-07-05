@@ -38,7 +38,8 @@ const DEFAULT_PAYOUT_SHARE = 0.5;
 const DEFAULT_SUBSCRIPTION_GR = 0;
 
 type BillingConfig = {
-  // Missing until migration 20260706000001 is applied:
+  // Optional defensively (e.g. a fresh environment before the billing
+  // migration) — the on-page banner flags that state; prod has the column.
   payout_share?: number;
   subscription_amount: number | null;
 };
@@ -90,9 +91,11 @@ export default async function EarningsPage({ searchParams }: PageProps) {
 
   const [{ data: jokRow }, { data: orderRows, error: oErr }, { data: tipRows, error: tErr }] =
     await Promise.all([
-      // select('*') so the page renders both before and after the billing
-      // migration; the missing payout_share column is detected and flagged.
-      supabase.from('jokusors').select('*').eq('user_id', user.id).maybeSingle(),
+      supabase
+        .from('jokusors')
+        .select('payout_share, subscription_amount')
+        .eq('user_id', user.id)
+        .maybeSingle(),
       supabase
         .from('orders')
         .select('id, base_price, total_price, completed_at, modules(name)')
@@ -115,8 +118,7 @@ export default async function EarningsPage({ searchParams }: PageProps) {
     throw new Error('Nie udało się załadować zestawienia zarobków');
   }
 
-  // payout_share is absent until migration 20260706000001 lands — unknown hop.
-  const billing = jokRow as unknown as BillingConfig | null;
+  const billing = jokRow as BillingConfig | null;
   const migrationMissing = billing !== null && billing.payout_share === undefined;
 
   const payoutShare = billing?.payout_share ?? DEFAULT_PAYOUT_SHARE;

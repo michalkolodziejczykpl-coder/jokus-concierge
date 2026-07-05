@@ -59,10 +59,9 @@ export type Module = {
   price_unit: PriceUnit;
   /**
    * Minimum fee for percent-priced modules (billing v2, migration
-   * 20260706000001); null/absent = no minimum. Optional until the migration
-   * is applied and types are regenerated.
+   * 20260706000001); null = no minimum.
    */
-  min_price?: number | null;
+  min_price: number | null;
   estimated_duration_min: number;
   requires_pickup: boolean;
   requires_age_verification: boolean;

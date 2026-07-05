@@ -44,13 +44,15 @@ export default async function JokusorBillingPage({ params }: PageProps) {
   if ((profile as { role?: string } | null)?.role !== 'admin') redirect('/home');
 
   const [{ data: jokRow }, { data: userRow }] = await Promise.all([
-    // select('*') so this works both before and after the billing migration.
-    supabase.from('jokusors').select('*').eq('user_id', userId).maybeSingle(),
+    supabase
+      .from('jokusors')
+      .select('user_id, payout_share, subscription_amount')
+      .eq('user_id', userId)
+      .maybeSingle(),
     supabase.from('users').select('full_name, email').eq('id', userId).maybeSingle()
   ]);
 
-  // New columns are absent until the migration lands — hence the unknown hop.
-  const jok = jokRow as unknown as JokusorBillingRow | null;
+  const jok = jokRow as JokusorBillingRow | null;
   const person = userRow as { full_name: string | null; email: string | null } | null;
 
   const migrationMissing = jok !== null && jok.payout_share === undefined;
