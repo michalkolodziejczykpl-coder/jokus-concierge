@@ -21,15 +21,11 @@ export default async function EditModulePage({ params }: PageProps) {
     .maybeSingle();
   if ((profile as { role?: string } | null)?.role !== 'admin') redirect('/home');
 
-  const { data: row } = await supabase
-    .from('modules')
-    .select(
-      'id, slug, name, description, category, icon_name, base_price, price_unit, estimated_duration_min, requires_pickup, requires_age_verification, is_global, sort_order'
-    )
-    .eq('id', id)
-    .maybeSingle();
+  // select('*') so the page works before and after migration 20260706000001
+  // (min_price column) — hence the unknown hop; regen types removes it.
+  const { data: row } = await supabase.from('modules').select('*').eq('id', id).maybeSingle();
   if (!row) notFound();
-  const m = row as Module;
+  const m = row as unknown as Module;
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">
@@ -54,6 +50,7 @@ export default async function EditModulePage({ params }: PageProps) {
             icon_name: m.icon_name ?? '',
             base_price: m.base_price,
             price_unit: m.price_unit,
+            min_price: m.min_price ?? null,
             estimated_duration_min: m.estimated_duration_min,
             requires_pickup: m.requires_pickup,
             requires_age_verification: m.requires_age_verification,

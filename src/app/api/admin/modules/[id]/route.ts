@@ -41,6 +41,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       icon_name: d.icon_name || null,
       base_price: d.base_price,
       price_unit: d.price_unit,
+      min_price: d.min_price,
       estimated_duration_min: d.estimated_duration_min,
       requires_pickup: d.requires_pickup,
       requires_age_verification: d.requires_age_verification,

@@ -57,6 +57,12 @@ export type Module = {
   /** Stored as numeric(10,2) in SQL — Supabase returns it as a number. */
   base_price: number;
   price_unit: PriceUnit;
+  /**
+   * Minimum fee for percent-priced modules (billing v2, migration
+   * 20260706000001); null/absent = no minimum. Optional until the migration
+   * is applied and types are regenerated.
+   */
+  min_price?: number | null;
   estimated_duration_min: number;
   requires_pickup: boolean;
   requires_age_verification: boolean;

@@ -310,6 +310,12 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
                                   jok.onboarding_status}
                               </span>
                             )}
+                            <Link
+                              href={`/jokusors/${u.id}/billing`}
+                              className="rounded-full border border-neutral-300 px-2.5 py-0.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                            >
+                              Rozliczenia
+                            </Link>
                           </div>
                         </div>
 

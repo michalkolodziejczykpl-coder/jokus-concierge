@@ -340,6 +340,15 @@ export const moduleSchema = z.object({
   icon_name: z.string().trim().max(40).optional().or(z.literal('')),
   base_price: z.coerce.number({ invalid_type_error: 'Cena musi być liczbą' }).min(0).max(100_000),
   price_unit: z.enum(['fixed', 'hourly', 'per_km', 'percent']),
+  // Minimum fee for percent-priced modules (billing v2); empty = no minimum.
+  min_price: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? null : v),
+    z.coerce
+      .number({ invalid_type_error: 'Minimum musi być liczbą' })
+      .min(0)
+      .max(100_000)
+      .nullable()
+  ),
   estimated_duration_min: z.coerce.number().int().min(1, 'Min 1 min').max(1440),
   requires_pickup: z.boolean(),
   requires_age_verification: z.boolean(),
@@ -402,3 +411,22 @@ export const productSchema = z.object({
   badge: z.enum(['hit', 'promo']).optional().or(z.literal(''))
 });
 export type ProductParsed = z.infer<typeof productSchema>;
+
+// ============================================================================
+// Jokusor billing (earnings panel) — admin edits the jokusor's revenue share
+// ============================================================================
+
+// Share arrives from the form as 0–100 (%) and is converted to the 0–1
+// fraction stored in jokusors.payout_share by the API route. Tips are always
+// 100% the jokusor's — not configurable here.
+export const jokusorBillingSchema = z.object({
+  payout_share_percent: z.coerce
+    .number({ invalid_type_error: 'Udział % musi być liczbą' })
+    .min(0, 'Udział nie może być ujemny')
+    .max(100, 'Udział nie może przekraczać 100%'),
+  subscription_amount: z.coerce
+    .number({ invalid_type_error: 'Abonament musi być liczbą' })
+    .min(0, 'Abonament nie może być ujemny')
+    .max(100_000)
+});
+export type JokusorBillingParsed = z.infer<typeof jokusorBillingSchema>;

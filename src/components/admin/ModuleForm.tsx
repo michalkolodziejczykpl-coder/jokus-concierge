@@ -23,6 +23,7 @@ type Initial = {
   icon_name: string;
   base_price: number | string;
   price_unit: PriceUnit;
+  min_price: number | string | null;
   estimated_duration_min: number | string;
   requires_pickup: boolean;
   requires_age_verification: boolean;
@@ -78,6 +79,7 @@ export default function ModuleForm({ initial }: { initial: Initial }) {
       icon_name: String(fd.get('icon_name') ?? '').trim(),
       base_price: String(fd.get('base_price') ?? ''),
       price_unit: String(fd.get('price_unit') ?? 'fixed'),
+      min_price: String(fd.get('min_price') ?? ''),
       estimated_duration_min: String(fd.get('estimated_duration_min') ?? ''),
       requires_pickup: fd.get('requires_pickup') === 'on',
       requires_age_verification: fd.get('requires_age_verification') === 'on',
@@ -197,6 +199,20 @@ export default function ModuleForm({ initial }: { initial: Initial }) {
               </option>
             ))}
           </select>
+        </Field>
+        <Field
+          label="Cena minimalna (zł)"
+          error={errors.min_price}
+          hint='Dla jednostki "procent wartości": cena bazowa = stawka %, a to pole = minimalna opłata. Puste = brak minimum.'
+        >
+          <input
+            name="min_price"
+            type="number"
+            min={0}
+            step="0.01"
+            defaultValue={initial.min_price == null ? '' : String(initial.min_price)}
+            className={inputClass}
+          />
         </Field>
         <Field label="Czas (min)" error={errors.estimated_duration_min}>
           <input

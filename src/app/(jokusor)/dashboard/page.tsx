@@ -116,6 +116,12 @@ export default async function JokusorDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <Link
+            href="/earnings"
+            className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
+          >
+            Zarobki
+          </Link>
+          <Link
             href="/profile"
             className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
           >

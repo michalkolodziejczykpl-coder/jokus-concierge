@@ -39,6 +39,7 @@ export default async function NewModulePage() {
             icon_name: '',
             base_price: '',
             price_unit: 'fixed',
+            min_price: null,
             estimated_duration_min: '30',
             requires_pickup: false,
             requires_age_verification: false,
