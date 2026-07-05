@@ -10,12 +10,21 @@ import { NextResponse } from 'next/server';
 import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 
+// Only allow app-internal relative paths as a post-auth redirect target.
+// Rejects absolute URLs (https://evil.com), protocol-relative ("//evil.com")
+// and backslash-tricked ("/\\evil.com") values that a browser can resolve to a
+// foreign origin — an open-redirect vector on an otherwise trusted login link.
+function isSafeInternalPath(path: string): boolean {
+  return path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/\\');
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const tokenHash = url.searchParams.get('token_hash');
   const type = url.searchParams.get('type') as EmailOtpType | null;
-  const next = url.searchParams.get('next') ?? '/home';
+  const requestedNext = url.searchParams.get('next') ?? '/home';
+  const next = isSafeInternalPath(requestedNext) ? requestedNext : '/';
 
   const supabase = await createClient();
 
