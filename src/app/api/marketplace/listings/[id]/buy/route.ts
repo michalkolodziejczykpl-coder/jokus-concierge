@@ -52,7 +52,7 @@ export async function POST(_request: Request, { params }: RouteContext) {
   }
 
   // RPC returns uuid (the new order id) as the data payload
-  const orderId = data as unknown as string | null;
+  const orderId = data as string | null;
   if (!orderId) {
     return NextResponse.json({ error: 'buy_failed_empty' }, { status: 500 });
   }

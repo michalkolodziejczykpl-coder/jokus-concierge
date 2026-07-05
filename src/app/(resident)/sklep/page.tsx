@@ -53,7 +53,7 @@ export default async function ShopPage() {
   ]);
 
   const categories = (cats as Category[] | null) ?? [];
-  const products = (prods as unknown as Product[] | null) ?? [];
+  const products = (prods as Product[] | null) ?? [];
   const initialCart = (cartRows as { product_id: string; quantity: number }[] | null) ?? [];
   const initialFavorites = ((favRows as { product_id: string }[] | null) ?? []).map(
     (f) => f.product_id

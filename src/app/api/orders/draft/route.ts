@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'module_not_found' }, { status: 404 });
   }
 
-  const moduleData = moduleRow as unknown as Module;
+  const moduleData = moduleRow as Module;
 
   // ---- Validate custom_data against the module's declared shape -----------
   // The client schema already ran on the form, but a malicious client could
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'no_default_address' }, { status: 409 });
   }
 
-  const address = addressRow as unknown as Address;
+  const address = addressRow as Address;
 
   if (!address.estate_id) {
     return NextResponse.json({ error: 'address_missing_estate' }, { status: 409 });

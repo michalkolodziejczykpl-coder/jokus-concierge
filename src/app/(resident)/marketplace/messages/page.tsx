@@ -63,7 +63,7 @@ export default async function MessagesInboxPage() {
     throw new Error('Nie udało się załadować wiadomości');
   }
 
-  const rows = (data as unknown as Row[] | null) ?? [];
+  const rows = (data as Row[] | null) ?? [];
 
   // Group by (listing, counterpart). Rows are newest-first, so the first row
   // seen for a key is the latest message.

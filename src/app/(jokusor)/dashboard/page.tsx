@@ -101,7 +101,7 @@ export default async function JokusorDashboard() {
     throw new Error('Nie udało się załadować zleceń');
   }
 
-  const orders = (rows as unknown as DashboardOrder[] | null) ?? [];
+  const orders = (rows as DashboardOrder[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-6 sm:px-6">

@@ -52,8 +52,8 @@ export default async function EditEstatePage({ params }: PageProps) {
       .eq('estate_id', id)
   ]);
 
-  const modules = (modRows as unknown as ModuleRow[] | null) ?? [];
-  const acts = (actRows as unknown as ActRow[] | null) ?? [];
+  const modules = (modRows as ModuleRow[] | null) ?? [];
+  const acts = (actRows as ActRow[] | null) ?? [];
   const actMap = new Map(acts.map((a) => [a.module_id, a]));
   const rows = modules.map((m) => {
     const a = actMap.get(m.id);

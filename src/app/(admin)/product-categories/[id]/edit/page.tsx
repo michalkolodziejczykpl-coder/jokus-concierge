@@ -26,7 +26,7 @@ export default async function EditCategoryPage({ params }: PageProps) {
     .eq('id', id)
     .maybeSingle();
   if (!row) notFound();
-  const c = row as unknown as Cat;
+  const c = row as Cat;
   return (
     <main className="mx-auto min-h-screen max-w-xl px-4 pb-16 pt-6 sm:px-6">
       <Link

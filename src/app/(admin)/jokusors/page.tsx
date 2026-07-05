@@ -63,7 +63,7 @@ export default async function AdminJokusorsPage() {
       .order('created_at', { ascending: true });
     if (jErr) throw new Error(`Odczyt zgłoszeń: ${jErr.message}`);
 
-    const joks = (jokRaw as unknown as JokRow[] | null) ?? [];
+    const joks = (jokRaw as JokRow[] | null) ?? [];
 
     const userIds = Array.from(new Set(joks.map((j) => j.user_id)));
     const estateIds = Array.from(
@@ -77,7 +77,7 @@ export default async function AdminJokusorsPage() {
         .select('id, full_name, email')
         .in('id', userIds);
       if (uErr) throw new Error(`Odczyt użytkowników: ${uErr.message}`);
-      for (const u of (us as unknown as
+      for (const u of (us as
         | { id: string; full_name: string | null; email: string | null }[]
         | null) ?? []) {
         usersMap.set(u.id, { full_name: u.full_name, email: u.email });
@@ -87,7 +87,7 @@ export default async function AdminJokusorsPage() {
     const estatesMap = new Map<string, string>();
     if (estateIds.length > 0) {
       const { data: es } = await admin.from('estates').select('id, name').in('id', estateIds);
-      for (const e of (es as unknown as { id: string; name: string }[] | null) ?? []) {
+      for (const e of (es as { id: string; name: string }[] | null) ?? []) {
         estatesMap.set(e.id, e.name);
       }
     }

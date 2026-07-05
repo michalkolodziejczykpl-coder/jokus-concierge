@@ -23,7 +23,7 @@ export default async function AdminCategoriesPage() {
     .select('id, name, slug')
     .order('sort_order')
     .order('name');
-  const cats = (rows as unknown as Row[] | null) ?? [];
+  const cats = (rows as Row[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">

@@ -29,7 +29,7 @@ export default async function EditModulePage({ params }: PageProps) {
     .eq('id', id)
     .maybeSingle();
   if (!row) notFound();
-  const m = row as unknown as Module;
+  const m = row as Module;
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">

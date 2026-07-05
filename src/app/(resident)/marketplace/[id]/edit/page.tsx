@@ -32,7 +32,7 @@ export default async function EditListingPage({ params }: PageProps) {
   }
   if (!row) notFound();
 
-  const listing = row as unknown as ListingRow;
+  const listing = row as ListingRow;
   // Only the owner can edit; others get a 404 (don't reveal it exists to edit).
   if (listing.seller_id !== user.id) notFound();
 

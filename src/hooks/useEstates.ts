@@ -21,7 +21,7 @@ async function fetchActiveEstates(): Promise<Estate[]> {
     throw new Error(`Nie udało się pobrać osiedli: ${error.message}`);
   }
 
-  return (data ?? []) as unknown as Estate[];
+  return (data ?? []) as Estate[];
 }
 
 export function useEstates() {

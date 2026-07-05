@@ -43,7 +43,7 @@ export default async function ModuleDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const moduleData = moduleRow as unknown as Module;
+  const moduleData = moduleRow as Module;
 
   // Onboarding gate. Send the user through /onboarding/address with a
   // `?next=` that bounces them back here once the address is saved.

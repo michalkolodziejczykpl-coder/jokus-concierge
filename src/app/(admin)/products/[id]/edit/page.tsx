@@ -45,7 +45,7 @@ export default async function EditProductPage({ params }: PageProps) {
     supabase.from('product_categories').select('id, name').order('sort_order').order('name')
   ]);
   if (!row) notFound();
-  const p = row as unknown as Prod;
+  const p = row as Prod;
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">

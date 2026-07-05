@@ -125,7 +125,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
 
     const { data: usersRaw, error: uErr } = await uq.limit(200);
     if (uErr) throw new Error(`Odczyt użytkowników: ${uErr.message}`);
-    users = (usersRaw as unknown as UserRow[] | null) ?? [];
+    users = (usersRaw as UserRow[] | null) ?? [];
 
     const jokusorIds = users.filter((u) => u.role === 'jokusor').map((u) => u.id);
     if (jokusorIds.length > 0) {
@@ -149,7 +149,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
         is_active: boolean | null;
         onboarding_status: string | null;
       };
-      for (const j of (jokRaw as unknown as JokRaw[] | null) ?? []) {
+      for (const j of (jokRaw as JokRaw[] | null) ?? []) {
         jokMap.set(j.user_id, {
           estate_id: j.estate_id,
           service_postal_codes: j.service_postal_codes,
@@ -172,7 +172,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
       );
       if (estateIds.length > 0) {
         const { data: es } = await admin.from('estates').select('id, name').in('id', estateIds);
-        for (const e of (es as unknown as { id: string; name: string }[] | null) ?? []) {
+        for (const e of (es as { id: string; name: string }[] | null) ?? []) {
           estatesMap.set(e.id, e.name);
         }
       }

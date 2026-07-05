@@ -76,7 +76,7 @@ export default async function OrderSlotsPage({ params }: PageProps) {
   }
   if (!orderRow) notFound();
 
-  const order = orderRow as unknown as Order;
+  const order = orderRow as Order;
 
   // -------- Fetch module (for slug + duration) -----------------------------
   const { data: moduleRow } = await supabase
@@ -90,7 +90,7 @@ export default async function OrderSlotsPage({ params }: PageProps) {
     throw new Error('Nie udało się załadować modułu zamówienia');
   }
 
-  const moduleData = moduleRow as unknown as Pick<
+  const moduleData = moduleRow as Pick<
     Module,
     'slug' | 'name' | 'estimated_duration_min'
   >;
@@ -133,7 +133,7 @@ export default async function OrderSlotsPage({ params }: PageProps) {
       throw new Error('Stan zamówienia rozjechał się z bazą — odśwież stronę.');
     }
 
-    const ts = tsRow as unknown as TimeSlotRow;
+    const ts = tsRow as TimeSlotRow;
     const parsed = parseTstzRange(ts.range);
     const slotStart = parsed ? parsed[0] : (order.scheduled_at ?? new Date().toISOString());
     const slotEnd = parsed

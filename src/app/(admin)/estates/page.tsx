@@ -35,7 +35,7 @@ export default async function AdminEstatesPage() {
     console.error('[/admin/estates] fetch', error);
     throw new Error('Nie udało się załadować osiedli');
   }
-  const estates = (rows as unknown as Row[] | null) ?? [];
+  const estates = (rows as Row[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-6 sm:px-6">

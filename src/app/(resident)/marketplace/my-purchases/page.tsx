@@ -66,7 +66,7 @@ export default async function MyPurchasesPage() {
     throw new Error('Nie udało się załadować zakupów');
   }
 
-  const purchases = (rows as unknown as PurchaseRow[] | null) ?? [];
+  const purchases = (rows as PurchaseRow[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-6 sm:px-6">

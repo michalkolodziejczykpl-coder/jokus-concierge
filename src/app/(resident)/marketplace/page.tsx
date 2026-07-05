@@ -124,7 +124,7 @@ export default async function MarketplacePage({ searchParams }: { searchParams: 
       .is('read_at', null)
   ]);
 
-  const listings = (rows as unknown as ListingRow[] | null) ?? [];
+  const listings = (rows as ListingRow[] | null) ?? [];
   const myListingsN = myListingsCount.count ?? 0;
   const myPurchasesN = myPurchasesCount.count ?? 0;
   const unreadN = unreadCount.count ?? 0;

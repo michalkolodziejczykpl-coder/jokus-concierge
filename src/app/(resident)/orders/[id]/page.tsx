@@ -128,7 +128,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
   }
   if (!row) notFound();
 
-  const order = row as unknown as OrderDetail;
+  const order = row as OrderDetail;
   const status = STATUS_VIEW[order.status];
 
   // If still draft, send back to slot picker

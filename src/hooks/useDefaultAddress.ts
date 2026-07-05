@@ -23,7 +23,7 @@ async function fetchDefaultAddress(): Promise<Address | null> {
     throw new Error(`Nie udało się pobrać adresu: ${error.message}`);
   }
 
-  return (data ?? null) as unknown as Address | null;
+  return (data ?? null) as Address | null;
 }
 
 export function useDefaultAddress() {

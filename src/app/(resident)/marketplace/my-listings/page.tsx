@@ -69,7 +69,7 @@ export default async function MyListingsPage() {
     throw new Error('Nie udało się załadować ogłoszeń');
   }
 
-  const listings = (rows as unknown as Row[] | null) ?? [];
+  const listings = (rows as Row[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-6 sm:px-6">

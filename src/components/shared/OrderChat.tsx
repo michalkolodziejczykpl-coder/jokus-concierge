@@ -55,7 +55,7 @@ export default function OrderChat({ orderId, meId, otherLabel }: Props) {
       console.error('[OrderChat.load]', loadErr);
       return;
     }
-    const rows = (data as unknown as Message[] | null) ?? [];
+    const rows = (data as Message[] | null) ?? [];
     setMessages(rows);
 
     if (rows.some((m) => m.recipient_id === meId && m.read_at === null)) {

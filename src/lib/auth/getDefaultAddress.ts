@@ -23,5 +23,5 @@ export async function getDefaultAddress(): Promise<Address | null> {
     return null;
   }
 
-  return (data ?? null) as unknown as Address | null;
+  return (data ?? null) as Address | null;
 }

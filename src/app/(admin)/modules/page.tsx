@@ -46,7 +46,7 @@ export default async function AdminModulesPage() {
     console.error('[/admin/modules] fetch', error);
     throw new Error('Nie udało się załadować modułów');
   }
-  const modules = (rows as unknown as Row[] | null) ?? [];
+  const modules = (rows as Row[] | null) ?? [];
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-6 sm:px-6">

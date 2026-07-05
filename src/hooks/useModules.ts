@@ -28,10 +28,9 @@ async function fetchGlobalModules(): Promise<Module[]> {
     throw new Error(`Nie udało się pobrać modułów: ${error.message}`);
   }
 
-  // `database.ts` is a permissive stub, so Supabase returns rows as
-  // `Record<string, unknown>`. Assert to our hand-written shape — see
-  // REVIEW_REPORT.md #5 for the plan to replace this with real codegen.
-  return (data ?? []) as unknown as Module[];
+  // The generated row types keep `custom_fields` as `Json` and `category` as a
+  // broad string; assert to our refined domain shape (CustomField[] + enum).
+  return (data ?? []) as Module[];
 }
 
 /**

@@ -38,8 +38,8 @@ export default async function AdminProductsPage() {
       .order('name'),
     supabase.from('product_categories').select('id, name')
   ]);
-  const products = (rows as unknown as Row[] | null) ?? [];
-  const catMap = new Map(((cats as unknown as Cat[] | null) ?? []).map((c) => [c.id, c.name]));
+  const products = (rows as Row[] | null) ?? [];
+  const catMap = new Map(((cats as Cat[] | null) ?? []).map((c) => [c.id, c.name]));
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-6 sm:px-6">

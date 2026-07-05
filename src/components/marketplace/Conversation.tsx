@@ -68,7 +68,7 @@ export default function Conversation({ listingId, otherId, meId, otherLabel }: P
       console.error('[Conversation.load]', loadErr);
       return;
     }
-    const rows = (data as unknown as Message[] | null) ?? [];
+    const rows = (data as Message[] | null) ?? [];
     setMessages(rows);
 
     const hasUnread = rows.some((m) => m.recipient_id === meId && m.read_at === null);

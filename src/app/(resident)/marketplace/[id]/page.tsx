@@ -43,7 +43,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
   }
   if (!row) notFound();
 
-  const listing = row as unknown as ListingRow;
+  const listing = row as ListingRow;
   const isOwn = listing.seller_id === user.id;
   const allowsDelivery =
     listing.delivery_option === 'migmig_only' || listing.delivery_option === 'migmig_or_pickup';

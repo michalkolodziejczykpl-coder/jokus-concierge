@@ -44,7 +44,7 @@ export async function POST() {
     console.error('[checkout] cart fetch', cartErr);
     return NextResponse.json({ error: 'cart_lookup_failed' }, { status: 500 });
   }
-  const cart = ((cartRaw as unknown as CartRow[] | null) ?? []).filter(
+  const cart = ((cartRaw as CartRow[] | null) ?? []).filter(
     (c) => c.products && c.products.is_active
   );
   if (cart.length === 0) return NextResponse.json({ error: 'cart_empty' }, { status: 400 });
