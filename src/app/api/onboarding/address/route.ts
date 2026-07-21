@@ -45,12 +45,23 @@ export async function POST(request: Request) {
   // Defensive: even though the form guard prevents this, double-check that
   // the user doesn't already have a default address. Without this, the
   // INSERT would fail with a unique-index violation and we'd return a less
-  // helpful error.
-  const { data: existing } = await supabase
+  // helpful error. Filter on user_id explicitly — RLS is the second layer,
+  // not the only one (an admin session sees every user's default, which used
+  // to blow up maybeSingle and let the INSERT run into 23505).
+  const { data: existing, error: existingErr } = await supabase
     .from('addresses')
     .select('id')
+    .eq('user_id', user.id)
     .eq('is_default', true)
     .maybeSingle();
+
+  if (existingErr) {
+    console.error('[POST /api/onboarding/address] default lookup', existingErr);
+    return NextResponse.json(
+      { error: 'default_lookup_failed', message: existingErr.message },
+      { status: 500 }
+    );
+  }
 
   if (existing) {
     return NextResponse.json(
