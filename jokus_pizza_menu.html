@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Jokus — menu „pizza” (5 sekcji)</title>
+    <style>
+      :root {
+        --ink: #1a1a1a;
+        --paper: #fbf7f0;
+        --orange: #ff6a2b;
+        --orange-d: #e8531a;
+        --line: #e6ddd0;
+        --shadow: 0 12px 40px rgba(40, 20, 5, 0.16);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family:
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+      }
+      .top {
+        width: 100%;
+        max-width: 520px;
+        padding: 18px 16px 6px;
+        text-align: center;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 30px;
+        letter-spacing: -1px;
+      }
+      .logo b {
+        color: var(--orange);
+      }
+      .tag {
+        font-size: 13px;
+        color: #8a7d6d;
+        margin-top: 2px;
+      }
+      .stage {
+        width: 100%;
+        max-width: 520px;
+        padding: 6px 16px 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .hint {
+        font-size: 12px;
+        color: #9a8d7d;
+        text-align: center;
+        margin-top: 14px;
+      }
+
+      /* ---------- PIZZA ---------- */
+      .pizza-wrap {
+        width: 100%;
+        max-width: 440px;
+        margin-top: 10px;
+      }
+      svg.pizza {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 14px 34px rgba(40, 20, 5, 0.22));
+      }
+      .slice {
+        cursor: pointer;
+        transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+        transform-origin: 250px 250px;
+        outline: none;
+      }
+      .slice:hover,
+      .slice:focus-visible {
+        transform: scale(1.045);
+      }
+      .slice:active {
+        transform: scale(0.97);
+      }
+      .slice text {
+        fill: #fff;
+        font-weight: 800;
+        pointer-events: none;
+        font-family: inherit;
+      }
+      .slice .ico {
+        font-size: 30px;
+      }
+      .slice .lbl {
+        font-size: 16.5px;
+        letter-spacing: 0.2px;
+      }
+      .slice .lbl2 {
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.92;
+      }
+      .hole {
+        fill: #fff;
+      }
+      .hole-logo {
+        font-weight: 800;
+        font-size: 26px;
+        letter-spacing: -1px;
+        fill: var(--ink);
+        font-family: inherit;
+      }
+      .hole-logo tspan {
+        fill: var(--orange);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .slice {
+          transition: none;
+        }
+      }
+
+      /* ---------- PEŁNY EKRAN SEKCJI ---------- */
+      .sheet {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: none;
+        flex-direction: column;
+        background: #fff;
+        animation: pop 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .sheet.open {
+        display: flex;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+          border-radius: 50%;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+          border-radius: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sheet {
+          animation: none;
+        }
+      }
+      .sheet-head {
+        padding: 64px 22px 22px;
+        color: #fff;
+      }
+      .sheet-head .ico {
+        font-size: 40px;
+      }
+      .sheet-head h2 {
+        font-size: 26px;
+        font-weight: 800;
+        margin-top: 8px;
+        line-height: 1.1;
+      }
+      .sheet-head p {
+        font-size: 13.5px;
+        opacity: 0.92;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+      .sheet-body {
+        flex: 1;
+        overflow: auto;
+        padding: 20px 22px 30px;
+      }
+      .svc {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 15px 16px;
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .svc .em {
+        font-size: 22px;
+      }
+      .svc .price {
+        margin-left: auto;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #8a7d6d;
+        white-space: nowrap;
+      }
+      .soon {
+        opacity: 0.55;
+      }
+      .soon .price {
+        color: var(--orange-d);
+      }
+
+      /* trójkąt powrotu — lewy górny róg */
+      .back-tri {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 86px;
+        height: 86px;
+        border: 0;
+        cursor: pointer;
+        z-index: 41;
+        clip-path: polygon(0 0, 100% 0, 0 100%);
+        background: rgba(0, 0, 0, 0.28);
+        color: #fff;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 10px 0 0 12px;
+        font-size: 24px;
+        line-height: 1;
+        font-family: inherit;
+        transition: background 0.2s;
+      }
+      .back-tri:hover {
+        background: rgba(0, 0, 0, 0.42);
+      }
+      .back-tri:focus-visible {
+        outline: 3px solid #fff;
+        outline-offset: -6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <div class="logo">JOK<b>U</b>S</div>
+      <div class="tag">Twoje osiedlowe usługi w jednej aplikacji</div>
+    </div>
+
+    <div class="stage">
+      <div class="pizza-wrap">
+        <svg
+          class="pizza"
+          viewBox="0 0 500 500"
+          role="menu"
+          aria-label="Kategorie usług JOKUS"
+          id="pizza"
+        ></svg>
+      </div>
+      <div class="hint">Kliknij kawałek, aby otworzyć sekcję · trójkąt w rogu wraca do pizzy</div>
+    </div>
+
+    <!-- Pełnoekranowe sekcje -->
+    <div id="sheets"></div>
+
+    <script>
+      const CATS = [
+        {
+          id: 'ext',
+          title: 'Paczki / przewóz',
+          l1: 'Paczki',
+          l2: 'przewóz',
+          ico: '📦',
+          g: ['#ff7a3c', '#e8531a'],
+          desc: 'Nadamy, odbierzemy, zawieziemy — Ty nie ruszasz się z domu.',
+          svcs: [
+            ['📮', 'Nadanie / odbiór z paczkomatu', 'od 14,90 zł'],
+            ['📄', 'Dokumenty do urzędu lub firmy', 'wycena'],
+            ['🔑', 'Przekazanie kluczy', 'od 14,90 zł'],
+            ['🚚', 'Przewóz drobnicy po osiedlu', 'wycena']
+          ]
+        },
+        {
+          id: 'shop',
+          title: 'Zakupy spożywcze',
+          l1: 'Zakupy',
+          l2: 'spożywcze',
+          ico: '🛒',
+          g: ['#27a06a', '#15663f'],
+          desc: 'Zakupy z Twojej listy, dostawa jokusora pod same drzwi.',
+          svcs: [
+            ['🥦', 'Zakupy z Twojej listy', '5% koszyka, min 14,90 zł'],
+            ['💊', 'Apteka / drogeria', 'od 14,90 zł'],
+            ['🐾', 'Karma i akcesoria dla zwierząt', 'od 14,90 zł']
+          ]
+        },
+        {
+          id: 'resto',
+          title: 'Restauracje',
+          l1: 'Restauracje',
+          l2: '',
+          ico: '🍕',
+          g: ['#ef4056', '#b81f35'],
+          desc: 'Ciepłe posiłki z lokali w Twojej okolicy.',
+          svcs: [
+            ['🍔', 'Posiłki z lokalnych restauracji', 'wkrótce'],
+            ['🥡', 'Odbiór Twojego zamówienia z lokalu', 'wkrótce']
+          ],
+          soon: true
+        },
+        {
+          id: 'home',
+          title: 'Dom i mieszkanie',
+          l1: 'Dom',
+          l2: 'i mieszkanie',
+          ico: '🏠',
+          g: ['#6a4f86', '#3b2a4a'],
+          desc: 'Sprzątanie, pies, fachowiec — osiedlowa pomoc na zawołanie.',
+          svcs: [
+            ['🧹', 'Sprzątanie mieszkania', 'wycena'],
+            ['🐕', 'Wyprowadzenie psa', 'od 19,90 zł'],
+            ['🔧', 'Poczekaj na fachowca', 'od 24,90 zł'],
+            ['🪴', 'Podlanie kwiatów / doglądanie', 'od 14,90 zł']
+          ]
+        },
+        {
+          id: 'market',
+          title: 'Kup / Sprzedaj',
+          l1: 'Kup /',
+          l2: 'Sprzedaj',
+          ico: '🔄',
+          g: ['#3a7bf2', '#1e4fbf'],
+          desc: 'Sąsiedzki marketplace z dostawą przez jokusora.',
+          svcs: [
+            ['🏷️', 'Wystaw przedmiot', '0 zł'],
+            ['🛍️', 'Kup od sąsiada z dostawą', 'od 14,90 zł']
+          ]
+        }
+      ];
+
+      const NS = 'http://www.w3.org/2000/svg';
+      const CX = 250,
+        CY = 250,
+        R = 238,
+        RIN = 72,
+        LR = 163; // środek, promienie, promień etykiet
+      const svg = document.getElementById('pizza');
+
+      function pt(a, r) {
+        const rad = ((a - 90) * Math.PI) / 180;
+        return [CX + r * Math.cos(rad), CY + r * Math.sin(rad)];
+      }
+      function wedge(a0, a1) {
+        const [x0, y0] = pt(a0, R),
+          [x1, y1] = pt(a1, R),
+          [x2, y2] = pt(a1, RIN),
+          [x3, y3] = pt(a0, RIN);
+        return `M ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1} L ${x2} ${y2} A ${RIN} ${RIN} 0 0 0 ${x3} ${y3} Z`;
+      }
+
+      // definicje gradientów
+      const defs = document.createElementNS(NS, 'defs');
+      CATS.forEach((c, i) => {
+        const g = document.createElementNS(NS, 'linearGradient');
+        g.id = 'g' + i;
+        g.setAttribute('x1', '0');
+        g.setAttribute('y1', '0');
+        g.setAttribute('x2', '1');
+        g.setAttribute('y2', '1');
+        const s1 = document.createElementNS(NS, 'stop');
+        s1.setAttribute('offset', '0');
+        s1.setAttribute('stop-color', c.g[0]);
+        const s2 = document.createElementNS(NS, 'stop');
+        s2.setAttribute('offset', '1');
+        s2.setAttribute('stop-color', c.g[1]);
+        g.append(s1, s2);
+        defs.append(g);
+      });
+      svg.append(defs);
+
+      // plastry
+      const SLICE = 360 / CATS.length,
+        GAP = 1.6; // odstęp między plastrami w stopniach
+      CATS.forEach((c, i) => {
+        const a0 = i * SLICE + GAP / 2,
+          a1 = (i + 1) * SLICE - GAP / 2,
+          mid = i * SLICE + SLICE / 2;
+        const gEl = document.createElementNS(NS, 'g');
+        gEl.setAttribute('class', 'slice');
+        gEl.setAttribute('tabindex', '0');
+        gEl.setAttribute('role', 'menuitem');
+        gEl.setAttribute('aria-label', c.title);
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', wedge(a0, a1));
+        p.setAttribute('fill', `url(#g${i})`);
+        p.setAttribute('stroke', '#fbf7f0');
+        p.setAttribute('stroke-width', '2');
+        gEl.append(p);
+        const [lx, ly] = pt(mid, LR);
+        const ico = document.createElementNS(NS, 'text');
+        ico.setAttribute('x', lx);
+        ico.setAttribute('y', ly - 16);
+        ico.setAttribute('text-anchor', 'middle');
+        ico.setAttribute('class', 'ico');
+        ico.textContent = c.ico;
+        const t1 = document.createElementNS(NS, 'text');
+        t1.setAttribute('x', lx);
+        t1.setAttribute('y', ly + 10);
+        t1.setAttribute('text-anchor', 'middle');
+        t1.setAttribute('class', 'lbl');
+        t1.textContent = c.l1;
+        gEl.append(ico, t1);
+        if (c.l2) {
+          const t2 = document.createElementNS(NS, 'text');
+          t2.setAttribute('x', lx);
+          t2.setAttribute('y', ly + 27);
+          t2.setAttribute('text-anchor', 'middle');
+          t2.setAttribute('class', 'lbl2');
+          t2.textContent = c.l2;
+          gEl.append(t2);
+        }
+        gEl.addEventListener('click', () => open(c.id));
+        gEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            open(c.id);
+          }
+        });
+        svg.append(gEl);
+      });
+
+      // dziurka z logo
+      const hole = document.createElementNS(NS, 'circle');
+      hole.setAttribute('cx', CX);
+      hole.setAttribute('cy', CY);
+      hole.setAttribute('r', RIN - 6);
+      hole.setAttribute('class', 'hole');
+      const logo = document.createElementNS(NS, 'text');
+      logo.setAttribute('x', CX);
+      logo.setAttribute('y', CY + 9);
+      logo.setAttribute('text-anchor', 'middle');
+      logo.setAttribute('class', 'hole-logo');
+      logo.innerHTML = 'JOK<tspan>U</tspan>S';
+      svg.append(hole, logo);
+
+      // pełnoekranowe arkusze
+      const sheets = document.getElementById('sheets');
+      CATS.forEach((c) => {
+        const d = document.createElement('div');
+        d.className = 'sheet';
+        d.id = 'sheet-' + c.id;
+        d.setAttribute('role', 'dialog');
+        d.setAttribute('aria-label', c.title);
+        d.innerHTML = `
+    <button class="back-tri" aria-label="Wróć do menu">↩</button>
+    <div class="sheet-head" style="background:linear-gradient(150deg,${c.g[0]},${c.g[1]})">
+      <div class="ico">${c.ico}</div><h2>${c.title}</h2><p>${c.desc}</p>
+    </div>
+    <div class="sheet-body">
+      ${c.svcs.map((s) => `<div class="svc${c.soon ? ' soon' : ''}"><span class="em">${s[0]}</span>${s[1]}<span class="price">${s[2]}</span></div>`).join('')}
+      ${c.soon ? '<div class="hint" style="margin-top:8px">Sekcja restauracyjna startuje wkrótce — kolejność uruchamiania wg osiedli pilotażu.</div>' : ''}
+    </div>`;
+        d.querySelector('.back-tri').addEventListener('click', () => close(c.id));
+        sheets.append(d);
+      });
+      let lastFocus = null;
+      function open(id) {
+        lastFocus = document.activeElement;
+        const s = document.getElementById('sheet-' + id);
+        s.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        s.querySelector('.back-tri').focus();
+      }
+      function close(id) {
+        const s = document.getElementById('sheet-' + id);
+        s.classList.remove('open');
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus();
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.sheet.open').forEach((s) => s.classList.remove('open'));
+          document.body.style.overflow = '';
+        }
+      });
+    </script>
+  </body>
+</html>
