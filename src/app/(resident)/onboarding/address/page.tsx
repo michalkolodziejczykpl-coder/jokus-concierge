@@ -1,7 +1,7 @@
 // /onboarding/address — first-time setup for a logged-in resident.
 //
 // Reached either:
-// - automatically (redirect from /modules/[slug] when no default address yet),
+// - automatically (redirect from /modules/[moduleKey] when no default address yet),
 //   in which case `?next=` carries the original destination
 // - directly by the user (no `?next` → back to /home after submit)
 //

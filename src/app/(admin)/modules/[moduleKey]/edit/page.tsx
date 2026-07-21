@@ -5,10 +5,14 @@ import { createClient } from '@/lib/supabase/server';
 import ModuleForm from '@/components/admin/ModuleForm';
 import type { Module } from '@/lib/types/modules';
 
-type PageProps = { params: Promise<{ id: string }> };
+// Param is named moduleKey: after route groups are stripped this page shares
+// the /modules/* URL position with (resident)/modules/[moduleKey], and Next
+// requires ONE name per position. Here the key is the module UUID (the
+// resident side feeds it a slug), hence the local alias.
+type PageProps = { params: Promise<{ moduleKey: string }> };
 
 export default async function EditModulePage({ params }: PageProps) {
-  const { id } = await params;
+  const { moduleKey: id } = await params;
   const supabase = await createClient();
   const {
     data: { user }

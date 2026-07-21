@@ -1,4 +1,7 @@
-// /modules/[slug] — module detail + order draft form.
+// /modules/[moduleKey] — module detail + order draft form. Here the key is
+// the module SLUG; the param shares its name with the admin edit page
+// ((admin)/modules/[moduleKey]/edit, where the key is a UUID) because Next
+// requires one param name per URL position across route groups.
 //
 // Server Component: resolves session, fetches the module by slug, and gates
 // on the user having a default address. If no address yet, redirects to
@@ -14,11 +17,11 @@ import { formatPLN, formatDurationMin } from '@/lib/utils/formatters';
 import type { Module } from '@/lib/types/modules';
 
 type PageProps = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ moduleKey: string }>;
 };
 
 export default async function ModuleDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { moduleKey: slug } = await params;
 
   const supabase = await createClient();
   const {
@@ -36,7 +39,7 @@ export default async function ModuleDetailPage({ params }: PageProps) {
     .maybeSingle();
 
   if (error) {
-    console.error('[/modules/[slug]] fetch error', error);
+    console.error('[/modules/[moduleKey]] fetch error', error);
     throw new Error('Nie udało się załadować modułu');
   }
   if (!moduleRow) {
