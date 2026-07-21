@@ -1,29 +1,22 @@
-// /jokusors/[userId]/billing — admin edits one jokusor's billing (v2):
-// payout share (% of each order's service price) + monthly subscription.
-// Admin-gated like the other (admin) pages. Reads via the server client
-// (RLS: jokusors_admin_all).
-//
-// Resilient to the pending migration: if the payout_share column is missing
-// (20260706000001 not applied yet), we show a warning and prefill defaults —
-// saving will fail until the migration is applied.
+// /jokusors/[userId]/billing — admin edits one jokusor's billing (v3):
+// optional payout-share EXCEPTION (empty = the general fee_config rule, 80%
+// as of 2026-07-21) + monthly subscription. Admin-gated like the other
+// (admin) pages. Reads via the server client (RLS: jokusors_admin_all,
+// fee_config_read_authenticated).
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ChevronLeft, AlertTriangle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentFeeConfig } from '@/lib/payments/feeConfig';
 import JokusorBillingForm from '@/components/admin/JokusorBillingForm';
 
 type PageProps = { params: Promise<{ userId: string }> };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// Owner-confirmed defaults (see migration 20260706000001).
-const DEFAULT_PAYOUT_SHARE = 0.5;
-const DEFAULT_SUBSCRIPTION = 0;
-
 type JokusorBillingRow = {
   user_id: string;
-  // Missing until migration 20260706000001 is applied:
-  payout_share?: number;
+  payout_share: number | null;
   subscription_amount: number | null;
 };
 
@@ -43,19 +36,21 @@ export default async function JokusorBillingPage({ params }: PageProps) {
     .maybeSingle();
   if ((profile as { role?: string } | null)?.role !== 'admin') redirect('/home');
 
-  const [{ data: jokRow }, { data: userRow }] = await Promise.all([
+  const [{ data: jokRow }, { data: userRow }, feeConfig] = await Promise.all([
     supabase
       .from('jokusors')
       .select('user_id, payout_share, subscription_amount')
       .eq('user_id', userId)
       .maybeSingle(),
-    supabase.from('users').select('full_name, email').eq('id', userId).maybeSingle()
+    supabase.from('users').select('full_name, email').eq('id', userId).maybeSingle(),
+    getCurrentFeeConfig(supabase, 'consumer')
   ]);
 
   const jok = jokRow as JokusorBillingRow | null;
   const person = userRow as { full_name: string | null; email: string | null } | null;
 
-  const migrationMissing = jok !== null && jok.payout_share === undefined;
+  const defaultSharePercent =
+    feeConfig !== null ? Math.round(feeConfig.jokusor_share * 10_000) / 100 : null;
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-6 sm:px-6">
@@ -80,13 +75,12 @@ export default async function JokusorBillingPage({ params }: PageProps) {
         </div>
       ) : (
         <>
-          {migrationMissing && (
+          {defaultSharePercent === null && (
             <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200">
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
               <p>
-                Migracja <code>20260706000001_jokusor_billing_fields.sql</code> nie jest jeszcze
-                zastosowana — poniżej wartości domyślne, a zapis nie powiedzie się, dopóki jej nie
-                zastosujesz.
+                Brak reguły ogólnej w <code>fee_config</code> (migracja 20260721000001 nie jest
+                zastosowana lub tabela jest pusta). Do czasu jej uzupełnienia ustaw udział jawnie.
               </p>
             </div>
           )}
@@ -94,10 +88,11 @@ export default async function JokusorBillingPage({ params }: PageProps) {
           <section className="mt-8 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
             <JokusorBillingForm
               userId={userId}
+              defaultSharePercent={defaultSharePercent}
               initial={{
                 payout_share_percent:
-                  Math.round((jok.payout_share ?? DEFAULT_PAYOUT_SHARE) * 10_000) / 100,
-                subscription_amount: jok.subscription_amount ?? DEFAULT_SUBSCRIPTION
+                  jok.payout_share == null ? null : Math.round(jok.payout_share * 10_000) / 100,
+                subscription_amount: jok.subscription_amount ?? 0
               }}
             />
           </section>

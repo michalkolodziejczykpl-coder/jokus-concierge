@@ -2,7 +2,15 @@
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ChevronLeft, Boxes, MapPin, ClipboardCheck, ShoppingCart, Users } from 'lucide-react';
+import {
+  ChevronLeft,
+  Boxes,
+  MapPin,
+  ClipboardCheck,
+  ShoppingCart,
+  Users,
+  UtensilsCrossed
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 const TILES = [
@@ -19,6 +27,12 @@ const TILES = [
     Icon: ShoppingCart
   },
   { href: '/estates', title: 'Osiedla', desc: 'Zarządzaj osiedlami i ich modułami.', Icon: MapPin },
+  {
+    href: '/gastro',
+    title: 'Gastro — restauracje',
+    desc: 'Kursy dostaw i tygodniowe zestawienia.',
+    Icon: UtensilsCrossed
+  },
   {
     href: '/jokusors',
     title: 'Zgłoszenia jokusorów',

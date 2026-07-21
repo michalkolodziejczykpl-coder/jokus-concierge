@@ -90,10 +90,7 @@ export default async function OrderSlotsPage({ params }: PageProps) {
     throw new Error('Nie udało się załadować modułu zamówienia');
   }
 
-  const moduleData = moduleRow as Pick<
-    Module,
-    'slug' | 'name' | 'estimated_duration_min'
-  >;
+  const moduleData = moduleRow as Pick<Module, 'slug' | 'name' | 'estimated_duration_min'>;
 
   // -------- Branch on status ------------------------------------------------
   let inner: React.ReactNode;

@@ -13,10 +13,10 @@ This file is automatically loaded by Claude Code on session start. It tells the 
 
 ## Repository state
 
-Phase 1 largely implemented. As of July 2026 (47 commits on `main`):
+Phase 1 largely implemented. As of 21 July 2026 (56 commits on `main`):
 
 - ✅ Config in place; `package.json` on Next 16.2.x / React 19 (bumped from 14 to clear 14.x CVEs). **Note:** the package `name` field is still `migmig-concierge` — renaming it to `jokus-concierge` is a separate, deliberate task.
-- ✅ Supabase migrations: **26 versioned files** in `supabase/migrations/` (initial schema, RLS, phase-1 fixes, slot finder/hold, sprint-4 order lifecycle, marketplace, grocery catalog, jokusor onboarding, seeds…), applied to the live dev project. RLS is enabled on all tables.
+- ✅ Supabase migrations: **28 versioned files** in `supabase/migrations/` (initial schema, RLS, phase-1 fixes, slot finder/hold, sprint-4 order lifecycle, marketplace, grocery catalog, jokusor onboarding, seeds, billing v2 `20260706000001`, billing v3 + gastro `20260721000001`…), applied to the live dev project. RLS is enabled on all tables.
 - ✅ Auth is real, not stubs: Supabase clients (browser/server/admin/middleware); Google OAuth + email/password + magic-link + phone-OTP (SMSAPI) all working. Session refresh via `proxy.ts`. `(auth)/callback` validates its `next` param (no open redirect).
 - ✅ Resident home (`(resident)/home/page.tsx`) is the real tile grid over the module catalog (no longer a placeholder).
 - ✅ Public `/privacy`, `/data-deletion`, `/regulamin`, `/cookies` pages (Polish, RODO-minimal — placeholder legal text, must be lawyer-reviewed before public launch).
@@ -28,9 +28,11 @@ Phase 1 largely implemented. As of July 2026 (47 commits on `main`):
   - Grocery shop (`/sklep`) with cart / favorites / checkout — checkout **reuses the same order/slot/payment pipeline** (no divergent path).
   - Marketplace C2C: listings, buy (creates a draft delivery order + purchase row), messaging, reports.
   - In-app order chat, ratings + tips, live GPS tracking (Realtime **broadcast-only**, nothing persisted).
-  - Three role panels: resident / jokusor (dashboard + order actions + tracking share) / admin (modules, estates + per-estate activations, products, product-categories, jokusor review, users).
+  - **Billing v3 (2026-07-21):** uniform 80/20 split (jokusor/platform) for ALL order types, driven by the versioned append-only `fee_config` table (`effective_from`; new terms = new row, never UPDATE; enforced by RLS — no update/delete policies). `jokusors.payout_share` is only an optional per-jokusor EXCEPTION (`NULL` = general rule; effective share = `payout_share ?? fee_config.jokusor_share`). Terms are FROZEN per order at payment time (`orders.jokusor_share_frozen`, `cashback_pct_frozen`, `fee_config_id` — set in `mock_pay_order`; historical orders backfilled at their settled 0.50); `/earnings` and all settlements read ONLY the `*_frozen` columns. Grocery consumer fee: `max(14,90 zł, 5% koszyka)` (both values on the module row — `fee_config` does NOT duplicate module pricing). Money math in grosze — helpers in `lib/payments/pricing.ts`. Cashback ("Skarbonka") is OUT of MVP: `cashback_pct=0`, columns exist as a future gate only.
+  - **Gastro (2026-07-21):** restaurant-paid outsourced delivery. 19,99 zł net/course up to 5 km, +2,50 zł per further started km (parameters live in `fee_config('gastro')`). Deliberately a SEPARATE `gastro_orders` table + `restaurants` (payer registry) — NOT rows in `orders` (which requires resident/address and serves the consumer pipeline). No end-client online payment; admin logs courses at `/gastro`, weekly per-restaurant statement + CSV export (`/api/admin/gastro/export`) as the basis for a collective invoice (no invoicing integration in MVP). Gastro shares appear in the jokusor's `/earnings`.
+  - Three role panels: resident / jokusor (dashboard + order actions + tracking share + `/earnings` statement) / admin (modules, estates + per-estate activations, products, product-categories, jokusor review + per-jokusor billing, users, gastro).
 - ⚠️ **Payments are mocked.** `mock_pay_order` SQL fn + `/api/payments/mock-pay`, gated by `MOCK_PAYMENT_ALLOWLIST` (fail-closed in production). The Przelewy24 webhook is still a TODO stub — no real money moves yet.
-- ❌ **Not built yet:** voice ordering + AI intent, jokusor earnings/settlement + invoicing, marketplace escrow release (15-min inspection / 5% commission), per-estate module filtering on the resident side (the `module_activations` admin UI exists but the resident home shows all `is_global` modules — see `hooks/useModules.ts`). Edge Functions `slot-finder` / `tracking-broadcast` / `ai-intent-recognition` / `przelewy24-webhook` are stubs; only `send-sms` is real.
+- ❌ **Not built yet:** voice ordering + AI intent, jokusor **invoicing** (the `/earnings` statement exists — invoices/faktury do not), marketplace escrow release (15-min inspection / 5% commission), per-estate module filtering on the resident side (the `module_activations` admin UI exists but the resident home shows all `is_global` modules — see `hooks/useModules.ts`). Edge Functions `slot-finder` / `tracking-broadcast` / `ai-intent-recognition` / `przelewy24-webhook` are stubs; only `send-sms` is real. The P24 webhook, when written, MUST replicate the terms-freeze that `mock_pay_order` does today.
 - ❌ No tests. Deferred per roadmap Faza 6; note the "premature scaffold" rationale is weakening now that a real order/slot/payment state machine exists.
 
 The full design spec lives in `docs/` — 15 markdown files + 2 SQL files. The reference contract is `JOKUS_Concierge_koncepcja_v2.docx` (not in repo; lives on Michał's machine).
@@ -63,7 +65,7 @@ src/
 │   ├── (auth)/                Public auth screens — login, register, reset, OAuth + email callback
 │   ├── (resident)/            Resident panel — home (tile grid), modules/[slug], orders (+slots), marketplace, sklep, profile
 │   ├── (jokusor)/             Franchisee panel — dashboard + order actions + live-tracking share
-│   ├── (admin)/               Admin panel (Michał only) — modules, estates (+activations), products, product-categories, jokusors, users
+│   ├── (admin)/               Admin panel (Michał only) — modules, estates (+activations), products, product-categories, jokusors (+billing), users, gastro (courses + restaurants + weekly CSV)
 │   └── api/                   Route handlers — orders, slots, payments, marketplace, sklep, admin, jokusor, register, profile
 ├── components/                Role-segregated UI (resident/, jokusor/, admin/, marketplace/, shared/). NOTE: ui/ exists but is EMPTY — primitives are inlined per component for now.
 ├── lib/
@@ -72,7 +74,7 @@ src/
 │   ├── slots/                 EMPTY — slot logic lives in SQL SECURITY DEFINER fns (get_available_slots, create_slot_hold, cancel_slot_hold)
 │   ├── tracking/              geo.ts (haversine, ETA). Live position is Realtime broadcast, never stored.
 │   ├── ai/                    EMPTY — voice / intent deferred (Phase 3)
-│   ├── payments/              mockGate.ts (mock-payment allowlist gate). Real Przelewy24 integration NOT written yet.
+│   ├── payments/              mockGate.ts (mock-payment allowlist gate), pricing.ts (grosze math: percent/gastro fees, effective share, rounding rules), feeConfig.ts (current fee_config row accessor). TECH DEBT: feeConfig.ts types its client param as a minimal structural `SupabaseLike` (`from: (relation: any) => any`) instead of `SupabaseClient<Database>`. Actual cause (verified 2026-07-22): the tree holds ONE deduped @supabase/supabase-js@2.105.4, but its `SupabaseClient` class was re-generified (`SchemaNameOrClientOptions`, `__InternalSupabase`-aware, 4 slots) while @supabase/ssr@0.5.2 still instantiates the old 3-slot form `SupabaseClient<Database, SchemaName, Schema>` — two incompatible instantiations of the same class, and a precise structural param type trips TS2589. Fix = upgrade @supabase/ssr 0.5.2 → 0.12.x (+ supabase-js to its peer ^2.110.5) as a SEPARATE dedicated session: 0.12 removes the get/set/remove cookie adapter (getAll/setAll only), so server.ts + middleware.ts must be rewritten and the full login flow of all three roles re-tested. Then restore the nominal type here. Real Przelewy24 integration NOT written yet.
 │   ├── maps/                  EMPTY — no geocoding / distance client yet
 │   ├── types/                 database.ts (GENERATED by `supabase gen types`, UTF-8) + hand-written domain types (modules, orders, marketplace, addresses, estates) that REFINE the generated rows
 │   ├── utils/                 cn, formatters (PLN, PL dates), validators (zod)
@@ -141,15 +143,20 @@ All four must pass. If `lint` is not yet configured (current state), skip it but
 
 ## Memory of past decisions
 
-| Decision                                                         | Reason                                                                                                                                            | Source                  |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| PWA before native apps                                           | One codebase, faster to market, install-prompt on Android is good enough until 3000 DAU                                                           | Koncepcja v2 sec. 13.5  |
-| Region Stockholm (instead of spec's Frankfurt)                   | Project was provisioned in EU-North-1 by mistake; ~10ms latency difference is negligible, region is immutable post-creation, not worth recreating | Setup decision May 2026 |
-| OAuth-first auth (no password fields)                            | Every required field cuts conversion ~20%                                                                                                         | Spec sec. 6             |
-| Three modes of `service_area` (polygon / postal codes / streets) | Different jokusors have different mental models for "my area"                                                                                     | Spec sec. 8             |
-| Escrow held by JOKUS, released after 15-min inspection           | Protects both buyer and seller; commission 5% on marketplace                                                                                      | Spec sec. 7.3           |
-| Slots: 90-second hold before payment                             | Long enough to enter BLIK code, short enough to free up after abandon                                                                             | Spec sec. 5.1           |
-| AI confidence threshold 0.75                                     | Empirically right balance; fallback shows 3 most common intents                                                                                   | Spec sec. 4.3           |
+| Decision                                                                                        | Reason                                                                                                                                            | Source                    |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| PWA before native apps                                                                          | One codebase, faster to market, install-prompt on Android is good enough until 3000 DAU                                                           | Koncepcja v2 sec. 13.5    |
+| Region Stockholm (instead of spec's Frankfurt)                                                  | Project was provisioned in EU-North-1 by mistake; ~10ms latency difference is negligible, region is immutable post-creation, not worth recreating | Setup decision May 2026   |
+| OAuth-first auth (no password fields)                                                           | Every required field cuts conversion ~20%                                                                                                         | Spec sec. 6               |
+| Three modes of `service_area` (polygon / postal codes / streets)                                | Different jokusors have different mental models for "my area"                                                                                     | Spec sec. 8               |
+| Escrow held by JOKUS, released after 15-min inspection                                          | Protects both buyer and seller; commission 5% on marketplace                                                                                      | Spec sec. 7.3             |
+| Slots: 90-second hold before payment                                                            | Long enough to enter BLIK code, short enough to free up after abandon                                                                             | Spec sec. 5.1             |
+| Billing v2: 50/50 split, grocery = max(min, % koszyka), frozen `orders.base_price` at checkout  | Earnings must never be rewritten by later price edits; percent fee scales with basket                                                             | Owner decision 2026-07-05 |
+| Billing v3: uniform 80/20 via versioned `fee_config`; `payout_share` = optional exception only  | One general rule, append-only history, no split constants in code; per-order freeze of share/cashback/config id extends the v2 freeze             | Owner decision 2026-07-21 |
+| Gastro: 19,99 zł net ≤5 km +2,50 zł/started km, restaurant pays, separate `gastro_orders` table | Outsourced restaurant delivery is B2B (weekly collective invoice) — must not touch the consumer orders pipeline or its RLS                        | Owner decision 2026-07-21 |
+| Grocery minimum raised 10,00 → 14,90 zł                                                         | Owner pricing decision; rate stays 5%, both editable on the module                                                                                | Owner decision 2026-07-21 |
+| Skarbonka (cashback) OUT of MVP                                                                 | `cashback_pct=0`, `cashback_pct_frozen` column is a future gate; no wallet/balance/UI                                                             | Owner decision 2026-07-21 |
+| AI confidence threshold 0.75                                                                    | Empirically right balance; fallback shows 3 most common intents                                                                                   | Spec sec. 4.3             |
 
 ## Useful pointers
 

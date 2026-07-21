@@ -1,12 +1,8 @@
 // PATCH /api/admin/jokusors/[userId]/billing — admin edits a jokusor's
-// billing (v2): payout share (% of each order's service price, default 50%)
-// and monthly subscription (default 0). Service-role client like the sibling
-// approve/reject routes (admin-only mutations on jokusors). Caller must be an
-// admin.
-//
-// Requires migration 20260706000001_jokusor_billing_fields.sql to be applied
-// (payout_share column) — until then the update fails with a readable column
-// error.
+// billing (v3): OPTIONAL payout-share exception (null = the general
+// fee_config rule applies) and monthly subscription (default 0). Service-role
+// client like the sibling approve/reject routes (admin-only mutations on
+// jokusors). Caller must be an admin.
 
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -41,8 +37,12 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
   const admin = createAdminClient();
 
-  // Store percent as the 0–1 fraction payout_share expects (numeric(5,4)).
-  const share = Math.round(parsed.data.payout_share_percent * 100) / 10_000;
+  // Store percent as the 0–1 fraction payout_share expects (numeric(5,4));
+  // null clears the exception so the general fee_config rule applies again.
+  const share =
+    parsed.data.payout_share_percent == null
+      ? null
+      : Math.round(parsed.data.payout_share_percent * 100) / 10_000;
 
   const { data, error } = await admin
     .from('jokusors')

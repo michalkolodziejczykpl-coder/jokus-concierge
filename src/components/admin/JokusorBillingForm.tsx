@@ -1,7 +1,8 @@
 'use client';
 
-// Admin form: per-jokusor billing v2 — payout share (% of each order's
-// service price, default 50%) + monthly subscription (default 0 zł).
+// Admin form: per-jokusor billing v3 — OPTIONAL payout-share exception
+// (empty field = the general fee_config rule applies; a value = deliberate
+// per-jokusor override) + monthly subscription (default 0 zł).
 // PATCHes /api/admin/jokusors/[userId]/billing. Same local-Field idiom as the
 // other admin forms (ModuleForm / EstateForm) — extraction to a shared
 // FormBase is a separate cleanup task.
@@ -17,8 +18,11 @@ const inputClass =
 
 type Props = {
   userId: string;
+  /** Current general rule from fee_config('consumer'), in % — null if absent. */
+  defaultSharePercent: number | null;
   initial: {
-    payout_share_percent: number;
+    /** null = no exception (inherits the general rule). */
+    payout_share_percent: number | null;
     subscription_amount: number;
   };
 };
@@ -34,13 +38,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function JokusorBillingForm({ userId, initial }: Props) {
+export default function JokusorBillingForm({ userId, defaultSharePercent, initial }: Props) {
   const router = useRouter();
-  const [sharePercent, setSharePercent] = useState(String(initial.payout_share_percent));
+  const [sharePercent, setSharePercent] = useState(
+    initial.payout_share_percent == null ? '' : String(initial.payout_share_percent)
+  );
   const [subscription, setSubscription] = useState(String(initial.subscription_amount));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+
+  const defaultLabel =
+    defaultSharePercent == null ? '—' : `${defaultSharePercent.toLocaleString('pl-PL')}%`;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,21 +87,34 @@ export default function JokusorBillingForm({ userId, initial }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Field label="Udział jokusora w cenie usługi (%)">
-        <input
-          type="number"
-          step="1"
-          min="0"
-          max="100"
-          value={sharePercent}
-          onChange={(e) => setSharePercent(e.target.value)}
-          className={inputClass}
-        />
+      <Field label="Indywidualny udział w cenie usługi (%) — wyjątek">
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            step="1"
+            min="0"
+            max="100"
+            value={sharePercent}
+            onChange={(e) => setSharePercent(e.target.value)}
+            placeholder={`wg reguły ogólnej (${defaultLabel})`}
+            className={inputClass}
+          />
+          {sharePercent !== '' && (
+            <button
+              type="button"
+              onClick={() => setSharePercent('')}
+              className="shrink-0 rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
+            >
+              Wyczyść — wg reguły
+            </button>
+          )}
+        </div>
       </Field>
       <p className="text-xs text-neutral-500 dark:text-neutral-500">
-        Domyślnie 50% — resztę zatrzymuje platforma. Napiwki zawsze w 100% trafiają do jokusora.
-        Cennik usług (kwoty stałe oraz % i minimum dla zakupów) edytujesz w module, w sekcji Moduły
-        usług.
+        Puste pole = udział wg reguły ogólnej z <code>fee_config</code> (obecnie {defaultLabel}).
+        Wpisz wartość tylko, aby ustawić świadomy wyjątek dla tego jokusora. Napiwki zawsze w 100%
+        trafiają do jokusora. Cennik usług (kwoty stałe oraz % i minimum dla zakupów) edytujesz w
+        module, w sekcji Moduły usług.
       </p>
 
       <Field label="Abonament (zł / miesiąc)">

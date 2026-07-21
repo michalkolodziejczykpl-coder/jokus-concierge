@@ -417,16 +417,55 @@ export type ProductParsed = z.infer<typeof productSchema>;
 // ============================================================================
 
 // Share arrives from the form as 0–100 (%) and is converted to the 0–1
-// fraction stored in jokusors.payout_share by the API route. Tips are always
-// 100% the jokusor's — not configurable here.
+// fraction stored in jokusors.payout_share by the API route. It is OPTIONAL:
+// null (empty field) = no per-jokusor exception, the general fee_config rule
+// applies. Tips are always 100% the jokusor's — not configurable here.
 export const jokusorBillingSchema = z.object({
-  payout_share_percent: z.coerce
-    .number({ invalid_type_error: 'Udział % musi być liczbą' })
-    .min(0, 'Udział nie może być ujemny')
-    .max(100, 'Udział nie może przekraczać 100%'),
+  payout_share_percent: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined ? null : v),
+    z.coerce
+      .number({ invalid_type_error: 'Udział % musi być liczbą' })
+      .min(0, 'Udział nie może być ujemny')
+      .max(100, 'Udział nie może przekraczać 100%')
+      .nullable()
+  ),
   subscription_amount: z.coerce
     .number({ invalid_type_error: 'Abonament musi być liczbą' })
     .min(0, 'Abonament nie może być ujemny')
     .max(100_000)
 });
 export type JokusorBillingParsed = z.infer<typeof jokusorBillingSchema>;
+
+// ============================================================================
+// Gastro — restaurants + delivery courses (admin only)
+// ============================================================================
+
+export const restaurantSchema = z.object({
+  name: z.string().trim().min(2, 'Podaj nazwę').max(120),
+  nip: z
+    .string()
+    .trim()
+    .regex(/^\d{10}$/, 'NIP to 10 cyfr')
+    .optional()
+    .or(z.literal('')),
+  address: z.string().trim().max(200).optional().or(z.literal('')),
+  contact_email: z.string().trim().email('Nieprawidłowy e-mail').optional().or(z.literal('')),
+  contact_phone: z.string().trim().max(20).optional().or(z.literal('')),
+  is_active: z.boolean(),
+  notes: z.string().trim().max(500).optional().or(z.literal(''))
+});
+export type RestaurantParsed = z.infer<typeof restaurantSchema>;
+
+// One delivered course. The fee is NOT part of the payload — the server
+// computes and freezes it from fee_config('gastro') + distance.
+export const gastroCourseSchema = z.object({
+  restaurant_id: z.string().uuid('Wybierz restaurację'),
+  jokusor_id: z.string().uuid('Wybierz jokusora'),
+  delivered_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data w formacie RRRR-MM-DD'),
+  distance_km: z.coerce
+    .number({ invalid_type_error: 'Dystans musi być liczbą' })
+    .positive('Dystans musi być dodatni')
+    .max(100, 'Maksymalnie 100 km'),
+  notes: z.string().trim().max(500).optional().or(z.literal(''))
+});
+export type GastroCourseParsed = z.infer<typeof gastroCourseSchema>;

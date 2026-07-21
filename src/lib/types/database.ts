@@ -273,6 +273,127 @@ export type Database = {
           }
         ];
       };
+      fee_config: {
+        Row: {
+          cashback_pct: number;
+          created_at: string | null;
+          created_by: string | null;
+          effective_from: string;
+          gastro_base_fee: number | null;
+          gastro_included_km: number | null;
+          gastro_per_km_fee: number | null;
+          id: string;
+          jokusor_share: number;
+          order_type: string;
+          payment_cost_mode: string;
+        };
+        Insert: {
+          cashback_pct?: number;
+          created_at?: string | null;
+          created_by?: string | null;
+          effective_from?: string;
+          gastro_base_fee?: number | null;
+          gastro_included_km?: number | null;
+          gastro_per_km_fee?: number | null;
+          id?: string;
+          jokusor_share: number;
+          order_type: string;
+          payment_cost_mode?: string;
+        };
+        Update: {
+          cashback_pct?: number;
+          created_at?: string | null;
+          created_by?: string | null;
+          effective_from?: string;
+          gastro_base_fee?: number | null;
+          gastro_included_km?: number | null;
+          gastro_per_km_fee?: number | null;
+          id?: string;
+          jokusor_share?: number;
+          order_type?: string;
+          payment_cost_mode?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'fee_config_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      gastro_orders: {
+        Row: {
+          created_at: string | null;
+          created_by: string | null;
+          delivered_on: string;
+          distance_km: number;
+          fee: number;
+          fee_config_id: string;
+          id: string;
+          jokusor_id: string;
+          jokusor_share_frozen: number;
+          notes: string | null;
+          restaurant_id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          created_by?: string | null;
+          delivered_on: string;
+          distance_km: number;
+          fee: number;
+          fee_config_id: string;
+          id?: string;
+          jokusor_id: string;
+          jokusor_share_frozen: number;
+          notes?: string | null;
+          restaurant_id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          created_by?: string | null;
+          delivered_on?: string;
+          distance_km?: number;
+          fee?: number;
+          fee_config_id?: string;
+          id?: string;
+          jokusor_id?: string;
+          jokusor_share_frozen?: number;
+          notes?: string | null;
+          restaurant_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'gastro_orders_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'gastro_orders_fee_config_id_fkey';
+            columns: ['fee_config_id'];
+            isOneToOne: false;
+            referencedRelation: 'fee_config';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'gastro_orders_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'jokusors';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'gastro_orders_restaurant_id_fkey';
+            columns: ['restaurant_id'];
+            isOneToOne: false;
+            referencedRelation: 'restaurants';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       invoices: {
         Row: {
           commission_amount: number;
@@ -387,7 +508,7 @@ export type Database = {
           max_concurrent_orders: number;
           nip: string | null;
           onboarding_status: string;
-          payout_share: number;
+          payout_share: number | null;
           public_photo_url: string | null;
           rating: number | null;
           regon: string | null;
@@ -418,7 +539,7 @@ export type Database = {
           max_concurrent_orders?: number;
           nip?: string | null;
           onboarding_status?: string;
-          payout_share?: number;
+          payout_share?: number | null;
           public_photo_url?: string | null;
           rating?: number | null;
           regon?: string | null;
@@ -449,7 +570,7 @@ export type Database = {
           max_concurrent_orders?: number;
           nip?: string | null;
           onboarding_status?: string;
-          payout_share?: number;
+          payout_share?: number | null;
           public_photo_url?: string | null;
           rating?: number | null;
           regon?: string | null;
@@ -1130,14 +1251,17 @@ export type Database = {
           bodycam_enabled: boolean | null;
           cancellation_reason: string | null;
           cancelled_at: string | null;
+          cashback_pct_frozen: number | null;
           completed_at: string | null;
           created_at: string | null;
           created_via: string | null;
           custom_data: Json | null;
           estate_id: string;
           estimated_duration_min: number | null;
+          fee_config_id: string | null;
           id: string;
           jokusor_id: string | null;
+          jokusor_share_frozen: number | null;
           module_id: string;
           notes: string | null;
           pickup_address: Json | null;
@@ -1159,14 +1283,17 @@ export type Database = {
           bodycam_enabled?: boolean | null;
           cancellation_reason?: string | null;
           cancelled_at?: string | null;
+          cashback_pct_frozen?: number | null;
           completed_at?: string | null;
           created_at?: string | null;
           created_via?: string | null;
           custom_data?: Json | null;
           estate_id: string;
           estimated_duration_min?: number | null;
+          fee_config_id?: string | null;
           id?: string;
           jokusor_id?: string | null;
+          jokusor_share_frozen?: number | null;
           module_id: string;
           notes?: string | null;
           pickup_address?: Json | null;
@@ -1188,14 +1315,17 @@ export type Database = {
           bodycam_enabled?: boolean | null;
           cancellation_reason?: string | null;
           cancelled_at?: string | null;
+          cashback_pct_frozen?: number | null;
           completed_at?: string | null;
           created_at?: string | null;
           created_via?: string | null;
           custom_data?: Json | null;
           estate_id?: string;
           estimated_duration_min?: number | null;
+          fee_config_id?: string | null;
           id?: string;
           jokusor_id?: string | null;
+          jokusor_share_frozen?: number | null;
           module_id?: string;
           notes?: string | null;
           pickup_address?: Json | null;
@@ -1223,6 +1353,13 @@ export type Database = {
             columns: ['estate_id'];
             isOneToOne: false;
             referencedRelation: 'estates';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'orders_fee_config_id_fkey';
+            columns: ['fee_config_id'];
+            isOneToOne: false;
+            referencedRelation: 'fee_config';
             referencedColumns: ['id'];
           },
           {
@@ -1533,6 +1670,45 @@ export type Database = {
             referencedColumns: ['id'];
           }
         ];
+      };
+      restaurants: {
+        Row: {
+          address: string | null;
+          contact_email: string | null;
+          contact_phone: string | null;
+          created_at: string | null;
+          id: string;
+          is_active: boolean;
+          name: string;
+          nip: string | null;
+          notes: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          address?: string | null;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+          created_at?: string | null;
+          id?: string;
+          is_active?: boolean;
+          name: string;
+          nip?: string | null;
+          notes?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          address?: string | null;
+          contact_email?: string | null;
+          contact_phone?: string | null;
+          created_at?: string | null;
+          id?: string;
+          is_active?: boolean;
+          name?: string;
+          nip?: string | null;
+          notes?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
       };
       spatial_ref_sys: {
         Row: {
@@ -2012,6 +2188,28 @@ export type Database = {
           hold_expires_at: string;
           time_slot_id: string;
         }[];
+      };
+      current_fee_config: {
+        Args: { p_at?: string; p_order_type: string };
+        Returns: {
+          cashback_pct: number;
+          created_at: string | null;
+          created_by: string | null;
+          effective_from: string;
+          gastro_base_fee: number | null;
+          gastro_included_km: number | null;
+          gastro_per_km_fee: number | null;
+          id: string;
+          jokusor_share: number;
+          order_type: string;
+          payment_cost_mode: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'fee_config';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       current_role_id: {
         Args: never;
