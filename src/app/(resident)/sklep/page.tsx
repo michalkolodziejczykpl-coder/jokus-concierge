@@ -28,11 +28,11 @@ export default async function ShopPage() {
   if (!user) redirect('/login');
 
   const [
-    { data: cats },
-    { data: prods },
-    { data: cartRows },
-    { data: favRows },
-    { data: recentRows }
+    { data: cats, error: e1 },
+    { data: prods, error: e2 },
+    { data: cartRows, error: e3 },
+    { data: favRows, error: e4 },
+    { data: recentRows, error: e5 }
   ] = await Promise.all([
     supabase.from('product_categories').select('id, name, slug').order('sort_order').order('name'),
     supabase
@@ -51,6 +51,13 @@ export default async function ShopPage() {
       .order('created_at', { ascending: false })
       .limit(40)
   ]);
+
+  // Surface every query error (permanent): a silently-empty shop hid a
+  // schema mismatch for a month — same lesson as the address-save 500
+  // (2026-07-22): a swallowed query error is worse than a log line.
+  for (const [name, err] of Object.entries({ e1, e2, e3, e4, e5 })) {
+    if (err) console.error(`[/sklep] query ${name} failed`, err);
+  }
 
   const categories = (cats as Category[] | null) ?? [];
   const products = (prods as Product[] | null) ?? [];
