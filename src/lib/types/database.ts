@@ -1710,6 +1710,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      sms_send_log: {
+        Row: {
+          alert_threshold: number | null;
+          created_at: string | null;
+          id: string;
+          phone: string;
+          sent_on: string;
+          smsapi_error_code: number | null;
+          status: string;
+        };
+        Insert: {
+          alert_threshold?: number | null;
+          created_at?: string | null;
+          id?: string;
+          phone: string;
+          sent_on: string;
+          smsapi_error_code?: number | null;
+          status: string;
+        };
+        Update: {
+          alert_threshold?: number | null;
+          created_at?: string | null;
+          id?: string;
+          phone?: string;
+          sent_on?: string;
+          smsapi_error_code?: number | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
       spatial_ref_sys: {
         Row: {
           auth_name: string | null;

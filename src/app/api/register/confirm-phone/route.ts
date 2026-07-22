@@ -28,6 +28,12 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
 
+  // Belt-and-suspenders (2026-07-22): same e-mail-first rule as in
+  // /api/register/profile — see the comment there.
+  if (!user.email_confirmed_at) {
+    return NextResponse.json({ error: 'email_not_confirmed' }, { status: 403 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

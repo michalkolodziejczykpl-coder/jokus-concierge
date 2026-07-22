@@ -18,6 +18,15 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
 
+  // Belt-and-suspenders (2026-07-22): the phone/OTP step must be unreachable
+  // for accounts that never confirmed their e-mail. The login gate already
+  // enforces this (unconfirmed accounts cannot sign in at all); this check
+  // keeps it true even if that gate ever changes. Google accounts arrive with
+  // email_confirmed_at set.
+  if (!user.email_confirmed_at) {
+    return NextResponse.json({ error: 'email_not_confirmed' }, { status: 403 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
