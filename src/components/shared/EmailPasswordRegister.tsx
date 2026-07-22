@@ -13,12 +13,17 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { passwordSchema } from '@/lib/utils/validators';
+import TurnstileWidget, {
+  resetTurnstile,
+  turnstileConfigured
+} from '@/components/shared/TurnstileWidget';
 
 export default function EmailPasswordRegister() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
@@ -37,6 +42,10 @@ export default function EmailPasswordRegister() {
       setError('Hasła nie są takie same.');
       return;
     }
+    if (turnstileConfigured && !captchaToken) {
+      setError('Poczekaj na weryfikację antybotową i spróbuj ponownie.');
+      return;
+    }
 
     setBusy(true);
     const supabase = createClient();
@@ -45,11 +54,17 @@ export default function EmailPasswordRegister() {
     const { data, error: signErr } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: { emailRedirectTo: `${origin}/callback?next=/home` }
+      options: {
+        emailRedirectTo: `${origin}/callback?next=/home`,
+        captchaToken: captchaToken ?? undefined
+      }
     });
 
     if (signErr) {
       setError('Nie udało się założyć konta. Sprawdź dane i spróbuj ponownie.');
+      // Turnstile tokens are single-use — demand a fresh challenge.
+      setCaptchaToken(null);
+      resetTurnstile();
       setBusy(false);
       return;
     }
@@ -110,6 +125,7 @@ export default function EmailPasswordRegister() {
         aria-label="Powtórz hasło"
         className={inputClass}
       />
+      <TurnstileWidget onToken={setCaptchaToken} />
       {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"

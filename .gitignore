@@ -47,3 +47,6 @@ supabase/.temp
 
 # Claude Code local config (user-specific; the example template is in repo as claude-settings.example.json)
 .claude/
+
+.vercel
+.env*

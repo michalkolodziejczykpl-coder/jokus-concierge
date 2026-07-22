@@ -8,26 +8,39 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import TurnstileWidget, {
+  resetTurnstile,
+  turnstileConfigured
+} from '@/components/shared/TurnstileWidget';
 
 export default function PasswordLogin() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
+    if (turnstileConfigured && !captchaToken) {
+      setError('Poczekaj na weryfikację antybotową i spróbuj ponownie.');
+      return;
+    }
     setBusy(true);
     setError(null);
     const supabase = createClient();
     const { error: signErr } = await supabase.auth.signInWithPassword({
       email: email.trim(),
-      password
+      password,
+      options: { captchaToken: captchaToken ?? undefined }
     });
     if (signErr) {
       setError('Nieprawidłowy e-mail lub hasło.');
+      // Turnstile tokens are single-use — demand a fresh challenge.
+      setCaptchaToken(null);
+      resetTurnstile();
       setBusy(false);
       return;
     }
@@ -60,6 +73,7 @@ export default function PasswordLogin() {
         aria-label="Hasło"
         className={inputClass}
       />
+      <TurnstileWidget onToken={setCaptchaToken} />
       {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"

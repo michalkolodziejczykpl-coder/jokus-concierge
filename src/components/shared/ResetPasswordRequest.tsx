@@ -13,16 +13,24 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import TurnstileWidget, { turnstileConfigured } from '@/components/shared/TurnstileWidget';
 
 export default function ResetPasswordRequest() {
   const [email, setEmail] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
+    if (turnstileConfigured && !captchaToken) {
+      setError('Poczekaj na weryfikację antybotową i spróbuj ponownie.');
+      return;
+    }
     setBusy(true);
+    setError(null);
 
     const supabase = createClient();
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.jokus.pl';
@@ -30,7 +38,8 @@ export default function ResetPasswordRequest() {
     // Ignore the error on purpose: surfacing it would leak whether the account
     // exists. Always show the same neutral confirmation.
     await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${origin}/callback?next=/reset-haslo/nowe`
+      redirectTo: `${origin}/callback?next=/reset-haslo/nowe`,
+      captchaToken: captchaToken ?? undefined
     });
 
     setSent(true);
@@ -60,6 +69,8 @@ export default function ResetPasswordRequest() {
         aria-label="E-mail"
         className={inputClass}
       />
+      <TurnstileWidget onToken={setCaptchaToken} />
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={busy}
