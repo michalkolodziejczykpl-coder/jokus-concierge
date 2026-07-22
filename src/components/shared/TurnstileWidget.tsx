@@ -24,6 +24,11 @@ type TurnstileApi = {
       callback: (token: string) => void;
       'expired-callback': () => void;
       'error-callback': () => void;
+      // Tokens live ~300 s — 'auto' makes the widget re-solve an expired
+      // challenge by itself, so a user who types slowly never submits a
+      // stale token (Supabase would reject it as captcha_failed). Optional:
+      // wiring it up is part of the PAUSED Turnstile investigation.
+      'refresh-expired'?: 'auto' | 'manual' | 'never';
       theme: 'auto' | 'light' | 'dark';
     }
   ) => string;
