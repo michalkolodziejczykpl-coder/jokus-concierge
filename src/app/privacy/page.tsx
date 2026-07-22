@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import Footer from '@/components/shared/Footer';
+import { COMPANY } from '@/lib/constants';
 
 export const metadata = {
   title: 'Polityka prywatności | JOKUS Concierge',
@@ -31,6 +32,10 @@ export default function PrivacyPage() {
             NIP 9131639730 (dalej: „JOKUS"). Kontakt:{' '}
             <a className="text-brand hover:underline" href="mailto:biuro@jokus.pl">
               biuro@jokus.pl
+            </a>
+            , tel.{' '}
+            <a className="text-brand hover:underline" href={COMPANY.phoneHref}>
+              {COMPANY.phoneDisplay}
             </a>
             .
           </p>

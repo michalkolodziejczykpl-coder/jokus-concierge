@@ -20,6 +20,9 @@ export const COMPANY = {
     'Sąd Rejonowy dla Wrocławia-Fabrycznej we Wrocławiu, IX Wydział Gospodarczy Krajowego Rejestru Sądowego',
   shareCapitalPln: '5 000,00 zł',
   email: 'biuro@jokus.pl',
+  // P24 verification requires a phone number in the site's contact data.
+  phoneDisplay: '+48 695 820 031',
+  phoneHref: 'tel:+48695820031',
   // Address for consumer returns / withdrawal statements.
   returnAddress: 'JOKUS Sp. z o.o., ul. Kwiatowa 8, 55-330 Księginice',
   paymentProvider: 'Przelewy24 (PayPro S.A.)',

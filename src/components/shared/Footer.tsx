@@ -32,6 +32,11 @@ export default function Footer() {
               {COMPANY.email}
             </a>
           </p>
+          <p>
+            <a className="hover:underline" href={COMPANY.phoneHref}>
+              {COMPANY.phoneDisplay}
+            </a>
+          </p>
         </div>
 
         <nav aria-label="Informacje prawne" className="flex flex-col gap-1.5 sm:text-right">

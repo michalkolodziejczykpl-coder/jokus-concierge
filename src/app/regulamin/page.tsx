@@ -47,6 +47,10 @@ export default function RegulaminPage() {
             <a className="text-brand hover:underline" href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}
             </a>
+            , tel.{' '}
+            <a className="text-brand hover:underline" href={COMPANY.phoneHref}>
+              {COMPANY.phoneDisplay}
+            </a>
             .
           </p>
           <p>
@@ -180,6 +184,10 @@ export default function RegulaminPage() {
             Reklamacje dotyczące Usług oraz działania Serwisu można składać na adres{' '}
             <a className="text-brand hover:underline" href={`mailto:${COMPANY.email}`}>
               {COMPANY.email}
+            </a>{' '}
+            lub telefonicznie:{' '}
+            <a className="text-brand hover:underline" href={COMPANY.phoneHref}>
+              {COMPANY.phoneDisplay}
             </a>
             . Reklamacja powinna zawierać dane Mieszkańca, opis problemu oraz numer Zlecenia.
             Operator rozpatruje reklamacje w terminie 14 dni od ich otrzymania i informuje o wyniku
