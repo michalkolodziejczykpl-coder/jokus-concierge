@@ -7,7 +7,29 @@
 // missing Vercel env can never reopen the public hole) but stay open outside
 // production (so local dev + pre-allowlist testing don't break).
 
+/**
+ * TYMCZASOWE na czas weryfikacji P24 (owner decision 2026-07-22): every
+ * signed-in user may mock-pay. The allowlist gate kept rejecting the P24 test
+ * account on production for a still-undiagnosed reason, and the verification
+ * blocks the pilot; risk accepted by the owner (no production traffic,
+ * payments are mock anyway, the route still requires a session).
+ *
+ * REMOVE together with MOCK_PAYMENT_ALLOWLIST after the P24 verification —
+ * restore by delegating to strictMockPaymentGate below (see the cleanup
+ * checklist in CLAUDE.md).
+ */
 export function isMockPaymentAllowed(email: string | null | undefined): boolean {
+  void email;
+  return true;
+}
+
+/**
+ * The real allowlist gate — the pre-bypass behavior, kept intact so the
+ * cleanup is a one-line change back to `return strictMockPaymentGate(email)`.
+ * Denials log diagnostics WITHOUT leaking values (entry LENGTHS expose the
+ * classic paste-with-quotes mistake: clean e-mail 19 chars, quoted 21).
+ */
+export function strictMockPaymentGate(email: string | null | undefined): boolean {
   const raw = process.env.MOCK_PAYMENT_ALLOWLIST;
   if (!raw || !raw.trim()) {
     // Not configured → fail closed in production, open elsewhere.
@@ -27,10 +49,6 @@ export function isMockPaymentAllowed(email: string | null | undefined): boolean 
     .filter(Boolean);
   const allowed = allow.includes(email.toLowerCase());
   if (!allowed) {
-    // Permanent diagnostics WITHOUT leaking values (lesson of 2026-07-22:
-    // a bare 403 hid the cause three times today). Entry LENGTHS expose the
-    // classic paste-with-quotes mistake ("jokustest@gmail.com" = 21 chars,
-    // clean value = 19) without printing anyone's address.
     console.error('[mockGate] denied', {
       entries: allow.length,
       entryLengths: allow.map((e) => e.length),
