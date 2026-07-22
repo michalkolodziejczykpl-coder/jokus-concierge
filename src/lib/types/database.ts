@@ -1481,6 +1481,7 @@ export type Database = {
       };
       products: {
         Row: {
+          badge: string | null;
           brand: string | null;
           category_id: string | null;
           created_at: string | null;
@@ -1489,11 +1490,13 @@ export type Database = {
           image_url: string | null;
           is_active: boolean;
           name: string;
+          old_price: number | null;
           sort_order: number;
           unit: string;
           updated_at: string | null;
         };
         Insert: {
+          badge?: string | null;
           brand?: string | null;
           category_id?: string | null;
           created_at?: string | null;
@@ -1502,11 +1505,13 @@ export type Database = {
           image_url?: string | null;
           is_active?: boolean;
           name: string;
+          old_price?: number | null;
           sort_order?: number;
           unit?: string;
           updated_at?: string | null;
         };
         Update: {
+          badge?: string | null;
           brand?: string | null;
           category_id?: string | null;
           created_at?: string | null;
@@ -1515,6 +1520,7 @@ export type Database = {
           image_url?: string | null;
           is_active?: boolean;
           name?: string;
+          old_price?: number | null;
           sort_order?: number;
           unit?: string;
           updated_at?: string | null;
