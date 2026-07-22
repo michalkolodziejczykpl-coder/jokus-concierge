@@ -37,7 +37,21 @@ export default function PasswordLogin() {
       options: { captchaToken: captchaToken ?? undefined }
     });
     if (signErr) {
-      setError('Nieprawidłowy e-mail lub hasło.');
+      // Log the REAL error (permanent): the generic message hid "is it the
+      // password or the captcha?" — same lesson as /sklep and the address 500.
+      console.error('[PasswordLogin] signInWithPassword failed', {
+        code: (signErr as { code?: string }).code,
+        message: signErr.message,
+        status: (signErr as { status?: number }).status
+      });
+      const isCaptcha =
+        (signErr as { code?: string }).code === 'captcha_failed' ||
+        /captcha/i.test(signErr.message ?? '');
+      setError(
+        isCaptcha
+          ? 'Weryfikacja antybotowa nie powiodła się, spróbuj ponownie.'
+          : 'Nieprawidłowy e-mail lub hasło.'
+      );
       // Turnstile tokens are single-use — demand a fresh challenge.
       setCaptchaToken(null);
       resetTurnstile();
