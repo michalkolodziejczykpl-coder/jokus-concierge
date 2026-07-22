@@ -1,21 +1,174 @@
-// Resident home — Phase 1 "coś na ekranie" sprint.
-// Server Component: resolves the session and resident's display name on the
-// server, then hands off to the client-side <ModuleGrid /> for catalog fetch.
+// Resident home — the radial "pizza" menu (5 sections) over the module
+// catalog. Replaces the former tile grid + the sklep/marketplace banner rows
+// (their entry points now live inside the slices). Owner decision 2026-07-22,
+// prototype: jokus_pizza_menu.html.
 //
-// The voice entry point (large mic button) is intentionally deferred — it
-// will live next to the greeting once the Whisper edge function lands.
+// Auth behavior is UNCHANGED: anonymous visitors are redirected to /login,
+// the phone-verification and jokusor-role gates stay as they were. A public
+// (anonymous) variant of this page is a separate product decision — not
+// bundled with the menu redesign.
+//
+// Section rows and price labels are built HERE from the modules table —
+// prices are never hardcoded in the JSX (the two deliberate label-only
+// exceptions are marked below).
 
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Briefcase, ClipboardCheck, ShoppingBag, ShoppingBasket } from 'lucide-react';
+import { Briefcase, ClipboardCheck } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { ModuleGrid } from '@/components/resident/ModuleGrid';
+import { formatPLN } from '@/lib/utils/formatters';
+import { COMING_SOON_MODULE_SLUGS } from '@/lib/constants';
+import PizzaMenu, { type PizzaSection, type PizzaService } from '@/components/resident/PizzaMenu';
+import type { Module } from '@/lib/types/modules';
 
 async function signOut() {
   'use server';
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect('/login');
+}
+
+type CatalogRow = Pick<
+  Module,
+  'slug' | 'name' | 'category' | 'icon_name' | 'base_price' | 'price_unit' | 'min_price'
+> & { sort_order: number | null };
+
+/** "od 25,00 zł", "od 40,00 zł/h", "5% koszyka, min 14,90 zł", 0 → "wycena". */
+function priceLabel(m: CatalogRow): string {
+  if (m.price_unit === 'percent') {
+    const rate = m.base_price.toString().replace('.', ',');
+    return m.min_price != null
+      ? `${rate}% koszyka, min ${formatPLN(m.min_price)}`
+      : `${rate}% koszyka`;
+  }
+  if (m.base_price === 0) {
+    // Deliberate non-DB label: custom-task has base_price 0 by design — the
+    // price is agreed per job, so the catalog cannot carry a number here.
+    return 'wycena';
+  }
+  const suffix = m.price_unit === 'hourly' ? '/h' : m.price_unit === 'per_km' ? '/km' : '';
+  return `od ${formatPLN(m.base_price)}${suffix}`;
+}
+
+function toService(m: CatalogRow): PizzaService {
+  return {
+    key: m.slug,
+    icon: m.icon_name,
+    label: m.name,
+    priceLabel: priceLabel(m),
+    // Grocery goes through the cart pipeline, not the generic module form.
+    href: m.slug === 'zakupy-spozywcze' ? '/sklep' : `/modules/${m.slug}`
+  };
+}
+
+function buildSections(catalog: CatalogRow[]): PizzaSection[] {
+  const byCat = (...cats: string[]) =>
+    catalog
+      .filter(
+        (m) =>
+          cats.includes(m.category) &&
+          !(COMING_SOON_MODULE_SLUGS as readonly string[]).includes(m.slug)
+      )
+      .map(toService);
+
+  const foodDelivery = catalog.find((m) => m.slug === 'food-delivery');
+  const marketplaceDelivery = catalog.find((m) => m.slug === 'marketplace-delivery');
+
+  return [
+    {
+      id: 'ext',
+      title: 'Paczki / przewóz',
+      l1: 'Paczki',
+      l2: 'przewóz',
+      desc: 'Nadamy, odbierzemy, zawieziemy — Ty nie ruszasz się z domu.',
+      colors: ['#ff7a3c', '#e8531a'],
+      icon: 'Package',
+      services: byCat('delivery', 'transport')
+    },
+    {
+      id: 'shop',
+      title: 'Zakupy spożywcze',
+      l1: 'Zakupy',
+      l2: 'spożywcze',
+      desc: 'Zakupy z Twojej listy, dostawa jokusora pod same drzwi.',
+      colors: ['#27a06a', '#15663f'],
+      icon: 'ShoppingCart',
+      services: byCat('shopping')
+    },
+    {
+      id: 'resto',
+      title: 'Restauracje',
+      l1: 'Restauracje',
+      l2: '',
+      desc: 'Ciepłe posiłki z lokali w Twojej okolicy.',
+      colors: ['#ef4056', '#b81f35'],
+      icon: 'UtensilsCrossed',
+      soon: true,
+      soonNote:
+        'Sekcja restauracyjna startuje wkrótce — kolejność uruchamiania wg osiedli pilotażu.',
+      services: [
+        // The real food-delivery module rendered as part of the placeholder:
+        // greyed out, no link (COMING_SOON gate; see lib/constants.ts).
+        ...(foodDelivery
+          ? [
+              {
+                key: foodDelivery.slug,
+                icon: foodDelivery.icon_name,
+                label: foodDelivery.name,
+                priceLabel: 'wkrótce',
+                href: null
+              }
+            ]
+          : []),
+        {
+          key: 'resto-pickup-placeholder',
+          icon: 'Store',
+          label: 'Odbiór Twojego zamówienia z lokalu',
+          priceLabel: 'wkrótce',
+          href: null
+        }
+      ]
+    },
+    {
+      id: 'home',
+      title: 'Dom i mieszkanie',
+      l1: 'Dom',
+      l2: 'i mieszkanie',
+      desc: 'Sprzątanie, pies, fachowiec — osiedlowa pomoc na zawołanie.',
+      colors: ['#6a4f86', '#3b2a4a'],
+      icon: 'Home',
+      services: byCat('home_pet', 'errands', 'professional')
+    },
+    {
+      id: 'market',
+      title: 'Kup / Sprzedaj',
+      l1: 'Kup /',
+      l2: 'Sprzedaj',
+      desc: 'Sąsiedzki marketplace z dostawą przez jokusora.',
+      colors: ['#3a7bf2', '#1e4fbf'],
+      icon: 'Repeat',
+      services: [
+        {
+          key: 'marketplace-new',
+          icon: 'Tag',
+          label: 'Wystaw przedmiot',
+          // Deliberate non-DB label: listing an item is free; no table stores
+          // that fact, so "0 zł" is product copy, not a hidden price constant.
+          priceLabel: '0 zł',
+          href: '/marketplace/new'
+        },
+        {
+          key: 'marketplace-browse',
+          icon: 'ShoppingBag',
+          label: 'Kup od sąsiada z dostawą',
+          priceLabel: marketplaceDelivery
+            ? `dostawa od ${formatPLN(marketplaceDelivery.base_price)}`
+            : 'przeglądaj',
+          href: '/marketplace'
+        }
+      ]
+    }
+  ];
 }
 
 export default async function ResidentHomePage() {
@@ -56,9 +209,32 @@ export default async function ResidentHomePage() {
     user.email?.split('@')[0] ??
     'mieszkańcu';
 
+  // Catalog for the pizza sections (RLS: modules readable by all).
+  const { data: catalogRows, error: catErr } = await supabase
+    .from('modules')
+    .select('slug, name, category, icon_name, base_price, price_unit, min_price, sort_order')
+    .eq('is_global', true)
+    .order('category')
+    .order('sort_order');
+  if (catErr) {
+    console.error('[/home] modules fetch', catErr);
+  }
+  // marketplace-delivery (is_global=false) provides the delivery price label.
+  const { data: mktRow } = await supabase
+    .from('modules')
+    .select('slug, name, category, icon_name, base_price, price_unit, min_price, sort_order')
+    .eq('slug', 'marketplace-delivery')
+    .maybeSingle();
+
+  const catalog = [
+    ...((catalogRows as unknown as CatalogRow[] | null) ?? []),
+    ...(mktRow ? [mktRow as unknown as CatalogRow] : [])
+  ];
+  const sections = buildSections(catalog);
+
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12">
-      <header className="mb-10">
+    <main className="mx-auto min-h-screen max-w-3xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12">
+      <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 sm:text-4xl">
           Cześć, {displayName}
         </h1>
@@ -82,7 +258,7 @@ export default async function ResidentHomePage() {
                   Panel administratora
                 </h2>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                  Moduły, ceny, osiedla, zgłoszenia jokusorów.
+                  Moduły, ceny, osiedla, gastro, zgłoszenia jokusorów.
                 </p>
               </div>
             </div>
@@ -93,57 +269,9 @@ export default async function ResidentHomePage() {
         </section>
       )}
 
-      <ModuleGrid />
+      <PizzaMenu sections={sections} />
 
       <section className="mt-10">
-        <Link
-          href="/sklep"
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-700 dark:hover:bg-orange-950/30"
-        >
-          <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
-              <ShoppingBasket className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div>
-              <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
-                Zakupy spożywcze
-              </h2>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                Złóż koszyk — jokusor zrobi zakupy i dostarczy.
-              </p>
-            </div>
-          </div>
-          <span className="text-sm font-medium text-orange-600 group-hover:underline dark:text-orange-400">
-            Otwórz →
-          </span>
-        </Link>
-      </section>
-
-      <section className="mt-4">
-        <Link
-          href="/marketplace"
-          className="group flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-700 dark:hover:bg-orange-950/30"
-        >
-          <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
-              <ShoppingBag className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div>
-              <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50">
-                Marketplace osiedlowy
-              </h2>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                Kup od sąsiadów — z dostawą jokusora pod drzwi.
-              </p>
-            </div>
-          </div>
-          <span className="text-sm font-medium text-orange-600 group-hover:underline dark:text-orange-400">
-            Przeglądaj →
-          </span>
-        </Link>
-      </section>
-
-      <section className="mt-4">
         <Link
           href="/zostan-jokusorem"
           className="group flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-orange-300 hover:bg-orange-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-700 dark:hover:bg-orange-950/30"

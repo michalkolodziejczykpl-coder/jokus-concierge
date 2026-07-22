@@ -9,11 +9,12 @@
 
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Clock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { getDefaultAddress } from '@/lib/auth/getDefaultAddress';
 import { OrderDraftForm } from '@/components/resident/OrderDraftForm';
 import { formatPLN, formatDurationMin } from '@/lib/utils/formatters';
+import { COMING_SOON_MODULE_SLUGS } from '@/lib/constants';
 import type { Module } from '@/lib/types/modules';
 
 type PageProps = {
@@ -47,6 +48,36 @@ export default async function ModuleDetailPage({ params }: PageProps) {
   }
 
   const moduleData = moduleRow as Module;
+
+  // COMING_SOON gate (see lib/constants.ts): the module exists in the catalog
+  // but is not orderable yet — show a notice instead of the order form. The
+  // draft API rejects these modules too, so a handcrafted POST can't bypass
+  // this screen.
+  if ((COMING_SOON_MODULE_SLUGS as readonly string[]).includes(moduleData.slug)) {
+    return (
+      <main className="mx-auto min-h-screen max-w-2xl px-4 pb-16 pt-6 sm:px-6">
+        <Link
+          href="/home"
+          className="inline-flex items-center gap-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          Wszystkie usługi
+        </Link>
+        <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-10 text-center dark:border-neutral-800 dark:bg-neutral-900">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300">
+            <Clock className="h-7 w-7" aria-hidden="true" />
+          </span>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+            {moduleData.name} — wkrótce
+          </h1>
+          <p className="max-w-md text-sm text-neutral-600 dark:text-neutral-400">
+            Ta usługa startuje niebawem — kolejność uruchamiania wg osiedli pilotażu. Zajrzyj tu
+            ponownie za jakiś czas.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   // Onboarding gate. Send the user through /onboarding/address with a
   // `?next=` that bounces them back here once the address is saved.

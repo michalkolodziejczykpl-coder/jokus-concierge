@@ -27,6 +27,14 @@ export const COMPANY = {
   inspectionWindowMinutes: 15
 } as const;
 
+// Product gate, NOT pricing: modules that exist in the catalog but are not
+// orderable yet (owner decision 2026-07-22: Restauracje section is a
+// "coming soon" placeholder for the MVP). Listed greyed-out on the pizza
+// menu; the module page shows a notice instead of the form and
+// POST /api/orders/draft rejects them with 409. Delete the slug from this
+// list the day the section goes live — no DB change involved.
+export const COMING_SOON_MODULE_SLUGS = ['food-delivery'] as const;
+
 export const SLOT_HOLD_TTL_SECONDS = 90;
 export const TRACKING_BROADCAST_INTERVAL_MS = 7_000;
 export const AI_INTENT_CONFIDENCE_THRESHOLD = 0.75;

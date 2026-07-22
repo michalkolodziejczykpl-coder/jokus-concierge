@@ -11,6 +11,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { orderDraftInputSchema, customFieldsToZodSchema } from '@/lib/utils/validators';
+import { COMING_SOON_MODULE_SLUGS } from '@/lib/constants';
 import type { Module } from '@/lib/types/modules';
 import type { Address } from '@/lib/types/addresses';
 
@@ -57,6 +58,12 @@ export async function POST(request: Request) {
   }
 
   const moduleData = moduleRow as Module;
+
+  // COMING_SOON gate (see lib/constants.ts): the module page shows a notice
+  // instead of the form; reject handcrafted POSTs here for the same modules.
+  if ((COMING_SOON_MODULE_SLUGS as readonly string[]).includes(moduleData.slug)) {
+    return NextResponse.json({ error: 'module_unavailable' }, { status: 409 });
+  }
 
   // ---- Validate custom_data against the module's declared shape -----------
   // The client schema already ran on the form, but a malicious client could
