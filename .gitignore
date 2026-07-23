@@ -50,3 +50,6 @@ supabase/.temp
 
 .vercel
 .env*
+
+# Audit packages for external review — never commit
+jokus_audyt_*.zip
