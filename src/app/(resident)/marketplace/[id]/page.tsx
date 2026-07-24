@@ -29,22 +29,43 @@ export default async function ListingDetailPage({ params }: PageProps) {
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: row, error } = await supabase
-    .from('marketplace_listings')
-    .select(
-      'id, seller_id, estate_id, title, description, category, price, currency, condition, status, photos, pickup_address, delivery_option, created_at, views_count'
-    )
+  // Read the public-safe view (migration 20260724000001): active + approved,
+  // NO pickup_address. If it's not there it may be the OWNER's own inactive /
+  // pending listing — fall back to the base table (RLS allows seller/admin).
+  // pickup_address is never selected here; the buyer gets it via their order.
+  const listingCols =
+    'id, seller_id, estate_id, title, description, category, price, currency, condition, status, photos, delivery_option, created_at, views_count';
+  const { data: pubRow } = await supabase
+    .from('public_listings')
+    .select(listingCols)
     .eq('id', id)
     .maybeSingle();
-
-  if (error) {
-    console.error('[/marketplace/[id]] fetch', error);
-    throw new Error('Nie udało się załadować ogłoszenia');
+  let row = pubRow as Omit<ListingRow, 'pickup_address'> | null;
+  if (!row) {
+    const { data: ownRow, error } = await supabase
+      .from('marketplace_listings')
+      .select(listingCols)
+      .eq('id', id)
+      .maybeSingle();
+    if (error) {
+      console.error('[/marketplace/[id]] fetch', error);
+      throw new Error('Nie udało się załadować ogłoszenia');
+    }
+    row = ownRow as Omit<ListingRow, 'pickup_address'> | null;
   }
   if (!row) notFound();
 
-  const listing = row as ListingRow;
+  const listing = row;
   const isOwn = listing.seller_id === user.id;
+
+  // Approximate pickup area (estate name) — the exact address is revealed to
+  // the buyer only after purchase.
+  const { data: estRow } = await supabase
+    .from('estates')
+    .select('name')
+    .eq('id', listing.estate_id)
+    .maybeSingle();
+  const pickupArea = (estRow as { name: string | null } | null)?.name ?? 'w okolicy';
   const allowsDelivery =
     listing.delivery_option === 'migmig_only' || listing.delivery_option === 'migmig_or_pickup';
 
@@ -94,7 +115,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
           <MapPin className="h-4 w-4 text-neutral-500" aria-hidden="true" />
-          {listing.pickup_address.street} {listing.pickup_address.building}
+          Odbiór: {pickupArea}
         </div>
       </section>
 

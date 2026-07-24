@@ -386,6 +386,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'gastro_orders_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'gastro_orders_restaurant_id_fkey';
             columns: ['restaurant_id'];
             isOneToOne: false;
@@ -450,6 +457,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'jokusors';
             referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'invoices_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
+            referencedColumns: ['user_id'];
           }
         ];
       };
@@ -478,6 +492,13 @@ export type Database = {
             columns: ['jokusor_id'];
             isOneToOne: false;
             referencedRelation: 'jokusors';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'jokusor_modules_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
             referencedColumns: ['user_id'];
           },
           {
@@ -721,6 +742,13 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'marketplace_messages_listing_id_fkey';
+            columns: ['listing_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_listings';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'marketplace_messages_recipient_id_fkey';
             columns: ['recipient_id'];
             isOneToOne: false;
@@ -808,6 +836,13 @@ export type Database = {
             referencedColumns: ['id'];
           },
           {
+            foreignKeyName: 'marketplace_purchases_listing_id_fkey';
+            columns: ['listing_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_listings';
+            referencedColumns: ['id'];
+          },
+          {
             foreignKeyName: 'marketplace_purchases_seller_id_fkey';
             columns: ['seller_id'];
             isOneToOne: false;
@@ -841,6 +876,13 @@ export type Database = {
             columns: ['listing_id'];
             isOneToOne: false;
             referencedRelation: 'marketplace_listings';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'marketplace_reports_listing_id_fkey';
+            columns: ['listing_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_listings';
             referencedColumns: ['id'];
           },
           {
@@ -1370,6 +1412,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'orders_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'orders_module_id_fkey';
             columns: ['module_id'];
             isOneToOne: false;
@@ -1662,6 +1711,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'ratings_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'ratings_order_id_fkey';
             columns: ['order_id'];
             isOneToOne: true;
@@ -1807,6 +1863,13 @@ export type Database = {
             referencedColumns: ['user_id'];
           },
           {
+            foreignKeyName: 'time_slots_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
+            referencedColumns: ['user_id'];
+          },
+          {
             foreignKeyName: 'time_slots_order_id_fkey';
             columns: ['order_id'];
             isOneToOne: false;
@@ -1852,6 +1915,13 @@ export type Database = {
             columns: ['jokusor_id'];
             isOneToOne: false;
             referencedRelation: 'jokusors';
+            referencedColumns: ['user_id'];
+          },
+          {
+            foreignKeyName: 'tips_jokusor_id_fkey';
+            columns: ['jokusor_id'];
+            isOneToOne: false;
+            referencedRelation: 'public_jokusor_profiles';
             referencedColumns: ['user_id'];
           },
           {
@@ -2078,6 +2148,109 @@ export type Database = {
           type?: string | null;
         };
         Relationships: [];
+      };
+      public_jokusor_profiles: {
+        Row: {
+          avatar_url: string | null;
+          completed_jobs_count: number | null;
+          estate_id: string | null;
+          estate_name: string | null;
+          full_name: string | null;
+          public_photo_url: string | null;
+          rating: number | null;
+          user_id: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'jokusors_estate_id_fkey';
+            columns: ['estate_id'];
+            isOneToOne: false;
+            referencedRelation: 'estates';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'jokusors_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      public_listings: {
+        Row: {
+          category: string | null;
+          condition: Database['public']['Enums']['listing_condition'] | null;
+          created_at: string | null;
+          currency: string | null;
+          delivery_option: string | null;
+          description: string | null;
+          estate_id: string | null;
+          expires_at: string | null;
+          id: string | null;
+          moderation_status: string | null;
+          photos: string[] | null;
+          price: number | null;
+          seller_id: string | null;
+          status: Database['public']['Enums']['listing_status'] | null;
+          title: string | null;
+          updated_at: string | null;
+          views_count: number | null;
+        };
+        Insert: {
+          category?: string | null;
+          condition?: Database['public']['Enums']['listing_condition'] | null;
+          created_at?: string | null;
+          currency?: string | null;
+          delivery_option?: string | null;
+          description?: string | null;
+          estate_id?: string | null;
+          expires_at?: string | null;
+          id?: string | null;
+          moderation_status?: string | null;
+          photos?: string[] | null;
+          price?: number | null;
+          seller_id?: string | null;
+          status?: Database['public']['Enums']['listing_status'] | null;
+          title?: string | null;
+          updated_at?: string | null;
+          views_count?: number | null;
+        };
+        Update: {
+          category?: string | null;
+          condition?: Database['public']['Enums']['listing_condition'] | null;
+          created_at?: string | null;
+          currency?: string | null;
+          delivery_option?: string | null;
+          description?: string | null;
+          estate_id?: string | null;
+          expires_at?: string | null;
+          id?: string | null;
+          moderation_status?: string | null;
+          photos?: string[] | null;
+          price?: number | null;
+          seller_id?: string | null;
+          status?: Database['public']['Enums']['listing_status'] | null;
+          title?: string | null;
+          updated_at?: string | null;
+          views_count?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'marketplace_listings_estate_id_fkey';
+            columns: ['estate_id'];
+            isOneToOne: false;
+            referencedRelation: 'estates';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'marketplace_listings_seller_id_fkey';
+            columns: ['seller_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
       };
     };
     Functions: {

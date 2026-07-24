@@ -90,12 +90,12 @@ export default async function MarketplacePage({ searchParams }: { searchParams: 
   const hasMaxPrice = Number.isFinite(maxPrice) && maxPrice > 0;
   const sort = sp.sort === 'cheapest' || sp.sort === 'priciest' ? sp.sort : 'newest';
 
-  // Build the filtered query.
+  // Build the filtered query against the public-safe view (migration
+  // 20260724000001): active + moderation-approved rows only, no pickup_address.
   let query = supabase
-    .from('marketplace_listings')
+    .from('public_listings')
     .select('id, title, category, price, condition, photos, created_at')
     .eq('estate_id', estateId)
-    .eq('status', 'active')
     .neq('seller_id', user.id);
 
   if (q) query = query.ilike('title', `%${q}%`);

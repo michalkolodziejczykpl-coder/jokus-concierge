@@ -136,25 +136,20 @@ export default async function OrderDetailPage({ params }: PageProps) {
     redirect(`/orders/${order.id}/slots`);
   }
 
-  // Fetch jokusor name (works via users_read_public_profile policy)
+  // Jokusor public identity via the public-safe view (migration
+  // 20260724000001): full_name + public_photo_url only — never email/phone or
+  // the jokusor's documents.
   let jokusorName: string | null = null;
-  if (order.jokusor_id) {
-    const { data: jokRow } = await supabase
-      .from('users')
-      .select('full_name')
-      .eq('id', order.jokusor_id)
-      .maybeSingle();
-    jokusorName = (jokRow as { full_name?: string | null } | null)?.full_name ?? null;
-  }
-
   let jokusorPhoto: string | null = null;
   if (order.jokusor_id) {
-    const { data: jp } = await supabase
-      .from('jokusors')
-      .select('public_photo_url')
+    const { data } = await supabase
+      .from('public_jokusor_profiles')
+      .select('full_name, public_photo_url')
       .eq('user_id', order.jokusor_id)
       .maybeSingle();
-    jokusorPhoto = (jp as { public_photo_url?: string | null } | null)?.public_photo_url ?? null;
+    const prof = data as { full_name: string | null; public_photo_url: string | null } | null;
+    jokusorName = prof?.full_name ?? null;
+    jokusorPhoto = prof?.public_photo_url ?? null;
   }
 
   // Rating + tip state (resident, completed orders only).
